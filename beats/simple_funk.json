@@ -1,0 +1,15 @@
+{
+  "name": "Simple Funk",
+  "genre": "Funk",
+  "difficulty": "beginner",
+  "tempo": 90,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN":   "---- --x- ---- ---- | ---- --x- ---- ----",
+    "HH_CLOSED": "X-X- X--- X-X- X-X- | X-X- X--- X-X- X-X-",
+    "SNARE":     "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK":      "x--- ---- x--- ---- | x--- ---- x--- ----"
+  }
+}
