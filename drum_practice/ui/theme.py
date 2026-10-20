@@ -1,0 +1,58 @@
+"""Shared colours and the app-wide Qt stylesheet."""
+
+BG = "#15171c"
+SURFACE = "#1e2128"
+SURFACE_HI = "#272b34"
+BORDER = "#323743"
+TEXT = "#e6e8ee"
+TEXT_DIM = "#8b92a3"
+ACCENT = "#f2a541"
+OK = "#4cc38a"
+BAD = "#e5534b"
+
+STYLESHEET = f"""
+QWidget {{
+    background: {BG};
+    color: {TEXT};
+    font-size: 13px;
+}}
+QLabel#title {{
+    font-size: 20px;
+    font-weight: 600;
+}}
+QLabel#sectionTitle {{
+    color: {TEXT_DIM};
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}}
+QLabel#status {{
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-weight: 600;
+}}
+QTableWidget, QListWidget {{
+    background: {SURFACE};
+    border: 1px solid {BORDER};
+    border-radius: 8px;
+    gridline-color: {BORDER};
+    selection-background-color: {SURFACE_HI};
+}}
+QHeaderView::section {{
+    background: {SURFACE};
+    color: {TEXT_DIM};
+    border: none;
+    border-bottom: 1px solid {BORDER};
+    padding: 6px;
+    font-weight: 600;
+}}
+QPushButton {{
+    background: {SURFACE_HI};
+    border: 1px solid {BORDER};
+    border-radius: 6px;
+    padding: 6px 14px;
+}}
+QPushButton:hover {{
+    border-color: {ACCENT};
+}}
+"""
