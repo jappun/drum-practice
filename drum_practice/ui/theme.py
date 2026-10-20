@@ -7,6 +7,7 @@ BORDER = "#323743"
 TEXT = "#e6e8ee"
 TEXT_DIM = "#8b92a3"
 ACCENT = "#f2a541"
+LIT = "#ffe7b8"
 OK = "#4cc38a"
 BAD = "#e5534b"
 
@@ -54,5 +55,25 @@ QPushButton {{
 }}
 QPushButton:hover {{
     border-color: {ACCENT};
+}}
+QPushButton#primary {{
+    background: {ACCENT};
+    color: {BG};
+    border: none;
+    font-weight: 600;
+    padding: 8px 22px;
+}}
+QPushButton#primary:hover {{
+    background: {LIT};
+}}
+QComboBox {{
+    background: {SURFACE_HI};
+    border: 1px solid {BORDER};
+    border-radius: 6px;
+    padding: 6px 10px;
+    min-width: 220px;
+}}
+QLabel#meta {{
+    color: {TEXT_DIM};
 }}
 """

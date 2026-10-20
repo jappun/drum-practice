@@ -2,7 +2,7 @@ import sys
 
 from PySide6.QtWidgets import QApplication
 
-from .ui.monitor import MonitorWindow
+from .ui.main_window import MainWindow
 from .ui.theme import STYLESHEET
 
 
@@ -10,7 +10,7 @@ def main() -> int:
     app = QApplication(sys.argv)
     app.setApplicationName("Drum Practice")
     app.setStyleSheet(STYLESHEET)
-    window = MonitorWindow()
+    window = MainWindow()
     window.show()
     return app.exec()
 

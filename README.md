@@ -24,7 +24,18 @@ Connect the kit over USB and switch it on, then:
 python -m drum_practice
 ```
 
-The current build (Phase 1) is a kit monitor. It shows the connection status and lights up each pad as you hit it. It also logs the MIDI note number and velocity of every hit, plus other messages such as hi-hat pedal position.
+Pick a beat and press **Play**. It plays on a loop and the grid lights up each note as it sounds. **Kit monitor** opens a window that shows the kit's connection status and lights up each pad as you hit it. It also logs the MIDI note number and velocity of every hit, plus other messages such as hi-hat pedal position.
+
+## Beats
+
+Beats live in `beats/` as JSON files, with one pattern string per drum and one character per 16th step:
+
+```
+"HH_CLOSED": "x-x- x-x- x-x- x-x-",
+"SNARE":     "---- X--g ---- x---",
+```
+
+`x` normal, `X` accent, `g` ghost, `-` rest. Spaces and `|` are only for readability.
 
 ## Tests
 
