@@ -4,9 +4,12 @@ A local desktop app for drum practice: it plays a beat and lights up the notes, 
 
 Built with Python + PySide6 (Qt). Reads the kit over USB-MIDI. Developed using Yamaha DTX400K drumkit; any kit that sends General MIDI drum notes should work.
 
-See [docs/PLAN_PHASES.md](docs/PLAN_PHASES.md) for the build plan.
+## My Build Process
+See `docs/` for build notes made along the way. I started off by giving [BRAINSTORM.md](docs/BRAINSTORM.md) to Claude Code. I went back and forth on my specific vision until the agent was aware of all my specific requirements. Then, I let it build  [docs/PLAN_PHASES.md](docs/PLAN_PHASES.md) which I carefully read through and provided feedback on for edits or incorrect choices. I did this until the plan met my expectations.
 
-TODO:
+Then I let Claude build a phase, and I manually approve its edits. I test the application between each phase before moving onto the next.
+
+## TODO:
 - [x] Phase 1: project setup + kit monitor
 - [x] Phase 2: Hardcoded beat playsback with ui light up 
 - [x] Phase 3: Core loop - play a beat back and get scored
@@ -22,6 +25,7 @@ TODO:
 ## Setup
 
 Requires Python 3.11+.
+Until phase 10 is complete, the application will assume your kit outputs are in line with General MIDI mapping.
 
 ```
 python3 -m venv .venv
