@@ -1,6 +1,6 @@
 # Drum Practice
 
-A local desktop app for drum practice: it plays a beat and lights up the notes, then you play it back on an electronic kit and get graded on accuracy.
+A local desktop app for drum practice: it plays a beat, you play it back and get scored on accuracy.
 
 Built with Python + PySide6 (Qt). Reads the kit over USB-MIDI. Developed using Yamaha DTX400K drumkit; any kit that sends General MIDI drum notes should work.
 
