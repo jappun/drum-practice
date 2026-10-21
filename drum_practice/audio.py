@@ -9,6 +9,8 @@ currently coming out of the speakers, for syncing the UI.
 import heapq
 import itertools
 import threading
+import time
+from collections import deque
 from dataclasses import dataclass
 
 import numpy as np
@@ -21,6 +23,7 @@ CHOKE_FADE_SECONDS = 0.008
 # ahead and the UI corrects for output delay, so the extra latency is harmless.
 BLOCK_FRAMES = 1024
 OUTPUT_LATENCY = 0.1
+CLOCK_WINDOW = 500  # callbacks (~10 s) used to estimate the clock offset
 MASTER_GAIN = 0.5
 
 
@@ -99,6 +102,10 @@ class AudioEngine:
         self._clock_lock = threading.Lock()
         self._block_start = 0  # absolute sample at the start of the last block
         self._block_dac_time = None  # stream time when that sample reaches the speakers
+        # perf_counter minus stream time. On macOS both run off the same host
+        # clock, so this is ~0; the minimum over recent callbacks filters out
+        # the jitter of when Python got to read perf_counter.
+        self._clock_offsets: deque[float] = deque(maxlen=CLOCK_WINDOW)
         self.underruns = 0  # blocks the callback didn't fill in time (audible glitches)
         self._stream = sd.OutputStream(
             samplerate=self.sample_rate,
@@ -116,15 +123,35 @@ class AudioEngine:
         self._stream.stop()
         self._stream.close()
 
-    def position_samples(self) -> float:
-        """The absolute sample being heard right now (includes output latency)."""
+    @property
+    def running(self) -> bool:
+        with self._clock_lock:
+            return self._block_dac_time is not None
+
+    def sample_to_perf(self, sample: float) -> float:
+        """The time.perf_counter() moment when `sample` comes out of the speakers."""
+        block_start, block_perf = self._clock()
+        return block_perf + (sample - block_start) / self.sample_rate
+
+    def perf_to_sample(self, perf_time: float) -> float:
+        block_start, block_perf = self._clock()
+        return block_start + (perf_time - block_perf) * self.sample_rate
+
+    def _clock(self) -> tuple[int, float]:
+        """(sample at the start of the last block, perf time it is heard)."""
         with self._clock_lock:
             if self._block_dac_time is None:
-                return 0.0
-            start, dac_time = self._block_start, self._block_dac_time
-        return start + (self._stream.time - dac_time) * self.sample_rate
+                raise RuntimeError("audio stream hasn't started yet")
+            return self._block_start, self._block_dac_time + min(self._clock_offsets)
+
+    def position_samples(self) -> float:
+        """The absolute sample being heard right now (includes output latency)."""
+        if not self.running:
+            return 0.0
+        return self.perf_to_sample(time.perf_counter())
 
     def _callback(self, outdata, frames, time_info, status) -> None:
+        now = time.perf_counter()
         if status.output_underflow:
             self.underruns += 1
         block_start = self.mixer.position
@@ -133,5 +160,6 @@ class AudioEngine:
         outdata[:, 1] = mono
         dac_time = time_info.outputBufferDacTime or time_info.currentTime
         with self._clock_lock:
+            self._clock_offsets.append(now - time_info.currentTime)
             self._block_start = block_start
             self._block_dac_time = dac_time

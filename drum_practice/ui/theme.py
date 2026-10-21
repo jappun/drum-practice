@@ -76,4 +76,14 @@ QComboBox {{
 QLabel#meta {{
     color: {TEXT_DIM};
 }}
+QLabel#banner {{
+    font-size: 18px;
+    font-weight: 600;
+    color: {ACCENT};
+    min-height: 28px;
+}}
+QLabel#summary {{
+    font-size: 14px;
+    line-height: 150%;
+}}
 """

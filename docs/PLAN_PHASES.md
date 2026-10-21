@@ -59,7 +59,7 @@ Core logic (model, grading, scheduling, import) stays free of Qt and hardware so
 ## Phase 3 — Play it back and get graded (core loop)
 **Purpose:** the full core loop on one beat: listen → play silently along → score.
 - One "Start" press runs the default sequence: **count-in → demo (beat plays with lights) → count-in → your playback** (silent, playhead + lights still run, MIDI hits recorded) → results. Seamless, in tempo, with the on-screen status showing which stage you're in.
-- Latency calibration: tap along to 8 clicks; median offset is stored and applied to hits.
+- Latency calibration: tap along to 8 clicks; median offset is stored and applied to hits. Rejected (and not saved) if the taps are scattered by more than ±20 ms (median absolute deviation), so an uneven calibration can't skew grading.
 - Grading: each expected note matches the nearest unused hit of the same drum within a window (Perfect ≤30 ms, Good ≤70 ms, else Miss); unmatched hits = extras (penalty). Score % plus counts.
 - Hi-hat pedal second pass: after normal matching, each leftover pedal hit is checked (window = 40 ms, a named constant):
   - **A:** within 40 ms of a recorded **closed** hi-hat stick hit → ignore (hand and foot closing together).

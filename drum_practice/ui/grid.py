@@ -6,7 +6,10 @@ from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QColor, QFont, QPainter, QPen
 from PySide6.QtWidgets import QSizePolicy, QWidget
 
-from ..kit import DRUM_ORDER
+from dataclasses import dataclass, field
+
+from ..grading import NoteResult, Verdict
+from ..kit import DRUM_ORDER, DrumClass
 from ..model import Beat
 from . import theme
 
@@ -14,19 +17,35 @@ LABEL_WIDTH = 130
 ROW_HEIGHT = 34
 HEADER_HEIGHT = 22
 CELL_GAP = 3
+MARK_RADIUS = 4.5
+
+
+@dataclass
+class GridResults:
+    """What the grid needs to draw a graded run."""
+
+    notes: dict[tuple[int, DrumClass], NoteResult]
+    extras: list[tuple[float, DrumClass]] = field(default_factory=list)  # (fractional step, drum)
+    ignored: list[tuple[float, DrumClass]] = field(default_factory=list)
 
 
 class BeatGrid(QWidget):
     def __init__(self):
         super().__init__()
         self.beat: Beat | None = None
+        self.results: GridResults | None = None
         self._step: int | None = None
         self.setMinimumHeight(HEADER_HEIGHT + ROW_HEIGHT * len(DRUM_ORDER) + 2)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
     def set_beat(self, beat: Beat | None) -> None:
         self.beat = beat
+        self.results = None
         self._step = None
+        self.update()
+
+    def set_results(self, results: GridResults | None) -> None:
+        self.results = results
         self.update()
 
     def set_step(self, step: float | None) -> None:
@@ -92,9 +111,40 @@ class BeatGrid(QWidget):
                 cell_w - CELL_GAP,
                 ROW_HEIGHT - 2 * CELL_GAP,
             )
+            graded = self.results.notes.get((note.step, note.drum)) if self.results else None
+            if graded is not None:
+                self._paint_graded(p, rect, graded)
+                continue
             lit = note.step == self._step
             color = QColor(theme.LIT if lit else theme.ACCENT)
             color.setAlphaF(1.0 if lit else 0.35 + 0.55 * note.velocity / 127)
             p.setPen(QPen(QColor(theme.LIT), 2) if lit else Qt.NoPen)
             p.setBrush(color)
             p.drawRoundedRect(rect, 5, 5)
+
+        if self.results:
+            for marks, color in ((self.results.ignored, theme.TEXT_DIM), (self.results.extras, theme.BAD)):
+                p.setPen(Qt.NoPen)
+                p.setBrush(QColor(color))
+                for step, drum in marks:
+                    x = LABEL_WIDTH + (min(max(step, -0.5), steps - 0.5) + 0.5) * cell_w
+                    y = HEADER_HEIGHT + (DRUM_ORDER.index(drum) + 0.5) * ROW_HEIGHT
+                    p.drawEllipse(QRectF(x - MARK_RADIUS, y - MARK_RADIUS, 2 * MARK_RADIUS, 2 * MARK_RADIUS))
+
+    def _paint_graded(self, p: QPainter, rect: QRectF, graded: NoteResult) -> None:
+        if graded.verdict is Verdict.MISS:
+            p.setPen(QPen(QColor(theme.BAD), 2))
+            p.setBrush(Qt.NoBrush)
+            p.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 5, 5)
+            return
+        p.setPen(Qt.NoPen)
+        p.setBrush(QColor(theme.OK if graded.verdict is Verdict.PERFECT else theme.ACCENT))
+        p.drawRoundedRect(rect, 5, 5)
+        if graded.verdict is Verdict.GOOD:
+            # A notch on the side you were off towards: left = early, right = late.
+            notch_w = max(3.0, rect.width() * 0.22)
+            notch = QRectF(rect.left(), rect.top(), notch_w, rect.height())
+            if not graded.early:
+                notch.moveRight(rect.right())
+            p.setBrush(QColor(theme.BG))
+            p.drawRect(notch.adjusted(0, 4, 0, -4))
