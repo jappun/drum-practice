@@ -76,6 +76,47 @@ QComboBox {{
 QLabel#meta {{
     color: {TEXT_DIM};
 }}
+QPushButton:disabled, QCheckBox:disabled, QLabel:disabled {{
+    color: {TEXT_DIM};
+}}
+QSlider::groove:horizontal {{
+    height: 4px;
+    background: {BORDER};
+    border-radius: 2px;
+}}
+QSlider::sub-page:horizontal {{
+    background: {ACCENT};
+    border-radius: 2px;
+}}
+QSlider::handle:horizontal {{
+    background: {TEXT};
+    width: 14px;
+    margin: -6px 0;
+    border-radius: 7px;
+}}
+QLineEdit {{
+    background: {SURFACE_HI};
+    border: 1px solid {BORDER};
+    border-radius: 6px;
+    padding: 5px 4px;
+}}
+QLineEdit:focus {{
+    border-color: {ACCENT};
+}}
+QLabel#rowTitle {{
+    font-weight: 600;
+}}
+QCheckBox::indicator {{
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid {BORDER};
+    background: {SURFACE_HI};
+}}
+QCheckBox::indicator:checked {{
+    background: {ACCENT};
+    border-color: {ACCENT};
+}}
 QLabel#banner {{
     font-size: 18px;
     font-weight: 600;

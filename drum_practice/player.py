@@ -79,3 +79,54 @@ class BeatPlayer:
 
     def _loop_start(self, loop: int) -> int:
         return step_sample(self.beat, self._start, loop * self.beat.total_steps, self._engine.sample_rate)
+
+
+def click_sample(start_sample: int, tempo: float, index: int, sample_rate: int) -> int:
+    """Absolute sample of the `index`th click, computed from the start (no drift)."""
+    return start_sample + round(index * 60.0 / tempo * sample_rate)
+
+
+class MetronomePlayer:
+    """Clicks on every beat, accenting beat 1, until stopped."""
+
+    def __init__(self, engine: AudioEngine, clicks, beats_per_bar: int = 4):
+        self._engine = engine
+        self._accent, self._click = clicks
+        self.beats_per_bar = beats_per_bar
+        self.tempo: float | None = None
+        self._start = 0
+        self._scheduled = 0
+
+    @property
+    def playing(self) -> bool:
+        return self.tempo is not None
+
+    def play(self, tempo: float) -> None:
+        self.stop()
+        self.tempo = tempo
+        self._start = int(self._engine.mixer.position + START_LEAD_SECONDS * self._engine.sample_rate)
+        self._scheduled = 0
+        self.pump()
+
+    def stop(self) -> None:
+        self.tempo = None
+        self._engine.mixer.clear()
+
+    def pump(self) -> None:
+        if self.tempo is None:
+            return
+        sr = self._engine.sample_rate
+        horizon = self._engine.mixer.position + LOOKAHEAD_SECONDS * sr
+        while (sample := click_sample(self._start, self.tempo, self._scheduled, sr)) < horizon:
+            accent = self._scheduled % self.beats_per_bar == 0
+            self._engine.mixer.schedule(sample, self._accent if accent else self._click)
+            self._scheduled += 1
+
+    def current_beat(self) -> int | None:
+        """1-based beat in the bar being heard now; None before the first click."""
+        if self.tempo is None:
+            return None
+        elapsed = (self._engine.position_samples() - self._start) / self._engine.sample_rate
+        if elapsed < 0:
+            return None
+        return int(elapsed * self.tempo / 60.0) % self.beats_per_bar + 1

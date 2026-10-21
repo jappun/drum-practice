@@ -36,9 +36,17 @@ class Click:
 
 
 class Timeline:
-    def __init__(self, beat: Beat, start: int, sample_rate: int, count_in: bool = True):
+    def __init__(
+        self,
+        beat: Beat,
+        start: int,
+        sample_rate: int,
+        count_in: bool = True,
+        metronome: bool = False,
+    ):
         self.beat = beat
         self.sample_rate = sample_rate
+        self.metronome = metronome  # click on every beat of your turn
         self.step_samples = beat.step_seconds() * sample_rate
         bar = beat.steps_per_bar
         plan = []
@@ -76,11 +84,11 @@ class Timeline:
         beat = self.beat
         out = []
         for seg in self.segments:
-            if seg.stage is not Stage.COUNT_IN:
-                continue
-            for b in range(beat.beats_per_bar):
-                sample = seg.start + round(b * beat.steps_per_beat * self.step_samples)
-                out.append(Click(sample, accent=b == 0))
+            if seg.stage is Stage.COUNT_IN or (seg.stage is Stage.PLAY and self.metronome):
+                beats = round((seg.end - seg.start) / self.step_samples) // beat.steps_per_beat
+                for b in range(beats):
+                    sample = seg.start + round(b * beat.steps_per_beat * self.step_samples)
+                    out.append(Click(sample, accent=b % beat.beats_per_bar == 0))
         return out
 
     def note_sample(self, stage: Stage, step: int) -> int:
@@ -94,7 +102,7 @@ class Timeline:
         ]
 
     def schedule(self, mixer: Mixer, kit: dict, clicks: tuple[np.ndarray, np.ndarray]) -> None:
-        """Queue the count-in clicks and the demo; the PLAY segment stays silent."""
+        """Queue the clicks and the demo; the beat itself is silent in the PLAY segment."""
         accent_click, click = clicks
         for c in self.clicks():
             mixer.schedule(c.sample, accent_click if c.accent else click)

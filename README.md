@@ -45,6 +45,8 @@ python -m drum_practice
 2. Pick a beat. **Listen** plays it on a loop, with the grid lighting up each note as it sounds.
 3. **Start practice** runs count-in → the beat plays → count-in → your turn (silent, the grid keeps lighting) → your score. On the results grid, green is perfect (≤30 ms), amber is good (≤70 ms, notched on the early/late side), a red outline is a missed note and a red dot is an extra hit.
 
+The settings row underneath sets the **tempo** (drag the slider or type a number), how many **bars** to practise (the pattern repeats to fill them), whether there's a **count-in**, and whether a **click** plays during your turn. **Metronome** just plays a click at the current tempo. Settings are remembered between launches.
+
 **Kit monitor** opens a window that shows the kit's connection status and lights up each pad as you hit it. It also logs the MIDI note number and velocity of every hit, plus other messages such as hi-hat pedal position.
 
 ## Beats

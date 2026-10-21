@@ -10,7 +10,7 @@ Spaces and "|" are ignored, so a bar of 16ths can be written as
 """
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from .kit import DRUM_ORDER, DrumClass
@@ -55,6 +55,22 @@ class Beat:
 
     def notes_at(self, step: int) -> list[Note]:
         return [n for n in self.notes if n.step == step]
+
+    def with_bars(self, bars: int) -> "Beat":
+        """This beat stretched to `bars` bars: repeated if it's shorter,
+        cut to the first `bars` bars if it's longer."""
+        total = bars * self.steps_per_bar
+        repeats = -(-bars // self.bars)  # ceiling division
+        notes = [
+            Note(n.step + k * self.total_steps, n.drum, n.velocity)
+            for k in range(repeats)
+            for n in self.notes
+            if n.step + k * self.total_steps < total
+        ]
+        return replace(self, bars=bars, notes=sorted(notes, key=Note.sort_key))
+
+    def with_tempo(self, tempo: float) -> "Beat":
+        return replace(self, tempo=tempo)
 
     # --- JSON ---
 

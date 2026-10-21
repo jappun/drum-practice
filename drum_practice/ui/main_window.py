@@ -2,21 +2,31 @@
 
 from enum import Enum, auto
 
-from PySide6.QtCore import QObject, Qt, QTimer, Signal
-from PySide6.QtWidgets import QComboBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtCore import QEvent, QObject, Qt, QTimer, Signal
+from PySide6.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 from .. import calibration
 from ..audio import AudioEngine
 from ..grading import GOOD_WINDOW, Played, Result, Verdict, grade
 from ..midi_in import Hit, MidiInput
-from ..model import load_beats
-from ..player import BeatPlayer
+from ..model import Beat, load_beats
+from ..player import BeatPlayer, MetronomePlayer
 from ..session import Stage, Timeline
 from ..settings import Settings
 from ..sounds import build_clicks, build_kit
 from . import theme
 from .grid import BeatGrid, GridResults
 from .monitor import MonitorWindow
+from .settings_bar import SettingsBar
 
 FRAME_MS = 16
 START_LEAD_SECONDS = 0.3  # pause between pressing Start and the first click
@@ -28,6 +38,7 @@ class Mode(Enum):
     LISTEN = auto()
     PRACTICE = auto()
     CALIBRATE = auto()
+    METRONOME = auto()
 
 
 class _HitBridge(QObject):
@@ -47,8 +58,10 @@ class MainWindow(QWidget):
         self._kit = build_kit(self._engine.sample_rate)
         self._clicks = build_clicks(self._engine.sample_rate)
         self._player = BeatPlayer(self._engine, self._kit)
+        self._metronome = MetronomePlayer(self._engine, self._clicks)
         self._engine.start()
         self._beats = load_beats()
+        self._base_beat: Beat = self._beats[0]  # as written; settings reshape it
         self._monitor: MonitorWindow | None = None
 
         self._mode = Mode.IDLE
@@ -70,6 +83,26 @@ class MainWindow(QWidget):
         self._poll.timeout.connect(self._poll_kit)
         self._poll.start()
         self._poll_kit()
+
+        # Start with nothing focused, and drop focus from a text box when the
+        # user clicks anywhere else. On macOS buttons never take focus, so
+        # without this the tempo box keeps a blinking cursor after any click.
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setFocus()
+        QApplication.instance().installEventFilter(self)
+
+    def eventFilter(self, obj, event) -> bool:
+        if event.type() == QEvent.MouseButtonPress:
+            focused = QApplication.focusWidget()
+            clicked = obj if isinstance(obj, QWidget) else None
+            if (
+                isinstance(focused, QLineEdit)
+                and clicked is not None
+                and clicked is not focused
+                and not focused.isAncestorOf(clicked)
+            ):
+                self.setFocus()  # the box commits its typed value as it loses focus
+        return False
 
     # --- layout ---
 
@@ -118,6 +151,11 @@ class MainWindow(QWidget):
         controls.addStretch()
         root.addLayout(controls)
 
+        self._settings_bar = SettingsBar(self._settings)
+        self._settings_bar.changed.connect(self._on_settings_changed)
+        self._settings_bar.metronome_toggled.connect(self._toggle_metronome)
+        root.addWidget(self._settings_bar)
+
         self._banner = QLabel()
         self._banner.setObjectName("banner")
         root.addWidget(self._banner)
@@ -135,12 +173,30 @@ class MainWindow(QWidget):
 
     # --- actions ---
 
+    def _practice_beat(self) -> Beat:
+        """The selected beat reshaped by the current tempo and bars settings."""
+        s = self._settings
+        return self._base_beat.with_bars(s.bars).with_tempo(s.tempo)
+
     def _select_beat(self, index: int) -> None:
         self._stop_all()
-        beat = self._beats[index]
-        self._grid.set_beat(beat)
-        self._meta.setText(f"{beat.genre} · {beat.difficulty} · {beat.bars} bars · {beat.tempo:g} BPM")
+        beat = self._base_beat = self._beats[index]
+        self._grid.set_beat(self._practice_beat())
+        self._meta.setText(
+            f"{beat.genre} · {beat.difficulty} · {beat.bars}-bar pattern · written at {beat.tempo:g} BPM"
+        )
         self._show_idle_banner()
+
+    def _on_settings_changed(self) -> None:
+        self._settings.save()
+        self._grid.set_beat(self._practice_beat())
+        # Hear changes straight away while something's playing.
+        if self._mode is Mode.LISTEN:
+            self._player.play(self._practice_beat())
+        elif self._mode is Mode.METRONOME:
+            self._metronome.play(self._settings.tempo)
+        elif self._mode is Mode.IDLE:
+            self._show_idle_banner()
 
     def _toggle_listen(self) -> None:
         if self._mode is Mode.LISTEN:
@@ -148,9 +204,17 @@ class MainWindow(QWidget):
             return
         self._stop_all()
         self._grid.set_results(None)
-        self._player.play(self._grid.beat)
+        self._player.play(self._practice_beat())
         self._set_mode(Mode.LISTEN)
         self._banner.setText("Listening — press Stop when you're ready to practise")
+
+    def _toggle_metronome(self) -> None:
+        if self._mode is Mode.METRONOME:
+            self._stop_all()
+            return
+        self._stop_all()
+        self._metronome.play(self._settings.tempo)
+        self._set_mode(Mode.METRONOME)
 
     def _toggle_practice(self) -> None:
         if self._mode is Mode.PRACTICE:
@@ -159,7 +223,13 @@ class MainWindow(QWidget):
         self._stop_all()
         self._grid.set_results(None)
         start = int(self._engine.mixer.position + START_LEAD_SECONDS * self._engine.sample_rate)
-        self._timeline = Timeline(self._grid.beat, start, self._engine.sample_rate)
+        self._timeline = Timeline(
+            self._practice_beat(),
+            start,
+            self._engine.sample_rate,
+            count_in=self._settings.count_in,
+            metronome=self._settings.metronome,
+        )
         self._timeline.schedule(self._engine.mixer, self._kit, self._clicks)
         self._hits = []
         self._set_mode(Mode.PRACTICE)
@@ -180,6 +250,7 @@ class MainWindow(QWidget):
 
     def _stop_all(self) -> None:
         self._player.stop()
+        self._metronome.stop()
         self._engine.mixer.clear()
         self._timeline = None
         self._grid.set_step(None)
@@ -192,14 +263,19 @@ class MainWindow(QWidget):
         self._listen.setText("Stop" if mode is Mode.LISTEN else "Listen")
         self._start.setText("Stop" if mode is Mode.PRACTICE else "Start practice")
         self._calibrate.setText("Stop" if mode is Mode.CALIBRATE else "Calibrate")
+        self._settings_bar.set_metronome_playing(mode is Mode.METRONOME)
+        # Settings can't change mid-run; while listening or clicking they apply live.
+        self._settings_bar.setEnabled(mode not in (Mode.PRACTICE, Mode.CALIBRATE))
         if mode is not Mode.IDLE:
             self._summary.setText("")
 
     def _show_idle_banner(self) -> None:
-        if self._settings.calibrated:
+        if not self._settings.calibrated:
+            self._banner.setText("Tip: press Calibrate first so timing is graded accurately.")
+        elif self._settings.count_in:
             self._banner.setText("Press Start practice: count-in, listen, count-in, then your turn.")
         else:
-            self._banner.setText("Tip: press Calibrate first so timing is graded accurately.")
+            self._banner.setText("Press Start practice: listen, then your turn.")
 
     # --- per frame ---
 
@@ -211,16 +287,23 @@ class MainWindow(QWidget):
             self._tick_practice()
         elif self._mode is Mode.CALIBRATE:
             self._tick_calibration()
+        elif self._mode is Mode.METRONOME:
+            self._metronome.pump()
+            beat = self._metronome.current_beat()
+            dots = " ".join("●" if beat == b else "○" for b in range(1, self._metronome.beats_per_bar + 1))
+            self._banner.setText(f"Metronome · {self._settings.tempo:.0f} BPM     {dots}")
 
     def _tick_practice(self) -> None:
         tl = self._timeline
         now = self._engine.position_samples()
         stage, step = tl.stage_at(now)
         beat = tl.beat
-        if stage is Stage.COUNT_IN:
+        if now < tl.segments[0].start:
             self._grid.set_step(None)
-            count = int(step // beat.steps_per_beat) + 1 if now >= tl.segments[0].start else ""
-            self._banner.setText(f"Count-in   {count}")
+            self._banner.setText("Get ready…")
+        elif stage is Stage.COUNT_IN:
+            self._grid.set_step(None)
+            self._banner.setText(f"Count-in   {int(step // beat.steps_per_beat) + 1}")
         elif stage is Stage.DEMO:
             self._grid.set_step(step)
             self._banner.setText("Listen…")
@@ -318,6 +401,7 @@ class MainWindow(QWidget):
         self._monitor.raise_()
 
     def closeEvent(self, event) -> None:
+        QApplication.instance().removeEventFilter(self)
         self._frame.stop()
         self._poll.stop()
         self._stop_all()

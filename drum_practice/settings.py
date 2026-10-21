@@ -18,6 +18,10 @@ def default_path() -> Path:
 class Settings:
     latency_offset: float = 0.0  # seconds subtracted from every hit
     calibrated: bool = False
+    tempo: float = 90.0
+    bars: int = 2
+    count_in: bool = True
+    metronome: bool = False  # click along during your turn
 
     @classmethod
     def load(cls, path: Path | None = None) -> "Settings":
