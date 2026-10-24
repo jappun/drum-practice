@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMessageBox,
     QPushButton,
     QVBoxLayout,
     QWidget,
@@ -32,6 +33,14 @@ from .monitor import MonitorWindow
 from .settings_bar import SettingsBar
 
 FRAME_MS = 16
+ABOUT_TEXT = """<p>Practise drum beats on an electronic kit and get graded on your timing.
+MIT licensed.</p>
+<p><b>Beats</b> come from the <a href="https://magenta.tensorflow.org/datasets/groove">Groove MIDI
+Dataset</a> by Google LLC, licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>:<br>
+Jon Gillick, Adam Roberts, Jesse Engel, Douglas Eck and David Bamman,
+"Learning to Groove with Inverse Sequence Transformations", ICML 2019.<br>
+Each beat is a 2-bar excerpt, simplified to a 16th-note grid.</p>"""
 START_LEAD_SECONDS = 0.3  # pause between pressing Start and the first click
 FINISH_GRACE_SECONDS = 0.15  # keep listening this long after the last bar for late hits
 
@@ -145,11 +154,14 @@ class MainWindow(QWidget):
         self._calibrate.clicked.connect(self._toggle_calibration)
         monitor = QPushButton("Kit monitor")
         monitor.clicked.connect(self._open_monitor)
+        about = QPushButton("About")
+        about.clicked.connect(self._show_about)
         header.addWidget(title)
         header.addStretch()
         header.addWidget(self._kit_status)
         header.addWidget(self._calibrate)
         header.addWidget(monitor)
+        header.addWidget(about)
         root.addLayout(header)
 
         body = QHBoxLayout()
@@ -467,6 +479,13 @@ class MainWindow(QWidget):
             self._kit_status.setText("● Kit not found — switch it on")
             color = theme.BAD
         self._kit_status.setStyleSheet(f"color: {color}; background: {theme.SURFACE};")
+
+    def _show_about(self) -> None:
+        box = QMessageBox(self)
+        box.setWindowTitle("About Drum Practice")
+        box.setText("Drum Practice")
+        box.setInformativeText(ABOUT_TEXT)
+        box.exec()
 
     def _open_monitor(self) -> None:
         if self._monitor is None:

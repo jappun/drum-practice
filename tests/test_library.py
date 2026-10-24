@@ -1,4 +1,5 @@
 import random
+from collections import Counter
 
 import pytest
 
@@ -37,6 +38,16 @@ def test_no_filters_lists_everything_easiest_first():
     ids = [b.id for b in filter_beats(BEATS)]
     assert ids[:3] == ["d_beg", "f_beg", "r_beg"]  # beginners, by name
     assert ids[3:] == ["f_int", "r_adv"]
+
+
+def test_numbered_names_sort_naturally():
+    beats = [make(f"r{n}", "Rock", "beginner", name=f"Rock {n}") for n in (10, 2, 1, 100)]
+    assert [b.name for b in filter_beats(beats)] == ["Rock 1", "Rock 2", "Rock 10", "Rock 100"]
+
+
+def test_other_genre_sorts_last():
+    beats = [make("o", "Other", "beginner"), make("a", "Afrobeat", "beginner"), make("p", "Punk", "beginner")]
+    assert genres(beats) == ["Afrobeat", "Punk", "Other"]
 
 
 def test_genre_filter():
@@ -133,19 +144,21 @@ def test_corrupt_scores_file_starts_fresh(tmp_path):
 # --- bundled beats ---
 
 
+BUNDLED = load_beats()
+
+
 def test_bundled_library_covers_genres_and_all_difficulties():
-    beats = load_beats()
-    assert 8 <= len(beats) <= 10
-    assert len(genres(beats)) >= 2
-    assert {b.difficulty for b in beats} == set(DIFFICULTIES)
-    assert len({b.id for b in beats}) == len(beats)
-    assert all(b.id for b in beats)
+    assert len(BUNDLED) > 100
+    assert len(genres(BUNDLED)) >= 5
+    counts = Counter(b.difficulty for b in BUNDLED)
+    assert set(counts) == set(DIFFICULTIES)
+    assert max(counts.values()) - min(counts.values()) <= 1  # split into even thirds
+    assert len({b.id for b in BUNDLED}) == len(BUNDLED)
 
 
-@pytest.mark.parametrize("beat", load_beats(), ids=lambda b: b.id)
-def test_every_bundled_beat_is_well_formed(beat):
-    assert beat.difficulty in DIFFICULTIES
-    assert beat.notes, "beat has no notes"
-    if beat.id == "funk_linear":
-        steps = [n.step for n in beat.notes]
-        assert len(steps) == len(set(steps)), "linear groove has two voices on one step"
+def test_every_bundled_beat_is_well_formed():
+    for beat in BUNDLED:
+        assert beat.id and beat.name, beat.id
+        assert beat.difficulty in DIFFICULTIES, beat.id
+        assert beat.bars == 2 and len(beat.notes) >= 16, beat.id
+        assert all(0 <= n.step < beat.total_steps for n in beat.notes), beat.id

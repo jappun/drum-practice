@@ -1,0 +1,22 @@
+{
+  "name": "Funk 45",
+  "genre": "Funk",
+  "difficulty": "beginner",
+  "tempo": 95.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- --X- ---- | ---- ---- --X- ----",
+    "HH_CLOSED": "x-g- X-g- g--- g-g- | X-g- x-g- g--- x-g-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--- ---- x--- ---- | x--g -g-g x--- ----",
+    "HH_PEDAL": "---- ---- ---- g--- | ---- ---- ---- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/2_funk_95_beat_4-4.mid",
+    "style": "funk",
+    "bars": "1-2"
+  }
+}

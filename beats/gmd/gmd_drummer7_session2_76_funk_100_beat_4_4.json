@@ -1,0 +1,22 @@
+{
+  "name": "Funk 25",
+  "genre": "Funk",
+  "difficulty": "intermediate",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "--xg ---- ---- ---- | ---- ---- ---- ----",
+    "HH_CLOSED": "---- X-X- X-x- X-X- | X-x- X-X- X-X- X-g-",
+    "SNARE": "-g-- X--- X--g --X- | Xg-g --X- X-g- X-g-",
+    "KICK": "--x- ---- --x- ---- | --x- x--- -x-- -x--",
+    "HH_PEDAL": "---- x--- ---- ---- | ---- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/76_funk_100_beat_4-4.mid",
+    "style": "funk",
+    "bars": "1-2"
+  }
+}

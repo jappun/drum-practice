@@ -1,0 +1,19 @@
+{
+  "name": "Brazilian 2",
+  "genre": "Latin",
+  "difficulty": "beginner",
+  "tempo": 184.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "g-x- X-X- xxxx X-X- | xgxx X-X- xgxx X-X-",
+    "KICK": "g--- ---- g--- ---- | g--- ---- g--- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer4/session1/5_latin-brazilian_184_beat_4-4.mid",
+    "style": "latin/brazilian",
+    "bars": "20-21"
+  }
+}

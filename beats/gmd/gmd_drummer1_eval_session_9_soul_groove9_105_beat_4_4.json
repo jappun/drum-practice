@@ -1,0 +1,20 @@
+{
+  "name": "Soul 4",
+  "genre": "Soul",
+  "difficulty": "beginner",
+  "tempo": 105.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--- ---- -gg- ---- | x--- ---- -gx- ----",
+    "HH_PEDAL": "x-X- x-x- x-X- X-x- | X-x- x-x- x-x- x-x-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/eval_session/9_soul-groove9_105_beat_4-4.mid",
+    "style": "soul/groove9",
+    "bars": "2-3"
+  }
+}

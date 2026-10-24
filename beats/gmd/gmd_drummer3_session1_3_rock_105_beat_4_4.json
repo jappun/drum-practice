@@ -1,0 +1,20 @@
+{
+  "name": "Rock 21",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 105.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-x- X-x- x-x- X-x- | x-x- X-x- x-X- X-X-",
+    "SNARE": "---- x--- ---- x--- | ---- x--- ---- x---",
+    "KICK": "x--g --x- --g- --g- | x--g --g- --g- --x-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session1/3_rock_105_beat_4-4.mid",
+    "style": "rock",
+    "bars": "1-2"
+  }
+}

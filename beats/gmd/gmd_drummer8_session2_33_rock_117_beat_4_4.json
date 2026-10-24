@@ -1,0 +1,21 @@
+{
+  "name": "Rock 107",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 117.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "--xx xx-- -gxx x--- | -gxx xx-- -ggx x---",
+    "SNARE": "---- ---- x--- ---- | ---- ---- x--- ----",
+    "KICK": "---- --x- ---- --gg | ---- g-x- ---- g-gg",
+    "HH_PEDAL": "g--- ---- ---- ---- | g--- ---- g--- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/33_rock_117_beat_4-4.mid",
+    "style": "rock",
+    "bars": "21-22"
+  }
+}

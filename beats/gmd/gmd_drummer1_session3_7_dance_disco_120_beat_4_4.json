@@ -1,0 +1,22 @@
+{
+  "name": "Disco 3",
+  "genre": "Dance",
+  "difficulty": "advanced",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "--Xg --XX --X- --XX | --XX --Xg --Xg --Xg",
+    "HH_CLOSED": "xx-- xx-- xx-- -x-- | xg-- xx-- xg-- Xg--",
+    "TOM_LOW": "---- ---- ---X X--- | ---- ---- ---- ----",
+    "KICK": "X--- X--- X--- X--- | X--- X--- X--- X---",
+    "HH_PEDAL": "g--- g--- g--- g--- | x--- g--- g--- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session3/7_dance-disco_120_beat_4-4.mid",
+    "style": "dance/disco",
+    "bars": "19-20"
+  }
+}

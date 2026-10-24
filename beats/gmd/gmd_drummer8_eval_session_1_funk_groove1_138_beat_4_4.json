@@ -1,0 +1,20 @@
+{
+  "name": "Funk 36",
+  "genre": "Funk",
+  "difficulty": "intermediate",
+  "tempo": 138.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-x- X-g- x-x- X-g- | x-x- X-g- x-X- g-X-",
+    "SNARE": "---- Xg-X -x-- Xx-x | ---- Xg-X -x-- --Xg",
+    "KICK": "X-x- ---- --xx ---- | X-X- ---- --X- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/eval_session/1_funk-groove1_138_beat_4-4.mid",
+    "style": "funk/groove1",
+    "bars": "6-7"
+  }
+}

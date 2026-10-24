@@ -1,0 +1,22 @@
+{
+  "name": "Rock 89",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 135.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "TOM_HIGH": "---- ---- --x- ---- | ---- ---- --X- ----",
+    "SNARE": "---- X-g- ---- X--- | ---- X-g- ---- X-g-",
+    "TOM_LOW": "X--- X--- X--- X--- | X-g- X--- X--- X---",
+    "KICK": "--x- --g- g--- --g- | x--- --g- --g- --g-",
+    "HH_PEDAL": "---- x--- ---- x--- | ---- x--- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/49_rock_135_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}

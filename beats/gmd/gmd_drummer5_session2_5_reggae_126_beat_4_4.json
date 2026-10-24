@@ -1,0 +1,21 @@
+{
+  "name": "Reggae 4",
+  "genre": "Other",
+  "difficulty": "intermediate",
+  "tempo": 126.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "--X- --x- --x- --X- | --X- --x- --x- --X-",
+    "HH_CLOSED": "x--- X--- X--- x--- | X--- x--- X--- X---",
+    "SNARE": "--X- -g-- Xxgg --X- | --X- -g-- X--X --X-",
+    "KICK": "g--- x--- x--- g--- | x--- g--- g--- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/session2/5_reggae_126_beat_4-4.mid",
+    "style": "reggae",
+    "bars": "58-59"
+  }
+}

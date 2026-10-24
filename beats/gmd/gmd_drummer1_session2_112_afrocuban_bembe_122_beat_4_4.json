@@ -1,0 +1,22 @@
+{
+  "name": "Bembe 1",
+  "genre": "Afro-Cuban",
+  "difficulty": "advanced",
+  "tempo": 122.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "x--- ---- ---- ---- | ---- ---- ---- ----",
+    "RIDE": "---x -x-X -x-- x--g | x--x -g-X --X- x--g",
+    "SNARE": "---- ---- ---X -g-g | --g- ---X ---g -gg-",
+    "KICK": "x--- g--- g--- g--- | g--x ---- ---- x---",
+    "HH_PEDAL": "X--- X-g- X--- x--- | x--- x--- X-x- X-g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session2/112_afrocuban-bembe_122_beat_4-4.mid",
+    "style": "afrocuban/bembe",
+    "bars": "77-78"
+  }
+}

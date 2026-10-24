@@ -1,0 +1,22 @@
+{
+  "name": "Punk 2",
+  "genre": "Punk",
+  "difficulty": "advanced",
+  "tempo": 128.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "---- ---- ---- ---- | ---- ---- ---- --X-",
+    "TOM_HIGH": "---- --X- ---- --X- | ---- --X- ---- ----",
+    "SNARE": "--X- ---- --X- ---- | --X- ---- ---- --X-",
+    "TOM_LOW": "X-X- x-X- x-X- x-X- | x-X- x-X- x-x- ----",
+    "KICK": "-g-g -g-x -g-x -g-x | -x-g -x-x -x-x -x--"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session2/33_punk_128_beat_4-4.mid",
+    "style": "punk",
+    "bars": "1-2"
+  }
+}

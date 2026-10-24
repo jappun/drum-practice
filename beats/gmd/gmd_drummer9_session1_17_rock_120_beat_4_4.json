@@ -1,0 +1,22 @@
+{
+  "name": "Rock 117",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "TOM_HIGH": "X--- ---- ---x X--- | ---- ---x X--- ----",
+    "TOM_MID": "--xx ---- ---- --xX | ---- ---- --xX ----",
+    "SNARE": "---- ---- XX-- ---- | ---- XX-- ---- ----",
+    "TOM_LOW": "---- -xx- ---- ---- | -xX- ---- ---- -xX-",
+    "KICK": "-x-- x--x --x- -x-- | x--x --x- -x-- x--x"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/17_rock_120_beat_4-4.mid",
+    "style": "rock",
+    "bars": "1-2"
+  }
+}

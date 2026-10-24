@@ -1,0 +1,21 @@
+{
+  "name": "Rock 130",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 90.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-Xx XxXx XxXx X-XX | X-Xx X-Xx X-Xx X-Xg",
+    "SNARE": "--X- --X- --X- -x-X | --X- --X- --X- --X-",
+    "KICK": "x-x- x-x- x-x- x-x- | x-x- x-x- x-x- x-x-",
+    "HH_PEDAL": "--x- --x- --g- --x- | --X- --X- --X- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/30_rock_90_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}

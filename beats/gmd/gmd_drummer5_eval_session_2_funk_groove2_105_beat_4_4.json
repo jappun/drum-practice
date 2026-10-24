@@ -1,0 +1,22 @@
+{
+  "name": "Funk 15",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 105.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- ---- ---- | ---- ---- ---- X---",
+    "HH_CLOSED": "x-x- X-X- X-X- X-x- | X-x- X-X- X-X- --g-",
+    "SNARE": "-gg- Xx-- -gg- Xg-X | -gg- X--- -gg- Xg-X",
+    "KICK": "x--- ---x -gx- ---- | x--g ---x -gg- ----",
+    "HH_PEDAL": "---- ---- ---- ---- | ---- ---- ---- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/eval_session/2_funk-groove2_105_beat_4-4.mid",
+    "style": "funk/groove2",
+    "bars": "9-10"
+  }
+}

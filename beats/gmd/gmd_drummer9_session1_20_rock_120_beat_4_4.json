@@ -1,0 +1,21 @@
+{
+  "name": "Rock 121",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x--g X--g x--- x--g | X--- X--g x--- X--X",
+    "SNARE": "---- X--- ---g X--- | ---g X--- ---g x--X",
+    "KICK": "g--- x--- x--- x--- | x--- x--- x--- x---",
+    "HH_PEDAL": "---- x--- ---- x--- | ---- x--- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/20_rock_120_beat_4-4.mid",
+    "style": "rock",
+    "bars": "45-46"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Pop 7",
+  "genre": "Pop",
+  "difficulty": "beginner",
+  "tempo": 132.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-g- X-g- X-g- X-g- | X-g- X-g- X-g- X-g-",
+    "SNARE": "---- X--- -g-- X--- | ---- X--- ---- X---",
+    "KICK": "x-X- --x- --x- ---- | x-x- --x- --x- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/103_pop_132_beat_4-4.mid",
+    "style": "pop",
+    "bars": "13-14"
+  }
+}

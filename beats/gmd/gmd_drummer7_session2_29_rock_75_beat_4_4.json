@@ -1,0 +1,22 @@
+{
+  "name": "Rock 81",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 75.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- ---- --X- | ---- ---- ---- ----",
+    "HH_CLOSED": "Xxxx XxXX Xxxx Xg-- | Xxxg Xxxg Xxgg Xggg",
+    "SNARE": "---- X--- ---- X--- | --g- X--- --g- X-gg",
+    "KICK": "x--- ---x X--- ---- | X--- ---x X--- ---x",
+    "HH_PEDAL": "---- ---- ---- ---- | X--- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/29_rock_75_beat_4-4.mid",
+    "style": "rock",
+    "bars": "3-4"
+  }
+}

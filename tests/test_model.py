@@ -62,9 +62,8 @@ def test_step_timing():
     assert beat.step_seconds() == pytest.approx(60 / 90 / 4)
 
 
-def test_bundled_beats_load_and_one_mixes_open_and_closed_hihat():
-    beats = load_beats()
-    assert len(beats) >= 2
-    assert any(
-        {DrumClass.HH_OPEN, DrumClass.HH_CLOSED} <= {n.drum for n in b.notes} for b in beats
-    )
+def test_beats_in_subfolders_load(tmp_path):
+    (tmp_path / "set").mkdir()
+    Beat.from_dict(_beat_dict({"KICK": "x--- ---- ---- ----"})).save(tmp_path / "set" / "one.json")
+    beats = load_beats(tmp_path)
+    assert [b.id for b in beats] == ["one"]

@@ -1,0 +1,20 @@
+{
+  "name": "Afrobeat 10",
+  "genre": "Afrobeat",
+  "difficulty": "beginner",
+  "tempo": 98.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-g- g-x- x-g- x-g- | x-g- g-x- x-x- x-g-",
+    "SNARE": "---X ---- ---- XX-- | ---X ---- ---- X---",
+    "KICK": "X--- ---- xg-- ---- | x--- --g- xg-- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/30_afrobeat_98_beat_4-4.mid",
+    "style": "afrobeat",
+    "bars": "3-4"
+  }
+}

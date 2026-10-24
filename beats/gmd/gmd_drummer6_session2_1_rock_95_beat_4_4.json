@@ -1,0 +1,21 @@
+{
+  "name": "Rock 57",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 95.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "g-g- --g- --gg -gg- | g-g- --g- --gg -gg-",
+    "SNARE": "-x-- X--x -X-- X--X | -X-- X--X -X-- X--X",
+    "KICK": "X-X- ---- X-X- ---- | X-X- ---- X-X- ----",
+    "HH_PEDAL": "---- xg-- ---- x--- | ---- x--- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer6/session2/1_rock_95_beat_4-4.mid",
+    "style": "rock",
+    "bars": "41-42"
+  }
+}

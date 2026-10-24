@@ -1,0 +1,22 @@
+{
+  "name": "Funk 46",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 80.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- ---- --X- | ---- ---- ---- --X-",
+    "HH_CLOSED": "XgXg Xgxg Xgxg xg-- | XgXg XgXg xgxg xg--",
+    "SNARE": "---- X--X ---X --X- | ---- X--X ---X --X-",
+    "KICK": "x-x- ---- -gx- -x-- | x-x- ---- -gx- -g--",
+    "HH_PEDAL": "x--- ---- ---- --g- | x--- ---- ---- --g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/6_funk_80_beat_4-4.mid",
+    "style": "funk",
+    "bars": "11-12"
+  }
+}

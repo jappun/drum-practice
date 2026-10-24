@@ -1,0 +1,22 @@
+{
+  "name": "Rock 75",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 95.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "---- ---- ---- ---- | X--- ---- ---- ----",
+    "HH_CLOSED": "X--- X--- X--- x--- | ---- X--- X--- X---",
+    "SNARE": "g--- --Xg -x-- -gXX | ---- --X- -g-- X--g",
+    "KICK": "x-x- ---- --gg ---- | x--- ---- --gg ----",
+    "HH_PEDAL": "---- ---- ---- ---g | ---- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/14_rock_95_beat_4-4.mid",
+    "style": "rock",
+    "bars": "12-13"
+  }
+}

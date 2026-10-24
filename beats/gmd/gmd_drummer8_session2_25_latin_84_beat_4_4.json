@@ -1,0 +1,22 @@
+{
+  "name": "Latin 5",
+  "genre": "Latin",
+  "difficulty": "advanced",
+  "tempo": 84.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "X--- ---- ---- X--- | ---- ---- ---- X---",
+    "HH_CLOSED": "--Xg xXx- xgX- ---- | X-X- xgX- xgX- --Xg",
+    "SNARE": "--Xg -X-X ---X --Xg | g-Xg gX-X gggX --Xg",
+    "KICK": "X--g x--- -x-- X--- | X--g x--- -g-- X--g",
+    "HH_PEDAL": "--g- ---- ---- --g- | --g- ---- ---- --g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/25_latin_84_beat_4-4.mid",
+    "style": "latin",
+    "bars": "29-30"
+  }
+}

@@ -3,9 +3,11 @@ import pytest
 
 from drum_practice.audio import MASTER_GAIN, Mixer
 from drum_practice.kit import DrumClass
-from drum_practice.model import BEATS_DIR, Beat
+from drum_practice.model import Beat
 from drum_practice.player import beat_events
 from drum_practice.sounds import build_kit
+
+from conftest import FIXTURES
 
 SR = 48_000
 IMPULSE = np.zeros(64, dtype=np.float32)
@@ -32,7 +34,7 @@ def test_scheduled_sounds_start_on_exact_sample_regardless_of_block_size(block):
 
 
 def test_beat_renders_with_every_note_within_1ms_of_its_step():
-    beat = Beat.load(BEATS_DIR / "rock_open_hat_fill.json")
+    beat = Beat.load(FIXTURES / "rock_open_hat_fill.json")
     start = 4_800
     events = beat_events(beat, start, SR)
     mixer = Mixer(SR)

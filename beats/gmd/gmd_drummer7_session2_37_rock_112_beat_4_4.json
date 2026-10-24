@@ -1,0 +1,20 @@
+{
+  "name": "Rock 85",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 112.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "x-g- --g- x--- --x- | g-g- --g- x-g- --g-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "g--- --g- g--- --g- | g-g- --g- g-g- --g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/37_rock_112_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}

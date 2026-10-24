@@ -1,0 +1,20 @@
+{
+  "name": "Reggae 2",
+  "genre": "Other",
+  "difficulty": "intermediate",
+  "tempo": 64.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "gxXg xgXg XxXX ggXX | ggXg XgxX xXxg ggxX",
+    "SNARE": "---- x--- x--- ---- | ---- x--- ---- x---",
+    "KICK": "---- x--- ---- x--- | ---- X--- ---- X---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session1/201_reggae-slow_64_beat_4-4.mid",
+    "style": "reggae/slow",
+    "bars": "7-8"
+  }
+}

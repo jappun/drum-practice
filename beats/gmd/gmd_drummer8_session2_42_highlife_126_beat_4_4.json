@@ -1,0 +1,21 @@
+{
+  "name": "Highlife 2",
+  "genre": "Other",
+  "difficulty": "advanced",
+  "tempo": 126.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-x- XX-X X-X- xX-x | X-X- xX-x X-X- X---",
+    "SNARE": "x--x --x- xg-x --x- | xggx --x- xx-X g---",
+    "KICK": "x--- g--- g--- g--- | g--- g--- g--- x---",
+    "HH_PEDAL": "--x- --x- --x- --x- | --x- --x- --x- --x-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/42_highlife_126_beat_4-4.mid",
+    "style": "highlife",
+    "bars": "5-6"
+  }
+}

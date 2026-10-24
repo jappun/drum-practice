@@ -1,0 +1,22 @@
+{
+  "name": "Disco 1",
+  "genre": "Dance",
+  "difficulty": "advanced",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "--X- ---- --X- ---- | --X- ---- ---- ----",
+    "HH_CLOSED": "x--- X-x- g--- x-x- | x--- X-x- x-X- x-x-",
+    "SNARE": "-g-- Xg-x -gx- Xg-g | -gg- Xg-g -gx- Xg-x",
+    "KICK": "x--- x--- x--- x--- | x--- x--- x--- x---",
+    "HH_PEDAL": "---- x--- ---- x--- | ---- X--- ---- X---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session1/101_dance-disco_120_beat_4-4.mid",
+    "style": "dance/disco",
+    "bars": "17-18"
+  }
+}

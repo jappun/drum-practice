@@ -1,0 +1,22 @@
+{
+  "name": "Rock 9",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 110.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x-g- x-gx x-X- g-x- | X-g- X-xx x-X- g-x-",
+    "TOM_HIGH": "x--- ---- ---- ---- | x--- ---- ---- ----",
+    "SNARE": "---- ---- --x- ---- | ---- ---- --x- ----",
+    "KICK": "---- X--- ---- ---- | ---- X--- ---- ----",
+    "HH_PEDAL": "X--- --X- ---- X--- | X--- --X- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer2/session1/1_rock_110_beat_4-4.mid",
+    "style": "rock",
+    "bars": "438-439"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Hip-hop 34",
+  "genre": "Hip-hop",
+  "difficulty": "beginner",
+  "tempo": 86.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "x-g- X-x- x-g- X-x- | x-g- X-x- x-g- X-x-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x-x- ---g X--- ---g | x-g- ---g x--- ---g"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/9_hiphop_86_beat_4-4.mid",
+    "style": "hiphop",
+    "bars": "30-31"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Rhumba 1",
+  "genre": "Afro-Cuban",
+  "difficulty": "intermediate",
+  "tempo": 110.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "TOM_HIGH": "---- ---- X--X ---- | ---- ---- X--g ----",
+    "SNARE": "xX-x ---X --X- X-xx | Xx-x ---X --X- X-gg",
+    "KICK": "---x --x- ---- ---- | ---x --x- ---- ----",
+    "HH_PEDAL": "x--- x--- x--- x--- | x--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session2/161_afrocuban-rhumba_110_beat_4-4.mid",
+    "style": "afrocuban/rhumba",
+    "bars": "46-47"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Funk 57",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 92.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-x- X-x- X-X- x-X- | X-xg X-Xg X-xg X---",
+    "SNARE": "xX-- XX-x gx-g --Xx | gx-- Xxgx gx-- Xxgx",
+    "KICK": "X--x ---- --X- -g-- | X--x ---g X--x --X-",
+    "HH_PEDAL": "---- ---- ---- g--- | ---- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/2_funk_92_beat_4-4.mid",
+    "style": "funk",
+    "bars": "139-140"
+  }
+}

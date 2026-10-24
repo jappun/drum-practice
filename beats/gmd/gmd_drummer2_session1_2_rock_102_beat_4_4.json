@@ -1,0 +1,23 @@
+{
+  "name": "Rock 10",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 102.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "xx-- X-x- xx-X --x- | xx-- X-x- xx-X g-x-",
+    "HH_OPEN": "---- ---- --x- ---- | ---- ---- ---- ----",
+    "TOM_HIGH": "x--- ---g x--- ---g | x--- ---g x--- ---g",
+    "SNARE": "---- x--- ---- x--- | ---- x--- ---- x---",
+    "KICK": "--x- x--g --x- x--g | --g- x--g --g- x--g",
+    "HH_PEDAL": "--X- --X- --X- --X- | --X- --X- --X- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer2/session1/2_rock_102_beat_4-4.mid",
+    "style": "rock",
+    "bars": "33-34"
+  }
+}

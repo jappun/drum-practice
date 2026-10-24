@@ -1,0 +1,21 @@
+{
+  "name": "Rock 115",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "X--- ---- ---- ---- | ---- ---- ---- ----",
+    "HH_OPEN": "--g- X-g- X-g- X-g- | X-g- X-g- X-g- X-g-",
+    "SNARE": "-gg- X--g -g-- X--g | -gg- X--g -g-- X---",
+    "KICK": "X--X ---- --Xx --x- | X--X ---- --X- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/15_rock_120_beat_4-4.mid",
+    "style": "rock",
+    "bars": "5-6"
+  }
+}

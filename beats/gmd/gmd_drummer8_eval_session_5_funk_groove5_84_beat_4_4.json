@@ -1,0 +1,20 @@
+{
+  "name": "Funk 38",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 84.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "Xxxx XxxX xxxx Xxxx | xxxg Xxxx xxxx Xgxx",
+    "SNARE": "---- X--X ---- X--- | ---- X--X ---- X---",
+    "KICK": "x--g ---- --x- -g-- | xg-g ---- --x- -g--"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/eval_session/5_funk-groove5_84_beat_4-4.mid",
+    "style": "funk/groove5",
+    "bars": "2-3"
+  }
+}

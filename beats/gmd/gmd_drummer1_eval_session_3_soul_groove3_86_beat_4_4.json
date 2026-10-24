@@ -1,0 +1,20 @@
+{
+  "name": "Soul 2",
+  "genre": "Soul",
+  "difficulty": "advanced",
+  "tempo": 86.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "xxXx XxXX xXxX XxXx | xxxx xgxx gxxx Xgxx",
+    "SNARE": "-gx- X--g -x-- X--X | -gx- X--x -x-- X--x",
+    "KICK": "X--X ---- -XX- -X-- | X--X ---- -XX- -X--"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/eval_session/3_soul-groove3_86_beat_4-4.mid",
+    "style": "soul/groove3",
+    "bars": "2-3"
+  }
+}

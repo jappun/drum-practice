@@ -1,0 +1,20 @@
+{
+  "name": "Hip-hop 23",
+  "genre": "Hip-hop",
+  "difficulty": "advanced",
+  "tempo": 67.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "XgXx XgXg XgXg XgXg | XgXg XgXg XxXx XxXX",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--x --x- -gx- -x-g | x--g --x- -xx- -x--"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session3/24_hiphop_67_beat_4-4.mid",
+    "style": "hiphop",
+    "bars": "9-10"
+  }
+}

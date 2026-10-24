@@ -1,0 +1,21 @@
+{
+  "name": "Rock 78",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 118.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "x-g- X-g- x-g- x-g- | x-g- X-g- x-g- X-g-",
+    "SNARE": "g--- X-gg ---- X--- | ---- X--- ---- X---",
+    "KICK": "x-x- --x- --x- --x- | x-x- --x- --g- --g-",
+    "HH_PEDAL": "X-g- x-g- x-g- x--- | x--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/24_rock_118_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}

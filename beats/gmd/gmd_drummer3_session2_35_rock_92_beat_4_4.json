@@ -1,0 +1,20 @@
+{
+  "name": "Rock 39",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 92.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x-x- x-x- x-x- x-x- | x-x- x-x- x-x- x-x-",
+    "SNARE": "--xx --x- --xg --x- | --xx --x- --xx --x-",
+    "KICK": "g--- g--- x--- x--- | x--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session2/35_rock_92_beat_4-4.mid",
+    "style": "rock",
+    "bars": "1-2"
+  }
+}

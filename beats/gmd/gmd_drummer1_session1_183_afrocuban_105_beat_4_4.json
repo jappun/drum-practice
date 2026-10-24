@@ -1,0 +1,21 @@
+{
+  "name": "Afro-Cuban 2",
+  "genre": "Afro-Cuban",
+  "difficulty": "advanced",
+  "tempo": 105.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-X- x-gg x-gg X-gg | X-X- x-gg X-gg X-gg",
+    "SNARE": "--xg -g-X -gg- -g-g | --xg -g-x -gg- -g-g",
+    "KICK": "---g --x- ---x --x- | ---g --g- ---g --x-",
+    "HH_PEDAL": "X-X- X-X- X-X- x-X- | x-x- x-g- X-X- x-X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session1/183_afrocuban_105_beat_4-4.mid",
+    "style": "afrocuban",
+    "bars": "1-2"
+  }
+}

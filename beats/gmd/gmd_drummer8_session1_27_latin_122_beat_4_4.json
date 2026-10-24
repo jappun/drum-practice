@@ -1,0 +1,23 @@
+{
+  "name": "Latin 3",
+  "genre": "Latin",
+  "difficulty": "advanced",
+  "tempo": 122.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "TOM_HIGH": "Xg-X --X- ---- ---- | Xg-X --X- ---- ----",
+    "TOM_MID": "---- ---- XX-- ---- | ---- ---- XX-- ----",
+    "SNARE": "X-g- gx-g x-g- gg-g | x-g- gg-g x-g- gg-g",
+    "TOM_LOW": "---- ---- ---X --X- | ---- ---- ---X --X-",
+    "KICK": "x--- x--- x--- x--- | x--- x--- x--- x---",
+    "HH_PEDAL": "x-X- x-X- x-X- x-X- | x-X- x-X- x-X- x-X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/27_latin_122_beat_4-4.mid",
+    "style": "latin",
+    "bars": "42-43"
+  }
+}

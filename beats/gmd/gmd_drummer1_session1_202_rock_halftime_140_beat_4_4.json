@@ -1,0 +1,21 @@
+{
+  "name": "Half-time 1",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 140.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x-x- X-x- X-x- x-x- | X-x- X-x- X-x- X-x-",
+    "SNARE": "---- ---- X--- ---- | ---- ---- X--- ----",
+    "KICK": "x--- ---- ---- --g- | x--- ---- ---- --g-",
+    "HH_PEDAL": "---- X--- ---- X--- | g--- X--- g--- X---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session1/202_rock-halftime_140_beat_4-4.mid",
+    "style": "rock/halftime",
+    "bars": "39-40"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Soul 11",
+  "genre": "Soul",
+  "difficulty": "advanced",
+  "tempo": 86.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "Xxgx Xxgg XXXx Xxgg | XgxX XxgX XXxx Xxxx",
+    "SNARE": "---- X--X ---- X--- | ---- X--X ---- X---",
+    "KICK": "X--x ---- -gx- -x-g | X--x ---- -gx- -x-g"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/eval_session/3_soul-groove3_86_beat_4-4.mid",
+    "style": "soul/groove3",
+    "bars": "6-7"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Rock 133",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x-x- X-x- X-x- X-x- | X-x- X-x- X-x- X-x-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--g --x- x--- --x- | x--x --x- x-x- --x-",
+    "HH_PEDAL": "---- ---- ---- X--- | ---- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/5_rock_100_beat_4-4.mid",
+    "style": "rock",
+    "bars": "3-4"
+  }
+}

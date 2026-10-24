@@ -1,0 +1,20 @@
+{
+  "name": "Rockabilly 1",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 200.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "g-g- X-g- g-g- X-g- | x-g- X-g- g--g X-g-",
+    "KICK": "X--- ---- X--- X--- | x--- ---- X--- x---",
+    "HH_PEDAL": "---- x--- ---- x--- | ---- x--- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session3/3_rock-rockabilly_200_beat_4-4.mid",
+    "style": "rock/rockabilly",
+    "bars": "103-104"
+  }
+}

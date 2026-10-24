@@ -1,0 +1,21 @@
+{
+  "name": "Funk 14",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 138.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-X- X-x- X-x- X-x- | X-x- X-x- x-x- X-x-",
+    "SNARE": "-x-- X--x -x-- X--x | -g-- X--x -xg- X--x",
+    "KICK": "x-x- ---- --gg ---- | x-x- ---- --gg ----",
+    "HH_PEDAL": "x--- X--- X--- x--- | X--- X--- X--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/eval_session/1_funk-groove1_138_beat_4-4.mid",
+    "style": "funk/groove1",
+    "bars": "5-6"
+  }
+}

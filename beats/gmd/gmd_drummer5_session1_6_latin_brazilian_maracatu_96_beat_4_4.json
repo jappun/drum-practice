@@ -1,0 +1,20 @@
+{
+  "name": "Maracatu 1",
+  "genre": "Latin",
+  "difficulty": "advanced",
+  "tempo": 96.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "XxxX xxXg xXxx xXxx | Xxxx xxxx xXxx XXXx",
+    "KICK": "x--- x-x- -x-- -x-g | x--- x-x- -x-- -g-g",
+    "HH_PEDAL": "--X- --X- --X- --X- | --X- --X- --X- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/session1/6_latin-brazilian-maracatu_96_beat_4-4.mid",
+    "style": "latin/brazilian-maracatu",
+    "bars": "16-17"
+  }
+}

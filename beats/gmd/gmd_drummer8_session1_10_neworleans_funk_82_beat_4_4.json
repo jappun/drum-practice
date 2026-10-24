@@ -1,0 +1,22 @@
+{
+  "name": "Funk 39",
+  "genre": "New Orleans",
+  "difficulty": "advanced",
+  "tempo": 82.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "X--- ---- ---- X-X- | X--- ---- ---- X-X-",
+    "HH_CLOSED": "-gxx xgXg X-Xg ---- | -gxx xgXg x-Xg ----",
+    "SNARE": "X--X --X- -X-- -X-- | X--X --x- -X-- X-X-",
+    "KICK": "x--x -g-g x--g x-X- | x--x -g-g x--g --g-",
+    "HH_PEDAL": "g--- ---- ---- g--- | g--- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/10_neworleans-funk_82_beat_4-4.mid",
+    "style": "neworleans/funk",
+    "bars": "16-17"
+  }
+}

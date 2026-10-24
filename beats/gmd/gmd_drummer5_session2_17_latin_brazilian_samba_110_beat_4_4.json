@@ -1,0 +1,20 @@
+{
+  "name": "Samba 6",
+  "genre": "Latin",
+  "difficulty": "advanced",
+  "tempo": 110.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "XxxX xxXX XxxX xXXx | XXgx XXxx XXxx XXxx",
+    "KICK": "g--g x--g g--g g--g | g--g g--g g--g g--g",
+    "HH_PEDAL": "--x- --X- --x- --X- | --X- --X- --X- --x-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/session2/17_latin-brazilian-samba_110_beat_4-4.mid",
+    "style": "latin/brazilian-samba",
+    "bars": "40-41"
+  }
+}

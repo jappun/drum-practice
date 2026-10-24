@@ -1,0 +1,20 @@
+{
+  "name": "Folk 1",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 90.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "ggXg gXgg g--- xggg | ggxg gXgg g--- Xxgx",
+    "KICK": "X--x ---- x-x- ---- | x--x ---- x-x- ----",
+    "HH_PEDAL": "X--- X--- X--- X--- | X--- X--- X--- X---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session3/10_rock-folk_90_beat_4-4.mid",
+    "style": "rock/folk",
+    "bars": "27-28"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Funk 19",
+  "genre": "Funk",
+  "difficulty": "intermediate",
+  "tempo": 138.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-g- X-g- X-x- X-g- | X-x- X-x- X-x- X-g-",
+    "SNARE": "---- X--x -g-- X--g | ---- X--g -g-- X--g",
+    "KICK": "g-g- ---- --gg ---- | g-g- ---- --gg ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/eval_session/1_funk-groove1_138_beat_4-4.mid",
+    "style": "funk/groove1",
+    "bars": "1-2"
+  }
+}

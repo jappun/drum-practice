@@ -1,0 +1,21 @@
+{
+  "name": "Rock 101",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 93.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-g- X-g- x-gg X-g- | X-g- x-g- X-gg X-g-",
+    "HH_CLOSED": "-x-X -g-x -X-- ---X | -x-X -g-x -X-- ---X",
+    "SNARE": "---- ---- g--- Xg-- | ---- ---- ---- Xg--",
+    "KICK": "x--g --x- -g-- ---- | x--x --x- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session3/120_rock_93_beat_4-4.mid",
+    "style": "rock",
+    "bars": "10-11"
+  }
+}

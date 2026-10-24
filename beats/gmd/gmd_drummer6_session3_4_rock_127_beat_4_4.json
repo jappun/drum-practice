@@ -1,0 +1,21 @@
+{
+  "name": "Rock 63",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 127.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x--- x--- x--- x--- | x--- x--- x--- x---",
+    "SNARE": "---- x--- ---- x--- | ---- x--- ---- x---",
+    "KICK": "--x- ---- x-x- --x- | --x- ---- x-x- --x-",
+    "HH_PEDAL": "---- g--- g--- g--- | ---- g--- ---- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer6/session3/4_rock_127_beat_4-4.mid",
+    "style": "rock",
+    "bars": "63-64"
+  }
+}

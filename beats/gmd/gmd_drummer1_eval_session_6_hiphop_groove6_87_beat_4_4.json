@@ -1,0 +1,22 @@
+{
+  "name": "Hip-hop 1",
+  "genre": "Hip-hop",
+  "difficulty": "advanced",
+  "tempo": 87.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- ---- -X-- | ---- ---- ---- ----",
+    "HH_CLOSED": "XgXg XgXx XgXg x-gg | XgXg XxXg XgXg XgXg",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--x ---x -xx- -X-x | X--x ---x -gx- -X-x",
+    "HH_PEDAL": "---- ---- ---- --x- | ---- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/eval_session/6_hiphop-groove6_87_beat_4-4.mid",
+    "style": "hiphop/groove6",
+    "bars": "8-9"
+  }
+}

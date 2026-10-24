@@ -1,0 +1,22 @@
+{
+  "name": "Rock 98",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 60.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- ---- ---X | ---- ---- ---- ---X",
+    "HH_CLOSED": "xgXg XgXg XxXg Xxx- | xxxg XgXg XgXg XxX-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "g--g ---- -gg- ---- | g--g ---- -gg- ----",
+    "HH_PEDAL": "x--- ---- ---- ---- | x--- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session3/10_rock_60_beat_4-4.mid",
+    "style": "rock",
+    "bars": "15-16"
+  }
+}

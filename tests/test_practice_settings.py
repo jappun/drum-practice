@@ -1,10 +1,12 @@
 import pytest
 
 from drum_practice.kit import DrumClass
-from drum_practice.model import BEATS_DIR, Beat, Note
+from drum_practice.model import Beat, Note
 from drum_practice.player import click_sample
 from drum_practice.session import Stage, Timeline
 from drum_practice.settings import Settings
+
+from conftest import FIXTURES
 
 SR = 48_000
 
@@ -34,7 +36,7 @@ def test_with_bars_repeats_a_shorter_pattern():
 
 
 def test_with_bars_cuts_a_longer_pattern_to_its_first_bars():
-    two_bar = Beat.load(BEATS_DIR / "rock_open_hat_fill.json")
+    two_bar = Beat.load(FIXTURES / "rock_open_hat_fill.json")
     one = two_bar.with_bars(1)
     assert one.total_steps == 16
     assert all(n.step < 16 for n in one.notes)

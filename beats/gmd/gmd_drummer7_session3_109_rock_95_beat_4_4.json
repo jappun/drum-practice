@@ -1,0 +1,23 @@
+{
+  "name": "Rock 97",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 95.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "X--- ---- ---- ---- | ---- ---- ---- ----",
+    "HH_OPEN": "---- ---- -g-- ---- | ---- ---- -g-- ----",
+    "HH_CLOSED": "-gXg -xXg g-Xg -gXg | ggXg -gXg g-Xx ---x",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- xXX-",
+    "KICK": "x--g --x- -gx- ---- | x--x --x- -gx- ---g",
+    "HH_PEDAL": "---- ---- ---- ---- | ---- ---- ---- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session3/109_rock_95_beat_4-4.mid",
+    "style": "rock",
+    "bars": "6-7"
+  }
+}

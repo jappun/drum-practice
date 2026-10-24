@@ -1,0 +1,20 @@
+{
+  "name": "Hip-hop 11",
+  "genre": "Hip-hop",
+  "difficulty": "advanced",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "xggg Xxgg Xxg- X-gX | xggg Xggg Xxg- X-gX",
+    "SNARE": "---- ---- ---- Xg-- | ---- ---- ---- Xx--",
+    "KICK": "-gx- --X- x--x ---x | --X- --x- x--x ---x"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session1/16_hiphop_100_beat_4-4.mid",
+    "style": "hiphop",
+    "bars": "4-5"
+  }
+}

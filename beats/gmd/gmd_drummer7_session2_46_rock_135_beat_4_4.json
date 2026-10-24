@@ -1,0 +1,22 @@
+{
+  "name": "Rock 88",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 135.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "X--- x--- ---- ---- | ---- ---- ---- ----",
+    "RIDE": "---- ---- x-g- X-g- | X-g- X-g- x-X- X-x-",
+    "SNARE": "X--- X--- ---- X--- | ---- X--- --x- X---",
+    "KICK": "x--- x--- x-g- --g- | g-x- --x- --g- g-g-",
+    "HH_PEDAL": "x--- X--- x--- x--- | x--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/46_rock_135_beat_4-4.mid",
+    "style": "rock",
+    "bars": "11-12"
+  }
+}

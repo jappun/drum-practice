@@ -1,0 +1,23 @@
+{
+  "name": "Rock 62",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "---- ---- ---- ---- | x--- ---- ---- ----",
+    "TOM_HIGH": "---- ---g -x-- ---- | ---- ---g -x-- ---g",
+    "TOM_MID": "---- --g- ---- ---- | ---- --x- ---- --x-",
+    "SNARE": "---- x--- ---- x-xx | ---- x--- ---- x---",
+    "TOM_LOW": "x--- ---- g-x- ---- | ---- ---- g-x- ----",
+    "KICK": "x-x- ---- g--g ---- | x-g- ---- g--g ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer6/session3/3_rock_100_beat_4-4.mid",
+    "style": "rock",
+    "bars": "35-36"
+  }
+}

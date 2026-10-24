@@ -1,0 +1,22 @@
+{
+  "name": "Rock 56",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 140.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "XxX- xxx- -xx- X--- | XxX- Xxx- -xX- XXx-",
+    "TOM_HIGH": "---- ---- ---- -X-- | ---- ---- ---- ----",
+    "SNARE": "---- ---- X--- --X- | ---- ---- X--- ----",
+    "KICK": "--g- ---- ---- ---- | g-g- ---- ---- ----",
+    "HH_PEDAL": "---- ---- ---- ---g | ---- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/session2/13_rock_140_beat_4-4.mid",
+    "style": "rock",
+    "bars": "9-10"
+  }
+}

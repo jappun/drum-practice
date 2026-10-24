@@ -1,0 +1,20 @@
+{
+  "name": "Rock 2",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 115.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "x--- X--x x--- x--x | x--- X--x x--- X--x",
+    "SNARE": "-g-- X--- -g-- X--X | gg-- Xg-- -g-- Xg--",
+    "KICK": "x--g x--g x--g x--g | x--g x--g x--g x--g"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session2/181_rock_115_beat_4-4.mid",
+    "style": "rock",
+    "bars": "23-24"
+  }
+}

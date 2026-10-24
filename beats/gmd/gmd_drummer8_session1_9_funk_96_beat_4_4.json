@@ -1,0 +1,23 @@
+{
+  "name": "Funk 49",
+  "genre": "Funk",
+  "difficulty": "beginner",
+  "tempo": 96.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "g--- ---- ---- ---- | g--- ---- ---- ----",
+    "HH_OPEN": "---- ---- --X- ---- | ---- ---- --X- ----",
+    "HH_CLOSED": "--X- --X- ---- --X- | --X- --X- ---- --X-",
+    "SNARE": "---- ---- ---- X--- | ---- ---- ---- X---",
+    "KICK": "x--- x--g x--- ---- | x--- x--g x--- ----",
+    "HH_PEDAL": "---- ---- ---- g--- | ---- ---- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/9_funk_96_beat_4-4.mid",
+    "style": "funk",
+    "bars": "30-31"
+  }
+}

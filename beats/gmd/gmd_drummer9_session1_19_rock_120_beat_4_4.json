@@ -1,0 +1,23 @@
+{
+  "name": "Rock 119",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "TOM_HIGH": "---- ---- -X-- ---- | ---- ---- -X-x ----",
+    "TOM_MID": "---- ---- ---- X--- | ---- ---- ---- X-xX",
+    "SNARE": "---X --X- ---- ---- | ---X --Xg ---- ----",
+    "TOM_LOW": "X-x- x-X- x-x- X-xX | X-x- x-X- X-g- ----",
+    "KICK": "X--- -x-- --x- ---- | x--- -x-- ---- ----",
+    "HH_PEDAL": "---- ---- ---- ---- | ---- ---- ---- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/19_rock_120_beat_4-4.mid",
+    "style": "rock",
+    "bars": "6-7"
+  }
+}

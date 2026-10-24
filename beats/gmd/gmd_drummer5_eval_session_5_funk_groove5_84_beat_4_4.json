@@ -1,0 +1,21 @@
+{
+  "name": "Funk 16",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 84.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---X ---- ---- | ---- ---- ---- ----",
+    "HH_CLOSED": "Xxxx Xxg- gxXx XxXx | XXxg XxxX gxXx XxXx",
+    "SNARE": "gg-- X--- ---- X--- | --g- X--- ---- X---",
+    "KICK": "x--x ---x --x- -x-- | gx-x ---x --x- -x--"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/eval_session/5_funk-groove5_84_beat_4-4.mid",
+    "style": "funk/groove5",
+    "bars": "10-11"
+  }
+}

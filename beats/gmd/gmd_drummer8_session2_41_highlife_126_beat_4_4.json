@@ -1,0 +1,21 @@
+{
+  "name": "Highlife 1",
+  "genre": "Other",
+  "difficulty": "advanced",
+  "tempo": 126.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-X- XX-X X-X- XX-- | X-X- XX-X X-X- XX-X",
+    "SNARE": "xx-x --x- xx-x --x- | Xggx --x- xg-x ----",
+    "KICK": "x--- x--- x--- x--- | X--- x--- x--- x---",
+    "HH_PEDAL": "--x- --x- --x- ---- | --x- --X- --x- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/41_highlife_126_beat_4-4.mid",
+    "style": "highlife",
+    "bars": "82-83"
+  }
+}

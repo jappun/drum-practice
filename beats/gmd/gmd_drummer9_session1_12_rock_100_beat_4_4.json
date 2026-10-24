@@ -1,0 +1,21 @@
+{
+  "name": "Rock 112",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "x-x- X-x- x-x- X-x- | x-x- x-x- X-x- --x-",
+    "SNARE": "---- X--x ---- X--- | ---- X--- X--g XX--",
+    "KICK": "--x- ---- x-x- --x- | --x- ---x --x- ---x",
+    "HH_PEDAL": "x--- ---- ---- ---- | X--- g--- ---- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/12_rock_100_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Breakbeat 2",
+  "genre": "Dance",
+  "difficulty": "advanced",
+  "tempo": 170.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "xxgg -ggx xx-g xxgg | xxgg -ggg Xx-x xxgx",
+    "SNARE": "---- X--- --X- ---- | ---- X--- --X- ----",
+    "KICK": "x--- ---- g--- ---- | x--- ---- x--- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session1/81_dance-breakbeat_170_beat_4-4.mid",
+    "style": "dance/breakbeat",
+    "bars": "1-2"
+  }
+}

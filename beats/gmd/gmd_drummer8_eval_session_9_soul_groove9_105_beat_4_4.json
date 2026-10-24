@@ -1,0 +1,20 @@
+{
+  "name": "Soul 24",
+  "genre": "Soul",
+  "difficulty": "beginner",
+  "tempo": 105.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-x- x-x- X-x- X-x- | x-x- x-x- x-g- X-x-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--- ---- --g- ---g | g--- ---- --x- ---g"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/eval_session/9_soul-groove9_105_beat_4-4.mid",
+    "style": "soul/groove9",
+    "bars": "1-2"
+  }
+}

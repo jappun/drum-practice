@@ -2,6 +2,7 @@
 
 import json
 import random
+import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -9,10 +10,12 @@ from .model import Beat
 from .settings import app_dir
 
 DIFFICULTIES = ("beginner", "intermediate", "advanced")
+OTHER_GENRE = "Other"  # catch-all for genres with too few beats
 
 
 def genres(beats: list[Beat]) -> list[str]:
-    return sorted({b.genre for b in beats})
+    """Genres alphabetically, with the catch-all last."""
+    return sorted({b.genre for b in beats}, key=lambda g: (g == OTHER_GENRE, g))
 
 
 def filter_beats(beats: list[Beat], genre: str | None = None, difficulty: str | None = None) -> list[Beat]:
@@ -39,9 +42,11 @@ def surprise(
     return (rng or random).choice(others or pool) if pool else None
 
 
-def _difficulty_then_name(beat: Beat) -> tuple[int, str]:
+def _difficulty_then_name(beat: Beat) -> tuple:
     rank = DIFFICULTIES.index(beat.difficulty) if beat.difficulty in DIFFICULTIES else len(DIFFICULTIES)
-    return rank, beat.name.lower()
+    # Natural order, so "Rock 2" comes before "Rock 10".
+    name = tuple(int(part) if part.isdigit() else part for part in re.split(r"(\d+)", beat.name.lower()))
+    return rank, name
 
 
 @dataclass(frozen=True)

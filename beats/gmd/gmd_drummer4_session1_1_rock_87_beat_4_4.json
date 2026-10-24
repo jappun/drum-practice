@@ -1,0 +1,21 @@
+{
+  "name": "Rock 52",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 87.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "x-x- x-x- x-x- x-x- | x-x- x-x- x-x- X-x-",
+    "SNARE": "-X-- X--- ---- Xgg- | -X-- X-g- ---- X-gg",
+    "KICK": "g--x ---x g-g- ---- | ---g ---g g-g- ----",
+    "HH_PEDAL": "---- ---- ---- g--- | ---- ---- ---- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer4/session1/1_rock_87_beat_4-4.mid",
+    "style": "rock",
+    "bars": "18-19"
+  }
+}

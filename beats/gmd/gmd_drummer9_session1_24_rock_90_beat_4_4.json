@@ -1,0 +1,22 @@
+{
+  "name": "Rock 124",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 90.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "x--- ---- ---- ---- | ---- ---- ---- ----",
+    "RIDE": "--g- X-x- x-X- X-xx | x-x- x-x- X-X- x-x-",
+    "SNARE": "---- X--X ---- X--- | ---- X--x ---- X---",
+    "KICK": "x--- ---- x-x- --x- | X--- ---- x-x- --x-",
+    "HH_PEDAL": "---- g--- ---- ---- | ---- g-g- ---- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/24_rock_90_beat_4-4.mid",
+    "style": "rock",
+    "bars": "20-21"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "Pop 5",
+  "genre": "Pop",
+  "difficulty": "advanced",
+  "tempo": 142.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "X--- ---- ---- ---- | ---- ---- ---- ----",
+    "RIDE": "--g- X-xx --x- g-X- | g-X- X-xx --g- X---",
+    "HH_CLOSED": "-g-g -x-- ---g -X-- | -x-g -X-- ---- ----",
+    "SNARE": "---- ---- X--- ---- | ---- ---- X-gx -X--",
+    "TOM_LOW": "---- ---- ---- ---- | ---- ---- ---- --XX",
+    "KICK": "X--- x--- x--- x--- | x--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/101_pop_142_beat_4-4.mid",
+    "style": "pop",
+    "bars": "20-21"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Rock 102",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 93.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-g- X-g- X-gg X-x- | X-g- X-X- X-gg X-x-",
+    "HH_CLOSED": "-g-X -g-x -x-- ---X | -g-X ---g -X-- ---x",
+    "SNARE": "---- ---- ---- Xg-- | ---- ---- ---- Xg--",
+    "KICK": "X--- --x- ---- ---- | x--- --x- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session3/129_rock_93_beat_4-4.mid",
+    "style": "rock",
+    "bars": "9-10"
+  }
+}

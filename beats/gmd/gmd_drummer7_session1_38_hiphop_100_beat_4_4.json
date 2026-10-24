@@ -1,0 +1,20 @@
+{
+  "name": "Hip-hop 15",
+  "genre": "Hip-hop",
+  "difficulty": "intermediate",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "--X- g-X- g-X- g-X- | --X- g-X- g-X- g-X-",
+    "SNARE": "Xx-x -X-x -x-x -g-- | Xx-x -g-g -x-x -g--",
+    "KICK": "---- ---X -X-x X--- | ---- --X- -X-x X---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session1/38_hiphop_100_beat_4-4.mid",
+    "style": "hiphop",
+    "bars": "5-6"
+  }
+}

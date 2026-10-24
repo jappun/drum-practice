@@ -1,0 +1,21 @@
+{
+  "name": "Merengue 1",
+  "genre": "Latin",
+  "difficulty": "intermediate",
+  "tempo": 158.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "TOM_HIGH": "---- ---- ---- xxxx | ---- ---- ---- xxxX",
+    "TOM_MID": "X--- ---- ---- ---- | X--- ---- ---- ----",
+    "SNARE": "---x X-gx X-X- ---- | ---x X-xx x-X- ----",
+    "KICK": "X--- x--- x--- x--- | X--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer4/session1/9_latin-merengue_158_beat_4-4.mid",
+    "style": "latin/merengue",
+    "bars": "10-11"
+  }
+}

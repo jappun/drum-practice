@@ -1,0 +1,21 @@
+{
+  "name": "Calypso 2",
+  "genre": "Afro-Cuban",
+  "difficulty": "advanced",
+  "tempo": 124.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x-g- X--- X-x- X--- | x-g- X--- X-x- X---",
+    "SNARE": "-g-X --X- -X-x --X- | -g-x --X- -X-X --X-",
+    "KICK": "gg-- g--- gg-- g--- | gg-- g--- g--- g---",
+    "HH_PEDAL": "--X- --x- --x- --X- | --X- --X- --x- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/session1/13_afrocuban-calypso_124_beat_4-4.mid",
+    "style": "afrocuban/calypso",
+    "bars": "73-74"
+  }
+}

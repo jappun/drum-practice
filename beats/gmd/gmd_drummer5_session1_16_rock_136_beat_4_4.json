@@ -1,0 +1,21 @@
+{
+  "name": "Rock 54",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 136.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-x- X-X- x-X- X-x- | X-x- X-X- x-x- X-x-",
+    "SNARE": "-g-- X--g -g-- Xx-x | -gg- X--g -x-- X--x",
+    "KICK": "xg-g --x- --xg ---- | xg-g --x- --x- ----",
+    "HH_PEDAL": "x--- X--- X--- X--- | X--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/session1/16_rock_136_beat_4-4.mid",
+    "style": "rock",
+    "bars": "38-39"
+  }
+}

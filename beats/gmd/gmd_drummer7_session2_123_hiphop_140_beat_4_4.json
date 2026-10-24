@@ -1,0 +1,20 @@
+{
+  "name": "Hip-hop 18",
+  "genre": "Hip-hop",
+  "difficulty": "beginner",
+  "tempo": 140.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-g- X-g- X-g- X-g- | X-x- X-g- X-g- X-g-",
+    "SNARE": "---- ---- X--- ---- | ---- ---- X--- ----",
+    "KICK": "---- ---- --x- x--- | X--- --x- ---- X---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/123_hiphop_140_beat_4-4.mid",
+    "style": "hiphop",
+    "bars": "60-61"
+  }
+}

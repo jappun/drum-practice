@@ -1,0 +1,21 @@
+{
+  "name": "Rock 70",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 86.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x-g- X-g- x-g- X-g- | X-g- x-g- x-g- X-g-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "--x- ---- x--- --x- | --x- ---- x--- --x-",
+    "HH_PEDAL": "X--- X--- X--- X--- | X--- X--- X--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session1/1_rock_86_beat_4-4.mid",
+    "style": "rock",
+    "bars": "34-35"
+  }
+}

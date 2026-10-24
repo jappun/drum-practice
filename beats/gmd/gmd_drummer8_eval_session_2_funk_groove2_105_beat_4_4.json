@@ -1,0 +1,22 @@
+{
+  "name": "Funk 37",
+  "genre": "Funk",
+  "difficulty": "intermediate",
+  "tempo": 105.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- --X- ---- | ---- ---- --X- ----",
+    "HH_CLOSED": "x-g- X-g- x--- --g- | x-g- X-g- g--- x-g-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "X--x ---x -gX- ---- | X--x ---x -gx- ----",
+    "HH_PEDAL": "---- ---- ---- x--- | ---- ---- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/eval_session/2_funk-groove2_105_beat_4-4.mid",
+    "style": "funk/groove2",
+    "bars": "6-7"
+  }
+}

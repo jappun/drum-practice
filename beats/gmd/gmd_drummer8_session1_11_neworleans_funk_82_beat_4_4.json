@@ -1,0 +1,22 @@
+{
+  "name": "Funk 40",
+  "genre": "New Orleans",
+  "difficulty": "advanced",
+  "tempo": 82.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "X--- ---- ---- X-X- | X--- ---- ---- X-X-",
+    "HH_CLOSED": "-gxX xgX- X-Xx ---- | -gxX xgXg X-X- ----",
+    "SNARE": "X--X --X- -X-- --X- | X--X g-Xg -Xg- X-X-",
+    "KICK": "x--x -x-g x-xg x--- | x--x -x-g x--g --g-",
+    "HH_PEDAL": "g-x- ---- ---- x--- | g-g- ---- ---- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/11_neworleans-funk_82_beat_4-4.mid",
+    "style": "neworleans/funk",
+    "bars": "30-31"
+  }
+}

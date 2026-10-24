@@ -1,0 +1,21 @@
+{
+  "name": "Hip-hop 29",
+  "genre": "Hip-hop",
+  "difficulty": "beginner",
+  "tempo": 70.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "g--- ---- g--- ---- | ---- ---- g--- ----",
+    "HH_CLOSED": "--x- --x- --x- --g- | --X- --X- --X- --x-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--- ---g x--- ---- | x--- ---g x-x- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/23_hiphop_70_beat_4-4.mid",
+    "style": "hiphop",
+    "bars": "7-8"
+  }
+}

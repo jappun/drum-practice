@@ -1,0 +1,20 @@
+{
+  "name": "Soul 13",
+  "genre": "Soul",
+  "difficulty": "beginner",
+  "tempo": 105.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-g- x-X- X-x- X-x- | X-x- x-X- X-x- X-x-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "g--- ---- --x- ---g | x--- ---- --x- ---g"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/eval_session/9_soul-groove9_105_beat_4-4.mid",
+    "style": "soul/groove9",
+    "bars": "1-2"
+  }
+}

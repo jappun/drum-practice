@@ -1,0 +1,20 @@
+{
+  "name": "Funk 3",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 84.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "xgxx xgxx xgxg xgxg | ggxg ggxx xggg xgxg",
+    "SNARE": "---- X--x -g-- X--g | g--- X--x -g-- X--g",
+    "KICK": "xx-x ---- --x- -x-- | xx-x ---- --x- -x--"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/eval_session/5_funk-groove5_84_beat_4-4.mid",
+    "style": "funk/groove5",
+    "bars": "2-3"
+  }
+}

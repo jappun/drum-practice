@@ -1,0 +1,24 @@
+{
+  "name": "Rock 79",
+  "genre": "Rock",
+  "difficulty": "advanced",
+  "tempo": 118.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "X-x- X-x- X--- ---- | X-g- X-g- X-x- X-g-",
+    "TOM_HIGH": "---- ---- ---- -X-- | ---- ---- ---- ----",
+    "TOM_MID": "---- ---- ---- --x- | ---- ---- ---- ----",
+    "SNARE": "g--- X--g -gXX X--- | ---- X--g g--- X---",
+    "TOM_LOW": "---- ---- ---- ---X | ---- ---- ---- ----",
+    "KICK": "x-x- --g- x-x- x-x- | X-x- g-x- g-x- --x-",
+    "HH_PEDAL": "---- X--- X--- X--- | X--- X--- X--- X---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/26_rock_118_beat_4-4.mid",
+    "style": "rock",
+    "bars": "3-4"
+  }
+}

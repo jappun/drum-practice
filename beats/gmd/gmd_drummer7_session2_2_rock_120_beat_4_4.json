@@ -1,0 +1,22 @@
+{
+  "name": "Rock 82",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "TOM_MID": "---- ---- --x- ---- | ---- ---- --g- ----",
+    "SNARE": "---- X-g- ---- X--- | ---- X--- ---- X---",
+    "TOM_LOW": "x--- X--- X--- X--- | X--- X--- x--- X---",
+    "KICK": "g--- --g- ---- --g- | g--- --g- ---- --g-",
+    "HH_PEDAL": "---- x--- ---- x--- | ---- x--- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/2_rock_120_beat_4-4.mid",
+    "style": "rock",
+    "bars": "3-4"
+  }
+}

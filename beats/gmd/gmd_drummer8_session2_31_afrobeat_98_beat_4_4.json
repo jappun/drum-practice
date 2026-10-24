@@ -1,0 +1,21 @@
+{
+  "name": "Afrobeat 11",
+  "genre": "Afrobeat",
+  "difficulty": "intermediate",
+  "tempo": 98.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-x- x-x- X-X- X-X- | X-x- X-X- X-X- X-X-",
+    "SNARE": "---X -ggx ---- Xggg | ---X gggx ---- XX-g",
+    "KICK": "X--- ---- xg-- ---- | X--- ---- xg-- ----",
+    "HH_PEDAL": "--x- --x- --x- --x- | --x- --x- --x- --x-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/31_afrobeat_98_beat_4-4.mid",
+    "style": "afrobeat",
+    "bars": "6-7"
+  }
+}

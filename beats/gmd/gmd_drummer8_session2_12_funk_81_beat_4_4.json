@@ -1,0 +1,20 @@
+{
+  "name": "Funk 51",
+  "genre": "Funk",
+  "difficulty": "intermediate",
+  "tempo": 81.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "xgxg x-xg xggg xgxg | xgxg xgxg ggxg x-xg",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--g -g-x ---- ---- | x--x -x-- -x-- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/12_funk_81_beat_4-4.mid",
+    "style": "funk",
+    "bars": "2-3"
+  }
+}

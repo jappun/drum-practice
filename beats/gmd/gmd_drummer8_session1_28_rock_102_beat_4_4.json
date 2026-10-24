@@ -1,0 +1,22 @@
+{
+  "name": "Rock 105",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 102.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- --X- --X- | ---- ---- ---- ----",
+    "HH_CLOSED": "--x- --x- ---- ---- | --x- --x- --X- --X-",
+    "SNARE": "---- X--- ---- x-x- | ---- X--- ---- X---",
+    "KICK": "x--- x--- x-X- x-x- | x--- X--- x--- x---",
+    "HH_PEDAL": "---- ---- ---- g--- | g--- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/28_rock_102_beat_4-4.mid",
+    "style": "rock",
+    "bars": "56-57"
+  }
+}

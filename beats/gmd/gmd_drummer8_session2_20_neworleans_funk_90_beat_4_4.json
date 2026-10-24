@@ -1,0 +1,21 @@
+{
+  "name": "Funk 56",
+  "genre": "New Orleans",
+  "difficulty": "advanced",
+  "tempo": 90.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "XxXX -XXx gXXx XXgg | XxXX -xXx gXXx gxgX",
+    "TOM_LOW": "---- ---- ---- --X- | ---- ---- ---- X-X-",
+    "KICK": "X--g X--g X--g X--x | X--x X--g X--x X--g",
+    "HH_PEDAL": "g-g- --g- --g- g-g- | g-g- --g- --g- --g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/20_neworleans-funk_90_beat_4-4.mid",
+    "style": "neworleans/funk",
+    "bars": "22-23"
+  }
+}

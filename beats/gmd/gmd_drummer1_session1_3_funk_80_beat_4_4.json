@@ -1,0 +1,22 @@
+{
+  "name": "Funk 8",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 80.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- ---- X-X- | ---- ---- ---- X-X-",
+    "HH_CLOSED": "xgXg gxXg Xggg ---- | xxXg xxXx Xggg ----",
+    "SNARE": "gg-- X--x -gg- Xg-g | gg-- X--x -gg- X--g",
+    "KICK": "x-x- ---- --gx ---- | x-xx ---- --gx ----",
+    "HH_PEDAL": "g--- ---- ---- ---- | g--- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session1/3_funk_80_beat_4-4.mid",
+    "style": "funk",
+    "bars": "3-4"
+  }
+}

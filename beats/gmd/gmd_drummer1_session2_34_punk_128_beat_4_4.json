@@ -1,0 +1,21 @@
+{
+  "name": "Punk 3",
+  "genre": "Punk",
+  "difficulty": "advanced",
+  "tempo": 128.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "g-X- x--- X-X- x--- | x--- x--- X-x- x-x-",
+    "SNARE": "--X- --X- --X- --X- | --X- --X- --X- --X-",
+    "TOM_LOW": "---- --X- ---- --X- | --X- --X- ---- ----",
+    "KICK": "-x-x -x-x -x-x -x-x | -x-g -g-x -g-x -x-x"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session2/34_punk_128_beat_4-4.mid",
+    "style": "punk",
+    "bars": "2-3"
+  }
+}

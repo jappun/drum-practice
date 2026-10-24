@@ -1,0 +1,20 @@
+{
+  "name": "Hip-hop 9",
+  "genre": "Hip-hop",
+  "difficulty": "beginner",
+  "tempo": 87.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-X- X-X- X-X- X-x- | X-x- X-X- X-x- g-g-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- ----",
+    "KICK": "x--- ---x -gx- -x-g | x--- ---x --x- g-g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/eval_session/6_hiphop-groove6_87_beat_4-4.mid",
+    "style": "hiphop/groove6",
+    "bars": "11-12"
+  }
+}

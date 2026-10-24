@@ -127,6 +127,24 @@ QListWidget#library::item:selected {{
 QListWidget#library::item:hover:!selected {{
     background: {SURFACE_HI};
 }}
+QScrollBar:vertical {{
+    background: transparent;
+    width: 8px;
+    margin: 2px;
+}}
+QScrollBar::handle:vertical {{
+    background: {BORDER};
+    border-radius: 3px;
+    min-height: 30px;
+}}
+QScrollBar::handle:vertical:hover {{
+    background: {TEXT_DIM};
+}}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{
+    height: 0px;
+    background: none;
+}}
 QLabel#beatName {{
     font-weight: 600;
 }}

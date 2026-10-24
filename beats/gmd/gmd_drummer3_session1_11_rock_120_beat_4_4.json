@@ -1,0 +1,20 @@
+{
+  "name": "Rock 13",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-x- X-x- x-x- X-x- | x-x- X-x- x-x- X-x-",
+    "SNARE": "---- x--- -x-- x--- | ---- x--- -x-- X---",
+    "KICK": "g--- ---- ---g --g- | g--- ---- ---g --g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session1/11_rock_120_beat_4-4.mid",
+    "style": "rock",
+    "bars": "3-4"
+  }
+}

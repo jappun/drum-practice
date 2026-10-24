@@ -1,0 +1,20 @@
+{
+  "name": "Disco 4",
+  "genre": "Dance",
+  "difficulty": "advanced",
+  "tempo": 137.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "Xggg -ggg Xggg -ggg | Xggg -ggx Xggx -ggx",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--g ---- g--g -g-- | x--g ---- g--g -g--"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/26_dance-disco_137_beat_4-4.mid",
+    "style": "dance/disco",
+    "bars": "2-3"
+  }
+}

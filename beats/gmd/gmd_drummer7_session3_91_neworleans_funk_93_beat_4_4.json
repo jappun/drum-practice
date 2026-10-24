@@ -1,0 +1,24 @@
+{
+  "name": "Funk 35",
+  "genre": "New Orleans",
+  "difficulty": "advanced",
+  "tempo": 93.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "---- ---- ---- ---- | X--- ---- ---- ----",
+    "TOM_HIGH": "---- ---- ---- ---- | ---- ---- X--X ----",
+    "TOM_MID": "---- ---- ---- ---- | ---- ---- ---- XXX-",
+    "SNARE": "g-Xg gXxX XgXg X--g | g-Xg gXXg -xX- ----",
+    "TOM_LOW": "---- ---- ---- --X- | ---- ---- ---- ---X",
+    "KICK": "x--- x--- x--- x--- | x--- x--- x--- x---",
+    "HH_PEDAL": "--X- --X- --X- --X- | --X- --X- --X- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session3/91_neworleans-funk_93_beat_4-4.mid",
+    "style": "neworleans/funk",
+    "bars": "3-4"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Funk 27",
+  "genre": "Funk",
+  "difficulty": "beginner",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "--g- X--- X--- X-g- | x-g- X-x- X-g- X---",
+    "SNARE": "---g --Xg -g-g -g-g | -g-- --X- X--- X---",
+    "KICK": "--x- ---- ---x ---x | --x- ---- --x- -X--"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/78_funk_100_beat_4-4.mid",
+    "style": "funk",
+    "bars": "1-2"
+  }
+}

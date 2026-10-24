@@ -51,6 +51,14 @@ The settings row underneath sets the **tempo** (drag the slider or type a number
 
 ## Beats
 
+The library's 384 beats come from the [Groove MIDI Dataset](https://magenta.tensorflow.org/datasets/groove) by Google LLC, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (Gillick et al., "Learning to Groove with Inverse Sequence Transformations", ICML 2019). Each beat is a 2-bar section of a real drummer's performance, snapped to a 16th-note grid. Swung and triplet-feel performances are left out, since the grid can't show them yet. See [beats/gmd/ATTRIBUTION.md](beats/gmd/ATTRIBUTION.md) for exactly what was changed.
+
+To rebuild them from the dataset (the script downloads it, 3 MB, and checks its checksum):
+
+```
+python scripts/import_gmd.py
+```
+
 Beats live in `beats/` as JSON files, with one pattern string per drum and one character per 16th step:
 
 ```

@@ -1,0 +1,23 @@
+{
+  "name": "Samba-reggae 3",
+  "genre": "Latin",
+  "difficulty": "advanced",
+  "tempo": 96.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "TOM_HIGH": "X--- ---- X--- ---- | X--- ---- X--- ----",
+    "TOM_MID": "---- X-X- ---- ---- | ---- X-X- ---- ----",
+    "SNARE": "-gxX -g-g -gxx ---- | -gxX -g-g -gxx ----",
+    "TOM_LOW": "---- ---- ---- XXXX | ---- ---- ---- XXXX",
+    "KICK": "x--- x--- x--- x--- | x--- x--- x--- x---",
+    "HH_PEDAL": "--x- --X- --X- --X- | --X- --X- --X- --X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/session1/12_latin-brazilian-sambareggae_96_beat_4-4.mid",
+    "style": "latin/brazilian-sambareggae",
+    "bars": "1-2"
+  }
+}

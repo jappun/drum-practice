@@ -1,0 +1,20 @@
+{
+  "name": "Latin 1",
+  "genre": "Funk",
+  "difficulty": "beginner",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-g- x-g- x-g- X-g- | x-x- X-g- x-g- X-g-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "X--- -x-x ---- ---- | g-x- -x-x ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/24_funk-latin_100_beat_4-4.mid",
+    "style": "funk/latin",
+    "bars": "5-6"
+  }
+}

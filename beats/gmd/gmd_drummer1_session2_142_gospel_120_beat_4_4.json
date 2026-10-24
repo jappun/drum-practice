@@ -1,0 +1,21 @@
+{
+  "name": "Gospel 1",
+  "genre": "Other",
+  "difficulty": "advanced",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "x-X- x-X- x-X- x-x- | x-X- X-X- x-X- g-X-",
+    "SNARE": "--X- --Xg --Xg --Xg | --Xg --Xg --Xg --Xg",
+    "KICK": "g--- gg-- g--- gg-- | x--- xx-- g--- x---",
+    "HH_PEDAL": "g-X- g-x- --X- g-X- | --X- g-X- --X- g-X-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session2/142_gospel_120_beat_4-4.mid",
+    "style": "gospel",
+    "bars": "67-68"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Ijexa 1",
+  "genre": "Latin",
+  "difficulty": "intermediate",
+  "tempo": 108.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-X- x-X- xX-X -XX- | X-X- X-X- xX-X -xX-",
+    "SNARE": "---- ---- -X-- ---- | ---- ---- -X-- ----",
+    "KICK": "---- g-g- ---- g-g- | ---- g-g- ---- g-g-",
+    "HH_PEDAL": "x--- x--- g--- x--- | x--- g--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/session2/19_latin-brazilian-ijexa_108_beat_4-4.mid",
+    "style": "latin/brazilian-ijexa",
+    "bars": "31-32"
+  }
+}

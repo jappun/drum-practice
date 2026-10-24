@@ -2,8 +2,8 @@
 
 Collapsible to a thin strip so the grid can use the full width."""
 
-from PySide6.QtCore import QPointF, QRectF, Qt, Signal
-from PySide6.QtGui import QColor, QPainter, QPainterPath, QPen
+from PySide6.QtCore import QPointF, QRectF, QSize, Qt, Signal
+from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QComboBox,
     QHBoxLayout,
@@ -11,8 +11,12 @@ from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QAbstractButton,
+    QApplication,
     QPushButton,
     QSizePolicy,
+    QStyle,
+    QStyledItemDelegate,
+    QStyleOptionViewItem,
     QVBoxLayout,
     QWidget,
 )
@@ -78,6 +82,9 @@ class LibraryPanel(QWidget):
 
         self._list = QListWidget()
         self._list.setObjectName("library")
+        self._list.setUniformItemSizes(True)
+        self._list.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self._list.setItemDelegate(_BeatRowDelegate(self._list))
         self._list.itemClicked.connect(self._on_item)
         col.addWidget(self._list, 1)
 
@@ -133,12 +140,15 @@ class LibraryPanel(QWidget):
         visible = filter_beats(self._beats, *self._filters())
         self._list.clear()
         for beat in visible:
+            best = self._scores.best(beat.id)
             item = QListWidgetItem()
             item.setData(Qt.UserRole, beat.id)
-            row = _BeatRow(beat, self._scores)
-            item.setSizeHint(row.sizeHint())
+            item.setData(_NAME, beat.name)
+            item.setData(_META, f"{beat.genre} · {beat.difficulty}")
+            item.setData(_SCORE, f"{best.score:.0f}%" if best else "")
+            if best:
+                item.setToolTip(f"Best: {best.score:.1f}% at {best.tempo:.0f} BPM, {best.bars} bars")
             self._list.addItem(item)
-            self._list.setItemWidget(item, row)
         self._empty.setVisible(not visible)
         self._list.setVisible(bool(visible))
         self._surprise.setEnabled(bool(visible))
@@ -162,33 +172,54 @@ class LibraryPanel(QWidget):
             self.select(pick.id)
 
 
-class _BeatRow(QWidget):
-    """Name and genre/level on the left, best score on the right."""
+# Item data roles for the painted rows.
+_NAME = Qt.UserRole + 1
+_META = Qt.UserRole + 2
+_SCORE = Qt.UserRole + 3  # "" when the beat has no best score yet
 
-    def __init__(self, beat: Beat, scores: ScoreBook):
-        super().__init__()
-        self.setAttribute(Qt.WA_TransparentForMouseEvents)
-        row = QHBoxLayout(self)
-        row.setContentsMargins(10, 7, 10, 7)
-        text = QVBoxLayout()
-        text.setSpacing(1)
-        name = QLabel(beat.name)
-        name.setObjectName("beatName")
-        meta = QLabel(f"{beat.genre} · {beat.difficulty}")
-        meta.setObjectName("meta")
-        text.addWidget(name)
-        text.addWidget(meta)
-        row.addLayout(text, 1)
 
-        best = scores.best(beat.id)
-        score = QLabel(f"{best.score:.0f}%" if best else "–")
-        score.setObjectName("bestScore" if best else "meta")
-        score.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        if best:
-            score.setToolTip(f"Best: {best.score:.1f}% at {best.tempo:.0f} BPM, {best.bars} bars")
-        row.addWidget(score)
-        for label in (name, meta, score):
-            label.setStyleSheet("background: transparent;")
+class _BeatRowDelegate(QStyledItemDelegate):
+    """Paints each row (name and genre/level on the left, best score on the
+    right) directly, which keeps a list of hundreds of beats instant."""
+
+    ROW_HEIGHT = 48
+    PAD = 10
+
+    def sizeHint(self, option, index) -> QSize:
+        return QSize(option.rect.width(), self.ROW_HEIGHT)
+
+    def paint(self, p: QPainter, option, index) -> None:
+        # Background, hover and selection come from the stylesheet.
+        opt = QStyleOptionViewItem(option)
+        self.initStyleOption(opt, index)
+        opt.text = ""
+        widget = opt.widget
+        (widget.style() if widget else QApplication.style()).drawControl(
+            QStyle.CE_ItemViewItem, opt, p, widget
+        )
+
+        rect = option.rect.adjusted(self.PAD, 6, -self.PAD, -6)
+        score = index.data(_SCORE)
+        p.save()
+        score_font = QFont(option.font)
+        score_font.setBold(True)
+        p.setFont(score_font)
+        p.setPen(QColor(theme.OK if score else theme.TEXT_DIM))
+        score_text = score or "–"
+        score_width = p.fontMetrics().horizontalAdvance(score_text)
+        p.drawText(rect, Qt.AlignRight | Qt.AlignVCenter, score_text)
+
+        text_rect = rect.adjusted(0, 0, -(score_width + 8), 0)
+        name_font = QFont(option.font)
+        name_font.setBold(True)
+        p.setFont(name_font)
+        p.setPen(QColor(theme.TEXT))
+        top, bottom = text_rect.adjusted(0, 0, 0, -text_rect.height() // 2), text_rect.adjusted(0, text_rect.height() // 2, 0, 0)
+        p.drawText(top, Qt.AlignLeft | Qt.AlignBottom, p.fontMetrics().elidedText(index.data(_NAME), Qt.ElideRight, top.width()))
+        p.setFont(option.font)
+        p.setPen(QColor(theme.TEXT_DIM))
+        p.drawText(bottom, Qt.AlignLeft | Qt.AlignTop, index.data(_META))
+        p.restore()
 
 
 class SidebarToggle(QAbstractButton):

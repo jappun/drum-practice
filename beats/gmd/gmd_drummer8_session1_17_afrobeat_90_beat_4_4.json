@@ -1,0 +1,22 @@
+{
+  "name": "Afrobeat 3",
+  "genre": "Afrobeat",
+  "difficulty": "beginner",
+  "tempo": 90.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- x--- ---- x--- | ---- x--- ---- x---",
+    "HH_CLOSED": "g-g- --g- x-g- ---- | x-g- --g- g-g- --x-",
+    "SNARE": "---x --x- --x- --x- | ---x --x- ---x --x-",
+    "KICK": "g--- g--- gg-- g--- | g--- g--- gg-- g---",
+    "HH_PEDAL": "---- --g- ---- --g- | ---- --g- ---- --g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/17_afrobeat_90_beat_4-4.mid",
+    "style": "afrobeat",
+    "bars": "6-7"
+  }
+}

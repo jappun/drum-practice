@@ -1,0 +1,22 @@
+{
+  "name": "Funk 43",
+  "genre": "Funk",
+  "difficulty": "beginner",
+  "tempo": 95.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- --x- ---- | ---- ---- --x- ----",
+    "HH_CLOSED": "g-g- X-g- g--- g-g- | g-g- x-g- g--- x-g-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "X--- ---- x--- ---- | x--x -x-g x--- ----",
+    "HH_PEDAL": "---- ---- ---- x--- | ---- ---- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session1/1_funk_95_beat_4-4.mid",
+    "style": "funk",
+    "bars": "1-2"
+  }
+}

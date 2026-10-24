@@ -1,0 +1,22 @@
+{
+  "name": "Latin 7",
+  "genre": "Latin",
+  "difficulty": "advanced",
+  "tempo": 95.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- ---- X--- | ---- ---- ---- Xg--",
+    "HH_CLOSED": "XgxX xg-- xXxX ---- | XgxX x--- xXxX ----",
+    "SNARE": "---- --X- ---- --X- | ---- --X- ---- --X-",
+    "KICK": "X--x ---- -x-g X--- | X--x ---- -x-g X---",
+    "HH_PEDAL": "g--- ---- ---- x--- | g--- ---- ---- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/7_latin_95_beat_4-4.mid",
+    "style": "latin",
+    "bars": "35-36"
+  }
+}

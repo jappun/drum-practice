@@ -1,0 +1,21 @@
+{
+  "name": "Pop 11",
+  "genre": "Pop",
+  "difficulty": "beginner",
+  "tempo": 142.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-g- x-g- X-g- x--- | X-g- x--- X-g- X---",
+    "HH_CLOSED": "---x ---- ---g --X- | ---- ---- ---g --X-",
+    "SNARE": "---- ---- X--- ---- | ---- ---- X--- ----",
+    "KICK": "x--- x--- x--- g--- | x--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/97_pop_142_beat_4-4.mid",
+    "style": "pop",
+    "bars": "5-6"
+  }
+}

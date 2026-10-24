@@ -1,0 +1,23 @@
+{
+  "name": "Hip-hop 6",
+  "genre": "Hip-hop",
+  "difficulty": "intermediate",
+  "tempo": 92.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH": "---- ---- ---- ---- | --x- ---- ---- ----",
+    "HH_OPEN": "X--- ---- ---- ---- | X--- ---- ---- ----",
+    "HH_CLOSED": "---- x-g- gggg -xgx | ---- x-g- gggg -g--",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X--X",
+    "KICK": "X--- ---- ---- ---- | X-X- ---- ---- ----",
+    "HH_PEDAL": "--x- ---- ---- ---- | --x- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session2/33_hiphop_92_beat_4-4.mid",
+    "style": "hiphop",
+    "bars": "1-2"
+  }
+}

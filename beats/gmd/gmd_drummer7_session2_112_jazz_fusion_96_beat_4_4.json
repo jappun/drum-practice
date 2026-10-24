@@ -1,0 +1,21 @@
+{
+  "name": "Fusion 1",
+  "genre": "Jazz",
+  "difficulty": "intermediate",
+  "tempo": 96.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "-gx- ggXx ggx- --Xg | -xXg ggXX ggxx --xg",
+    "TOM_HIGH": "---- ---- ---X ---- | ---- ---- ---- ----",
+    "SNARE": "---X ---- ---- Xx-- | ---- ---- ---- Xx--",
+    "KICK": "X--- ---- ---- ---- | X--X ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/112_jazz-fusion_96_beat_4-4.mid",
+    "style": "jazz/fusion",
+    "bars": "4-5"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Indie 3",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 104.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-X- x-X- X-Xx X-x- | X-X- x-X- Xxg- X-x-",
+    "SNARE": "-x-- -g-- ---- X--g | -g-- -g-- ---- X--g",
+    "KICK": "g-xg --x- x--- ---- | g-xx --x- x--- ----",
+    "HH_PEDAL": "x--- x--- x--- x--- | x--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/39_rock-indie_104_beat_4-4.mid",
+    "style": "rock/indie",
+    "bars": "21-22"
+  }
+}

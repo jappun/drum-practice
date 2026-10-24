@@ -3,17 +3,19 @@ import pytest
 
 from drum_practice.audio import Mixer
 from drum_practice.calibration import MAX_SCATTER, MEASURED_CLICKS, measure
-from drum_practice.model import BEATS_DIR, Beat
+from drum_practice.model import Beat
 from drum_practice.session import Stage, Timeline
 from drum_practice.settings import Settings
 from drum_practice.sounds import build_clicks, build_kit
+
+from conftest import FIXTURES
 
 SR = 48_000
 
 
 @pytest.fixture
 def beat():
-    return Beat.load(BEATS_DIR / "basic_rock.json")  # 2 bars at 90 BPM
+    return Beat.load(FIXTURES / "basic_rock.json")  # 2 bars at 90 BPM
 
 
 def test_sequence_is_count_in_demo_count_in_play(beat):

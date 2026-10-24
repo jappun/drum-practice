@@ -1,0 +1,20 @@
+{
+  "name": "Soul 5",
+  "genre": "Soul",
+  "difficulty": "beginner",
+  "tempo": 102.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-x- X-x- X-x- X-X- | X-x- X-x- X-g- X-x-",
+    "SNARE": "---- X--- ---- X--- | ---- X--- ---- X---",
+    "KICK": "x--- ---- --x- ---g | x--- ---- --x- ---g"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer5/eval_session/10_soul-groove10_102_beat_4-4.mid",
+    "style": "soul/groove10",
+    "bars": "3-4"
+  }
+}

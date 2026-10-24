@@ -1,0 +1,20 @@
+{
+  "name": "Rock 137",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 100.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-x- X-x- X-x- X-x- | X-x- X-x- X-x- X-x-",
+    "SNARE": "---- X--X ---- X--X | ---- X--- X--- X---",
+    "KICK": "x--- ---- x-x- -x-- | x-x- ---- --x- -x-x"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/9_rock_100_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}

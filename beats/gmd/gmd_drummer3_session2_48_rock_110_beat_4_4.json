@@ -1,0 +1,20 @@
+{
+  "name": "Rock 45",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 110.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "g-x- g-x- x-g- x-g- | x-g- x-g- x--- x-g-",
+    "SNARE": "--x- ---- ---- x--- | ---- x--- ---- x---",
+    "KICK": "---- --x- x--- --g- | x--- --x- x--- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session2/48_rock_110_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}

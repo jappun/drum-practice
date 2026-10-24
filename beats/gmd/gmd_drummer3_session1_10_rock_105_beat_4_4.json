@@ -1,0 +1,19 @@
+{
+  "name": "Rock 12",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 105.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "x-xg X-xx XxgX -Xxx | X-xx X-xx XxxX -XxX",
+    "KICK": "x--- x--- x--- x--- | x--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session1/10_rock_105_beat_4-4.mid",
+    "style": "rock",
+    "bars": "4-5"
+  }
+}

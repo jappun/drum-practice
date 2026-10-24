@@ -1,0 +1,19 @@
+{
+  "name": "March 3",
+  "genre": "Jazz",
+  "difficulty": "intermediate",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "SNARE": "Xxgx xxXx gXxx XxgX | XggX xxXg gXxx Xxxx",
+    "KICK": "X--- X--- x--- x--- | X--- x--- x--- x---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer1/session2/9_jazz-march_120_beat_4-4.mid",
+    "style": "jazz/march",
+    "bars": "29-30"
+  }
+}

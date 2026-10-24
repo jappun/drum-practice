@@ -1,0 +1,22 @@
+{
+  "name": "Funk 22",
+  "genre": "Funk",
+  "difficulty": "advanced",
+  "tempo": 102.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---g ---- ---x ---- | ---g ---- ---g ----",
+    "HH_CLOSED": "g-x- X-xX X-x- X-xx | x-x- X-gg X-g- X-gx",
+    "SNARE": "-x-- Xx-x -x-- Xx-X | -xg- Xx-x -xg- Xx-x",
+    "KICK": "--gx ---- x-xx ---- | --xx ---- x-gx ----",
+    "HH_PEDAL": "---- x--- ---- x--- | ---- x--- ---- X---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session1/12_funk_102_beat_4-4.mid",
+    "style": "funk",
+    "bars": "4-5"
+  }
+}

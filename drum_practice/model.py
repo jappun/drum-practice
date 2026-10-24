@@ -156,4 +156,4 @@ BEATS_DIR = Path(__file__).resolve().parent.parent / "beats"
 
 
 def load_beats(directory: Path = BEATS_DIR) -> list[Beat]:
-    return [Beat.load(p) for p in sorted(directory.glob("*.json"))]
+    return [Beat.load(p) for p in sorted(directory.rglob("*.json"))]

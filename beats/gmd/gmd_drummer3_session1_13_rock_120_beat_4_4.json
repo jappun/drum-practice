@@ -1,0 +1,21 @@
+{
+  "name": "Rock 15",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- ---- ---- | ---- ---- ---- --X-",
+    "HH_CLOSED": "X-X- X-x- X-X- X-X- | X-g- X-x- x-X- X---",
+    "SNARE": "---- x--- ---- x--- | ---- x--- ---- x---",
+    "KICK": "g--- ---- --g- --g- | x--- ---- --x- --x-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session1/13_rock_120_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}

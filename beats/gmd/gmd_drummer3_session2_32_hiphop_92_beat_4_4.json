@@ -1,0 +1,22 @@
+{
+  "name": "Hip-hop 5",
+  "genre": "Hip-hop",
+  "difficulty": "beginner",
+  "tempo": 92.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "X-x- ---- ---- ---- | X--- ---- ---- ----",
+    "HH_CLOSED": "---- x-g- ggxx Xx-x | --x- x-g- ggxx -xg-",
+    "SNARE": "---- X--- ---- --X- | ---- X--- ---- X--X",
+    "KICK": "X-X- ---- ---- ---- | X-X- ---- ---- ----",
+    "HH_PEDAL": "--x- ---- ---- ---- | --x- ---- ---- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session2/32_hiphop_92_beat_4-4.mid",
+    "style": "hiphop",
+    "bars": "2-3"
+  }
+}

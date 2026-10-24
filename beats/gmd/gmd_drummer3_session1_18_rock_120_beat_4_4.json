@@ -1,0 +1,20 @@
+{
+  "name": "Rock 16",
+  "genre": "Rock",
+  "difficulty": "beginner",
+  "tempo": 120.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-g- X-g- X-X- X-X- | X-x- X-x- X-X- X-X-",
+    "SNARE": "---- X--- ---- x--- | ---- x--- ---- X---",
+    "KICK": "x--- ---- g-x- --x- | x--- ---- x-g- --x-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer3/session1/18_rock_120_beat_4-4.mid",
+    "style": "rock",
+    "bars": "9-10"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Afrobeat 12",
+  "genre": "Afrobeat",
+  "difficulty": "advanced",
+  "tempo": 114.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN": "---- ---- X--- X--- | X--- ---- ---- X---",
+    "HH_CLOSED": "X-g- X-g- --X- --X- | --x- X-g- X-X- --X-",
+    "SNARE": "---- Xg-g -g-X -XXX | ---- Xg-g -g-X -XX-",
+    "KICK": "x-x- ---- x-x- ---- | x-x- ---- x-x- ----",
+    "HH_PEDAL": "g-x- g-g- g-g- --g- | g-g- g-g- g-g- --g-"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer8/session2/3_afrobeat_114_beat_4-4.mid",
+    "style": "afrobeat",
+    "bars": "67-68"
+  }
+}

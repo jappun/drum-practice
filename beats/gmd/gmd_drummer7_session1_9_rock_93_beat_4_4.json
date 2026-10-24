@@ -1,0 +1,19 @@
+{
+  "name": "Rock 73",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 93.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "Xggg Xxgg -gXX -gXg | XggX gxXX ggXg -Xgg",
+    "KICK": "x--- x--- x--- g--- | x--- g--- g--- g---"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session1/9_rock_93_beat_4-4.mid",
+    "style": "rock",
+    "bars": "10-11"
+  }
+}

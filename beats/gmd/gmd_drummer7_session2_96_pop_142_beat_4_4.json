@@ -1,0 +1,20 @@
+{
+  "name": "Pop 10",
+  "genre": "Pop",
+  "difficulty": "beginner",
+  "tempo": 142.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_CLOSED": "X-gg X-g- X-gx X-X- | X-g- X-g- X-g- X-gX",
+    "SNARE": "---- ---- X--- ---- | ---- ---- X--- ----",
+    "KICK": "x--- x--- x--- --g- | X--- x--- --x- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer7/session2/96_pop_142_beat_4-4.mid",
+    "style": "pop",
+    "bars": "24-25"
+  }
+}

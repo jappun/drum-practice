@@ -1,0 +1,21 @@
+{
+  "name": "Rock 128",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 90.0,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "RIDE": "X-Xg X-Xg x-Xx X-Xx | X-Xx X-Xx x-Xx X-Xx",
+    "SNARE": "--X- --X- --X- --X- | --X- --X- --X- --X-",
+    "KICK": "x--- g--- x--- x--- | x--- x--- gx-- gg--",
+    "HH_PEDAL": "--x- --x- --x- --x- | --x- --x- g--- ----"
+  },
+  "source": {
+    "dataset": "Groove MIDI Dataset (CC BY 4.0)",
+    "file": "drummer9/session1/28_rock_90_beat_4-4.mid",
+    "style": "rock",
+    "bars": "2-3"
+  }
+}
