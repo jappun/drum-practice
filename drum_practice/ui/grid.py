@@ -14,6 +14,7 @@ from ..model import Beat
 from . import theme
 
 LABEL_WIDTH = 130
+KEY_LABEL_EXTRA = 56  # dev mode widens the label column to fit key hints
 ROW_HEIGHT = 34
 HEADER_HEIGHT = 22
 CELL_GAP = 3
@@ -30,8 +31,11 @@ class GridResults:
 
 
 class BeatGrid(QWidget):
-    def __init__(self):
+    def __init__(self, key_labels: dict[DrumClass, str] | None = None):
+        """`key_labels` (dev mode only) shows each drum's keyboard key beside its name."""
         super().__init__()
+        self._key_labels = key_labels
+        self._label_width = LABEL_WIDTH + (KEY_LABEL_EXTRA if key_labels else 0)
         self.beat: Beat | None = None
         self.results: GridResults | None = None
         self._step: int | None = None
@@ -64,7 +68,7 @@ class BeatGrid(QWidget):
 
         beat = self.beat
         steps = beat.total_steps
-        cell_w = (self.width() - LABEL_WIDTH) / steps
+        cell_w = (self.width() - self._label_width) / steps
         used = {n.drum for n in beat.notes}
 
         # Beat shading, bar lines and beat numbers.
@@ -73,7 +77,7 @@ class BeatGrid(QWidget):
         p.setFont(number_font)
         grid_bottom = HEADER_HEIGHT + ROW_HEIGHT * len(DRUM_ORDER)
         for step in range(steps):
-            x = LABEL_WIDTH + step * cell_w
+            x = self._label_width + step * cell_w
             beat_index = step // beat.steps_per_beat
             if beat_index % 2 == 0:
                 p.fillRect(QRectF(x, HEADER_HEIGHT, cell_w, grid_bottom - HEADER_HEIGHT), QColor(theme.SURFACE))
@@ -90,7 +94,7 @@ class BeatGrid(QWidget):
 
         # Playhead column.
         if self._step is not None:
-            x = LABEL_WIDTH + self._step * cell_w
+            x = self._label_width + self._step * cell_w
             head = QColor(theme.ACCENT)
             head.setAlphaF(0.18)
             p.fillRect(QRectF(x, HEADER_HEIGHT, cell_w, grid_bottom - HEADER_HEIGHT), head)
@@ -100,13 +104,17 @@ class BeatGrid(QWidget):
         for row, drum in enumerate(DRUM_ORDER):
             y = HEADER_HEIGHT + row * ROW_HEIGHT
             p.setPen(QColor(theme.TEXT if drum in used else theme.TEXT_DIM))
-            p.drawText(QRectF(8, y, LABEL_WIDTH - 12, ROW_HEIGHT), Qt.AlignVCenter, drum.label)
+            rect = QRectF(8, y, self._label_width - 12, ROW_HEIGHT)
+            p.drawText(rect, Qt.AlignVCenter, drum.label)
+            if self._key_labels:
+                p.setPen(QColor(theme.ACCENT))
+                p.drawText(rect, Qt.AlignVCenter | Qt.AlignRight, self._key_labels[drum])
 
         # Notes; the ones under the playhead light up.
         for note in beat.notes:
             row = DRUM_ORDER.index(note.drum)
             rect = QRectF(
-                LABEL_WIDTH + note.step * cell_w + CELL_GAP / 2,
+                self._label_width + note.step * cell_w + CELL_GAP / 2,
                 HEADER_HEIGHT + row * ROW_HEIGHT + CELL_GAP,
                 cell_w - CELL_GAP,
                 ROW_HEIGHT - 2 * CELL_GAP,
@@ -127,7 +135,7 @@ class BeatGrid(QWidget):
                 p.setPen(Qt.NoPen)
                 p.setBrush(QColor(color))
                 for step, drum in marks:
-                    x = LABEL_WIDTH + (min(max(step, -0.5), steps - 0.5) + 0.5) * cell_w
+                    x = self._label_width + (min(max(step, -0.5), steps - 0.5) + 0.5) * cell_w
                     y = HEADER_HEIGHT + (DRUM_ORDER.index(drum) + 0.5) * ROW_HEIGHT
                     p.drawEllipse(QRectF(x - MARK_RADIUS, y - MARK_RADIUS, 2 * MARK_RADIUS, 2 * MARK_RADIUS))
 

@@ -4,6 +4,7 @@ import json
 import sys
 from dataclasses import asdict, dataclass, fields
 from pathlib import Path
+from typing import ClassVar
 
 
 def app_dir() -> Path:
@@ -15,23 +16,14 @@ def app_dir() -> Path:
     return base / "Drum Practice"
 
 
-def default_path() -> Path:
-    return app_dir() / "settings.json"
+class _JsonFile:
+    """Load/save a dataclass as JSON in the app-data folder (FILENAME)."""
 
-
-@dataclass
-class Settings:
-    latency_offset: float = 0.0  # seconds subtracted from every hit
-    calibrated: bool = False
-    tempo: float = 90.0
-    bars: int = 2
-    count_in: bool = True
-    metronome: bool = False  # click along during your turn
-    beat_id: str = ""  # last beat picked, reopened on launch
+    FILENAME: ClassVar[str]
 
     @classmethod
-    def load(cls, path: Path | None = None) -> "Settings":
-        path = path or default_path()
+    def load(cls, path: Path | None = None):
+        path = path or app_dir() / cls.FILENAME
         try:
             data = json.loads(path.read_text())
         except (OSError, ValueError):
@@ -40,6 +32,29 @@ class Settings:
         return cls(**{k: v for k, v in data.items() if k in known})
 
     def save(self, path: Path | None = None) -> None:
-        path = path or default_path()
+        path = path or app_dir() / self.FILENAME
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(asdict(self), indent=2) + "\n")
+
+
+@dataclass
+class Settings(_JsonFile):
+    FILENAME: ClassVar[str] = "settings.json"
+
+    latency_offset: float = 0.0  # seconds subtracted from every hit
+    calibrated: bool = False
+    tempo: float = 90.0
+    bars: int = 2
+    count_in: bool = True
+    metronome: bool = False  # click along during your turn
+    beat_id: str = ""  # last beat picked, reopened on launch
+
+
+@dataclass
+class DevSettings(_JsonFile):
+    """Dev mode (--dev) only, in its own file so the regular app never sees it."""
+
+    FILENAME: ClassVar[str] = "dev_settings.json"
+
+    keyboard_latency_offset: float = 0.0
+    keyboard_calibrated: bool = False

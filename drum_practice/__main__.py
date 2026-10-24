@@ -10,7 +10,8 @@ def main() -> int:
     app = QApplication(sys.argv)
     app.setApplicationName("Drum Practice")
     app.setStyleSheet(STYLESHEET)
-    window = MainWindow()
+    # --dev is the only way to enable keyboard drums (a developer tool).
+    window = MainWindow(dev_mode="--dev" in sys.argv[1:])
     window.show()
     return app.exec()
 

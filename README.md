@@ -16,16 +16,16 @@ Then I let Claude build a phase, and I manually approve its edits. I test the ap
 - [ ] Phase 4: User-controlled practice settings
 - [ ] Phase 5: Build enhanced beat library and picker
 - [ ] Phase 6: Groove MIDI Dataset import
-- [ ] Phase 7: Dynamic hits (ie ghost notes, accents)
-- [ ] Phase 8: Users can add/edit beats
-- [ ] Phase 9: Upload sheet music
-- [ ] Phase 10: Setup wizard to learn any kit's MIDI outputs
+- [ ] Phase 7: Users can add/edit beats
+- [ ] Phase 8: Upload sheet music
+- [ ] Phase 9: Setup wizard to learn any kit's MIDI outputs
+- [ ] Phase 10: Dynamic hits (ie ghost notes, accents)
 
 
 ## Setup
 
 Requires Python 3.11+.
-Until phase 10 is complete, the application will assume your kit outputs are in line with General MIDI mapping.
+Until phase 9 is complete, the application will assume your kit outputs are in line with General MIDI mapping.
 
 ```
 python3 -m venv .venv
@@ -61,6 +61,31 @@ Beats live in `beats/` as JSON files, with one pattern string per drum and one c
 `x` normal, `X` accent, `g` ghost, `-` rest. Spaces and `|` are only for readability.
 
 Each beat file also sets `name`, `genre`, `difficulty` (`beginner`, `intermediate` or `advanced`), `tempo` and `bars`. The file name is the beat's ID, and best scores are saved under it. You can rename a beat inside the file without losing its scores, but renaming the file itself starts its score history over.
+
+## Dev mode (keyboard drums)
+
+For development without the kit:
+
+```
+python -m drum_practice --dev
+```
+
+The laptop keyboard plays the drums, and the grid shows each drum's key next to its name:
+
+| Key | Drum | Key | Drum |
+|---|---|---|---|
+| Space | Kick | G | Tom 1 |
+| F | Snare | H | Tom 2 |
+| J | Hi-hat closed | B | Floor tom |
+| U | Hi-hat open | I | Crash |
+| C | Hi-hat pedal | O | Ride |
+
+How it differs from the regular app:
+- Dev mode has its own calibration, saved separately in `dev_settings.json`. Calibrate once by tapping a key.
+- Keyboard timing is less precise than the kit's, and some laptop keyboards can't register three keys pressed at once.
+- Treat dev-mode scores as rough. Final testing should be on the kit.
+
+Without `--dev`, the keyboard does nothing and the app is unchanged.
 
 ## Tests
 

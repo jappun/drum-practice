@@ -44,7 +44,7 @@ Core logic (model, grading, scheduling, import) stays free of Qt and hardware so
 - PySide6 window listing the MIDI port status and a live log of hits: note number, mapped drum name, velocity, timestamp. Hit pads light up on a simple kit diagram/row of labels.
 - Discover and record the DTX note map in `kit.py` (incl. hi-hat open/closed/pedal and any rim/edge zones).
 - **Automated:** unit test for note→drum mapping; test that unknown notes are reported, not crashed on.
-- **Human:** hit each of the 10 inputs → correct label every time; hit soft vs hard → velocity changes (decides whether Phase 7 is feasible); unplug/replug → status updates.
+- **Human:** hit each of the 10 inputs → correct label every time; hit soft vs hard → velocity changes (decides whether Phase 10 is feasible); unplug/replug → status updates.
 - **Hi-hat behaviour checks (inform Phase 3's pedal rule):** does closing the pedal send a chick note (expected 44)? Does moving the pedal send position messages (expected CC #4)? Is there a separate foot-splash note? Where is the module's open/half-open/closed threshold for stick hits?
 
 ## Phase 2 — One beat: play it and see it
@@ -90,32 +90,33 @@ Core logic (model, grading, scheduling, import) stays free of Qt and hardware so
 - **Automated:** quantisation, note mapping, difficulty-score tests on small fixture MIDI files; importer is idempotent.
 - **Human:** library now has many beats per genre; spot-check a few: they sound musical and difficulty labels feel right.
 
-## Phase 7 — Dynamics (only if Phase 1 confirmed velocity)
-**Purpose:** accents and ghost notes matter.
-- Grid shows velocity (cell shading / accent marks); playback uses velocity.
-- Optional "score dynamics" setting: per-velocity calibration (your soft/hard range), accent/ghost matching added to the grade.
-- **Automated:** velocity bucketing + dynamics scoring tests.
-- **Human:** accents audibly/visibly differ; playing them flat lowers the dynamics score.
-
-## Phase 8 — Beat editor
+## Phase 7 — Beat editor
 **Purpose:** create and edit your own beats.
 - Editable grid: click/drag to toggle notes, pick drum row, set bars/tempo/genre/difficulty/name; save to library; edit/duplicate existing beats.
 - **Automated:** edit operations on the model; saved beats load identically.
 - **Human:** build a beat from scratch, practise it, edit it, and it's still in the library after restart.
 
-## Phase 9 — Song import (whole-song scoring)
+## Phase 8 — Song import (whole-song scoring)
 **Purpose:** practise against a full song chart.
 - Import a drum part from a MIDI file (GM drum map) and from MusicXML (what MuseScore exports, so regular sheet music can be encoded there first).
 - Long-form view: grid scrolls horizontally; section-by-section results; option to practise a bar range.
 - **Automated:** import fixtures (MIDI + MusicXML) → expected note lists; tempo/time-signature changes handled or rejected cleanly.
 - **Human:** import a song exported from MuseScore, play it through, review per-section results.
 
-## Phase 10 — Kit setup wizard (any kit)
+## Phase 9 — Kit setup wizard (any kit)
 **Purpose:** make the app work with any e-kit, not just the developer's DTX.
 - Setup screen that walks through each of the 10 drums ("hit your snare now…"), records the note numbers each pad sends, and saves a per-user kit profile. The General MIDI map stays the default for anything not set up.
 - Lets the user pick the MIDI input port, and re-run or edit the mapping any time.
 - **Automated:** profile save/load; profile overrides GM; unassigned drums fall back to GM.
 - **Human:** set a pad on the module to a non-GM note, run the wizard → that pad is mapped correctly without code changes.
+
+## Phase 10 — Dynamics
+**Purpose:** accents and ghost notes matter.
+- Grid shows velocity (cell shading / accent marks); playback uses velocity.
+- Optional "score dynamics" setting: per-velocity calibration (your soft/hard range), accent/ghost matching added to the grade.
+- Hi-hat pedal hits are left out of dynamics scoring: the DTX sends every chick at velocity 100 (see `docs/KIT_NOTES.md`).
+- **Automated:** velocity bucketing + dynamics scoring tests.
+- **Human:** accents audibly/visibly differ; playing them flat lowers the dynamics score.
 
 ---
 

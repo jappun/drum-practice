@@ -1,5 +1,6 @@
 """Main window: pick a beat, listen to it, then play it back and get graded."""
 
+import time
 from enum import Enum, auto
 
 from PySide6.QtCore import QEvent, QObject, Qt, QTimer, Signal
@@ -13,15 +14,16 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from .. import calibration
+from .. import calibration, keyboard_in
 from ..audio import AudioEngine
 from ..grading import GOOD_WINDOW, Played, Result, Verdict, grade
+from ..kit import DrumClass
 from ..midi_in import Hit, MidiInput
 from ..library import ScoreBook, filter_beats
 from ..model import Beat, load_beats
 from ..player import BeatPlayer, MetronomePlayer
 from ..session import Stage, Timeline
-from ..settings import Settings
+from ..settings import DevSettings, Settings
 from ..sounds import build_clicks, build_kit
 from . import theme
 from .grid import BeatGrid, GridResults
@@ -49,12 +51,17 @@ class _HitBridge(QObject):
 
 
 class MainWindow(QWidget):
-    def __init__(self):
+    def __init__(self, dev_mode: bool = False):
+        """`dev_mode` (only ever set by launching with --dev) lets the laptop
+        keyboard play drums. It has its own calibration file and never
+        changes anything for the regular app."""
         super().__init__()
-        self.setWindowTitle("Drum Practice")
+        self._dev_mode = dev_mode
+        self.setWindowTitle("Drum Practice — DEV (keyboard)" if dev_mode else "Drum Practice")
         self.resize(1460, 680)
 
         self._settings = Settings.load()
+        self._dev = DevSettings.load() if dev_mode else None
         self._engine = AudioEngine()
         self._kit = build_kit(self._engine.sample_rate)
         self._clicks = build_clicks(self._engine.sample_rate)
@@ -96,6 +103,8 @@ class MainWindow(QWidget):
         QApplication.instance().installEventFilter(self)
 
     def eventFilter(self, obj, event) -> bool:
+        if self._dev_mode and event.type() == QEvent.KeyPress:
+            return self._dev_key_press(event)
         if event.type() == QEvent.MouseButtonPress:
             focused = QApplication.focusWidget()
             clicked = obj if isinstance(obj, QWidget) else None
@@ -107,6 +116,18 @@ class MainWindow(QWidget):
             ):
                 self.setFocus()  # the box commits its typed value as it loses focus
         return False
+
+    def _dev_key_press(self, event) -> bool:
+        """Dev mode: a mapped key becomes a drum hit. Returns True to consume
+        the key, so one press is one hit even though the app-wide filter sees
+        the event again as it travels to the focused widget."""
+        if event.isAutoRepeat() or isinstance(QApplication.focusWidget(), QLineEdit):
+            return False  # held keys and typing into number fields aren't drums
+        drum = keyboard_in.drum_for_key(event.text())
+        if drum is None:
+            return False
+        self._on_hit(Hit(keyboard_in.note_for(drum), 100, time.perf_counter(), drum))
+        return True
 
     # --- layout ---
 
@@ -173,7 +194,9 @@ class MainWindow(QWidget):
         self._banner.setObjectName("banner")
         main.addWidget(self._banner)
 
-        self._grid = BeatGrid()
+        self._grid = BeatGrid(
+            key_labels={d: keyboard_in.key_label(d) for d in DrumClass} if self._dev_mode else None
+        )
         main.addWidget(self._grid)
 
         self._summary = QLabel()
@@ -291,8 +314,26 @@ class MainWindow(QWidget):
         if mode is not Mode.IDLE:
             self._summary.setText("")
 
+    # Dev mode keeps its own keyboard calibration; the regular app uses the kit's.
+
+    def _latency_offset(self) -> float:
+        return self._dev.keyboard_latency_offset if self._dev_mode else self._settings.latency_offset
+
+    def _calibrated(self) -> bool:
+        return self._dev.keyboard_calibrated if self._dev_mode else self._settings.calibrated
+
+    def _save_calibration(self, offset: float) -> None:
+        if self._dev_mode:
+            self._dev.keyboard_latency_offset = offset
+            self._dev.keyboard_calibrated = True
+            self._dev.save()
+        else:
+            self._settings.latency_offset = offset
+            self._settings.calibrated = True
+            self._settings.save()
+
     def _show_idle_banner(self) -> None:
-        if not self._settings.calibrated:
+        if not self._calibrated():
             self._banner.setText("Tip: press Calibrate first so timing is graded accurately.")
         elif self._settings.count_in:
             self._banner.setText("Press Start practice: count-in, listen, count-in, then your turn.")
@@ -344,7 +385,8 @@ class MainWindow(QWidget):
             self._banner.setText(f"Calibrating: listen to the count-in… {heard or ''}")
         else:
             n = heard - calibration.LEAD_IN_CLICKS
-            self._banner.setText(f"Hit any pad exactly on each click   {n} / {calibration.MEASURED_CLICKS}")
+            target = "any drum key" if self._dev_mode else "any pad"
+            self._banner.setText(f"Hit {target} exactly on each click   {n} / {calibration.MEASURED_CLICKS}")
         beat = 60.0 / calibration.TEMPO * sr
         if now > clicks[-1] + beat / 2:
             self._finish_calibration()
@@ -353,7 +395,7 @@ class MainWindow(QWidget):
 
     def _finish_practice(self) -> None:
         tl = self._timeline
-        offset = self._settings.latency_offset
+        offset = self._latency_offset()
         to_perf = self._engine.sample_to_perf
         play = tl.segment(Stage.PLAY)
         play_start, play_end = to_perf(play.start), to_perf(play.end)
@@ -396,9 +438,7 @@ class MainWindow(QWidget):
             )
             return
         offset = m.offset
-        self._settings.latency_offset = offset
-        self._settings.calibrated = True
-        self._settings.save()
+        self._save_calibration(offset)
         direction = "late" if offset >= 0 else "early"
         self._banner.setText(
             f"Calibrated: your hits arrive {abs(offset) * 1000:.0f} ms {direction}. That's now corrected for."
@@ -411,7 +451,11 @@ class MainWindow(QWidget):
             self._hits.append(hit)
 
     def _poll_kit(self) -> None:
-        if self._midi.poll_connection():
+        kit = self._midi.poll_connection()
+        if self._dev_mode:
+            self._kit_status.setText("⌨ Keyboard (dev mode)" + (" + kit" if kit else ""))
+            color = theme.ACCENT
+        elif kit:
             self._kit_status.setText("● Kit connected")
             color = theme.OK
         else:
