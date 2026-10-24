@@ -42,7 +42,7 @@ python -m drum_practice
 ```
 
 1. **Calibrate** (once): tap any pad on each click, and the app measures the delay between sound and hit so it can correct for it.
-2. Pick a beat. **Listen** plays it on a loop, with the grid lighting up each note as it sounds.
+2. Pick a beat from the **Library** on the left. You can filter it by genre and level, or press **Surprise me** for a random beat that matches the filters. Each beat shows your best score. **Listen** plays the beat on a loop, with the grid lighting up each note as it sounds.
 3. **Start practice** runs count-in → the beat plays → count-in → your turn (silent, the grid keeps lighting) → your score. On the results grid, green is perfect (≤30 ms), amber is good (≤70 ms, notched on the early/late side), a red outline is a missed note and a red dot is an extra hit.
 
 The settings row underneath sets the **tempo** (drag the slider or type a number), how many **bars** to practise (the pattern repeats to fill them), whether there's a **count-in**, and whether a **click** plays during your turn. **Metronome** just plays a click at the current tempo. Settings are remembered between launches.
@@ -59,6 +59,8 @@ Beats live in `beats/` as JSON files, with one pattern string per drum and one c
 ```
 
 `x` normal, `X` accent, `g` ghost, `-` rest. Spaces and `|` are only for readability.
+
+Each beat file also sets `name`, `genre`, `difficulty` (`beginner`, `intermediate` or `advanced`), `tempo` and `bars`. The file name is the beat's ID, and best scores are saved under it. You can rename a beat inside the file without losing its scores, but renaming the file itself starts its score history over.
 
 ## Tests
 

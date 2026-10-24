@@ -10,7 +10,7 @@ Spaces and "|" are ignored, so a bar of 16ths can be written as
 """
 
 import json
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from .kit import DRUM_ORDER, DrumClass
@@ -41,6 +41,8 @@ class Beat:
     notes: list[Note]
     beats_per_bar: int = 4
     steps_per_beat: int = 4
+    # Stable identity for scores: the file name, so renaming a beat keeps its history.
+    id: str = field(default="", compare=False)
 
     @property
     def steps_per_bar(self) -> int:
@@ -129,7 +131,9 @@ class Beat:
 
     @classmethod
     def load(cls, path: Path) -> "Beat":
-        return cls.from_dict(json.loads(path.read_text()))
+        beat = cls.from_dict(json.loads(path.read_text()))
+        beat.id = path.stem
+        return beat
 
     def _format_pattern(self, cells: list[str]) -> str:
         bars = []

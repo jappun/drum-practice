@@ -106,6 +106,34 @@ QLineEdit:focus {{
 QLabel#rowTitle {{
     font-weight: 600;
 }}
+QLabel#sectionHeading {{
+    font-size: 15px;
+    font-weight: 600;
+}}
+QComboBox#filter {{
+    min-width: 0px;
+}}
+QListWidget#library {{
+    padding: 4px;
+}}
+QListWidget#library::item {{
+    border-radius: 6px;
+    margin: 1px 0px;
+}}
+QListWidget#library::item:selected {{
+    background: {SURFACE_HI};
+    border: 1px solid {ACCENT};
+}}
+QListWidget#library::item:hover:!selected {{
+    background: {SURFACE_HI};
+}}
+QLabel#beatName {{
+    font-weight: 600;
+}}
+QLabel#bestScore {{
+    color: {OK};
+    font-weight: 600;
+}}
 QCheckBox::indicator {{
     width: 16px;
     height: 16px;

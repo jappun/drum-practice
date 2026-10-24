@@ -6,12 +6,17 @@ from dataclasses import asdict, dataclass, fields
 from pathlib import Path
 
 
-def default_path() -> Path:
+def app_dir() -> Path:
+    """Where the app keeps per-user files (settings, scores)."""
     if sys.platform == "darwin":
         base = Path.home() / "Library" / "Application Support"
     else:
         base = Path.home() / ".config"
-    return base / "Drum Practice" / "settings.json"
+    return base / "Drum Practice"
+
+
+def default_path() -> Path:
+    return app_dir() / "settings.json"
 
 
 @dataclass
@@ -22,6 +27,7 @@ class Settings:
     bars: int = 2
     count_in: bool = True
     metronome: bool = False  # click along during your turn
+    beat_id: str = ""  # last beat picked, reopened on launch
 
     @classmethod
     def load(cls, path: Path | None = None) -> "Settings":

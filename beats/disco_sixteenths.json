@@ -1,0 +1,15 @@
+{
+  "name": "Disco: Sixteenths",
+  "genre": "Disco",
+  "difficulty": "intermediate",
+  "tempo": 90,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "HH_OPEN":   "--x- --x- --x- --x- | --x- --x- --x- --x-",
+    "HH_CLOSED": "xx-x xx-x xx-x xx-x | xx-x xx-x xx-x xx-x",
+    "SNARE":     "---- x--- ---- x--- | ---- x--- ---- x--g",
+    "KICK":      "x--- x--- x--- x--- | x--- x--- x--- x---"
+  }
+}

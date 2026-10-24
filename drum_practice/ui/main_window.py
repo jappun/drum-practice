@@ -5,7 +5,6 @@ from enum import Enum, auto
 from PySide6.QtCore import QEvent, QObject, Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QApplication,
-    QComboBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -18,6 +17,7 @@ from .. import calibration
 from ..audio import AudioEngine
 from ..grading import GOOD_WINDOW, Played, Result, Verdict, grade
 from ..midi_in import Hit, MidiInput
+from ..library import ScoreBook, filter_beats
 from ..model import Beat, load_beats
 from ..player import BeatPlayer, MetronomePlayer
 from ..session import Stage, Timeline
@@ -25,6 +25,7 @@ from ..settings import Settings
 from ..sounds import build_clicks, build_kit
 from . import theme
 from .grid import BeatGrid, GridResults
+from .library_panel import LibraryPanel
 from .monitor import MonitorWindow
 from .settings_bar import SettingsBar
 
@@ -51,7 +52,7 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Drum Practice")
-        self.resize(1180, 640)
+        self.resize(1460, 680)
 
         self._settings = Settings.load()
         self._engine = AudioEngine()
@@ -61,6 +62,7 @@ class MainWindow(QWidget):
         self._metronome = MetronomePlayer(self._engine, self._clicks)
         self._engine.start()
         self._beats = load_beats()
+        self._scores = ScoreBook()
         self._base_beat: Beat = self._beats[0]  # as written; settings reshape it
         self._monitor: MonitorWindow | None = None
 
@@ -74,7 +76,9 @@ class MainWindow(QWidget):
         self._midi = MidiInput(on_hit=self._bridge.hit.emit)
 
         self._build_ui()
-        self._select_beat(0)
+        known = {b.id for b in self._beats}
+        start_id = self._settings.beat_id if self._settings.beat_id in known else self._library_first_id()
+        self._library.select(start_id)
 
         self._frame = QTimer(self, interval=FRAME_MS)
         self._frame.timeout.connect(self._tick)
@@ -127,12 +131,20 @@ class MainWindow(QWidget):
         header.addWidget(monitor)
         root.addLayout(header)
 
+        body = QHBoxLayout()
+        body.setSpacing(24)
+        root.addLayout(body, 1)
+        self._library = LibraryPanel(self._beats, self._scores)
+        self._library.beat_selected.connect(self._select_beat)
+        body.addWidget(self._library)
+        main = QVBoxLayout()
+        main.setSpacing(14)
+        body.addLayout(main, 1)
+
         controls = QHBoxLayout()
         controls.setSpacing(12)
-        self._picker = QComboBox()
-        for beat in self._beats:
-            self._picker.addItem(beat.name)
-        self._picker.currentIndexChanged.connect(self._select_beat)
+        self._beat_name = QLabel()
+        self._beat_name.setObjectName("sectionHeading")
         self._listen = QPushButton("Listen")
         self._listen.clicked.connect(self._toggle_listen)
         self._start = QPushButton("Start practice")
@@ -144,32 +156,36 @@ class MainWindow(QWidget):
         self._listen.setFixedWidth(90)
         self._start.setFixedWidth(150)
         self._calibrate.setFixedWidth(100)
-        controls.addWidget(self._picker)
         controls.addWidget(self._listen)
         controls.addWidget(self._start)
+        controls.addSpacing(12)
+        controls.addWidget(self._beat_name)
         controls.addWidget(self._meta)
         controls.addStretch()
-        root.addLayout(controls)
+        main.addLayout(controls)
 
         self._settings_bar = SettingsBar(self._settings)
         self._settings_bar.changed.connect(self._on_settings_changed)
         self._settings_bar.metronome_toggled.connect(self._toggle_metronome)
-        root.addWidget(self._settings_bar)
+        main.addWidget(self._settings_bar)
 
         self._banner = QLabel()
         self._banner.setObjectName("banner")
-        root.addWidget(self._banner)
+        main.addWidget(self._banner)
 
         self._grid = BeatGrid()
-        root.addWidget(self._grid)
+        main.addWidget(self._grid)
 
         self._summary = QLabel()
         self._summary.setObjectName("summary")
         self._summary.setTextFormat(Qt.RichText)
         self._summary.setWordWrap(True)
         self._summary.setMinimumHeight(70)
-        root.addWidget(self._summary)
-        root.addStretch()
+        main.addWidget(self._summary)
+        main.addStretch()
+
+    def _library_first_id(self) -> str:
+        return filter_beats(self._beats)[0].id
 
     # --- actions ---
 
@@ -178,10 +194,15 @@ class MainWindow(QWidget):
         s = self._settings
         return self._base_beat.with_bars(s.bars).with_tempo(s.tempo)
 
-    def _select_beat(self, index: int) -> None:
+    def _select_beat(self, beat: Beat) -> None:
         self._stop_all()
-        beat = self._base_beat = self._beats[index]
+        self._base_beat = beat
+        if self._settings.beat_id != beat.id:
+            self._settings.beat_id = beat.id
+            self._settings.save()
         self._grid.set_beat(self._practice_beat())
+        self._summary.setText("")
+        self._beat_name.setText(beat.name)
         self._meta.setText(
             f"{beat.genre} · {beat.difficulty} · {beat.bars}-bar pattern · written at {beat.tempo:g} BPM"
         )
@@ -266,6 +287,7 @@ class MainWindow(QWidget):
         self._settings_bar.set_metronome_playing(mode is Mode.METRONOME)
         # Settings can't change mid-run; while listening or clicking they apply live.
         self._settings_bar.setEnabled(mode not in (Mode.PRACTICE, Mode.CALIBRATE))
+        self._library.setEnabled(mode not in (Mode.PRACTICE, Mode.CALIBRATE))
         if mode is not Mode.IDLE:
             self._summary.setText("")
 
@@ -354,8 +376,11 @@ class MainWindow(QWidget):
             )
         )
         self._stop_all()
-        self._banner.setText(f"Score  {result.score:.0f}%")
+        new_best = self._scores.record(self._base_beat.id, result.score, tl.beat.tempo, tl.beat.bars)
+        self._banner.setText(f"Score  {result.score:.0f}%" + ("   ★ New best!" if new_best else ""))
         self._summary.setText(_summary_text(result))
+        if new_best:
+            self._library.refresh_scores()
 
     def _finish_calibration(self) -> None:
         clicks = [self._engine.sample_to_perf(s) for s in self._calibration_clicks[calibration.LEAD_IN_CLICKS:]]
