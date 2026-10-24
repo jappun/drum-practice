@@ -48,6 +48,7 @@ class Settings(_JsonFile):
     count_in: bool = True
     metronome: bool = False  # click along during your turn
     beat_id: str = ""  # last beat picked, reopened on launch
+    library_collapsed: bool = False
 
 
 @dataclass

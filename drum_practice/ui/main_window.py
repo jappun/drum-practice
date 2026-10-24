@@ -155,8 +155,9 @@ class MainWindow(QWidget):
         body = QHBoxLayout()
         body.setSpacing(24)
         root.addLayout(body, 1)
-        self._library = LibraryPanel(self._beats, self._scores)
+        self._library = LibraryPanel(self._beats, self._scores, collapsed=self._settings.library_collapsed)
         self._library.beat_selected.connect(self._select_beat)
+        self._library.collapsed_changed.connect(self._on_library_collapsed)
         body.addWidget(self._library)
         main = QVBoxLayout()
         main.setSpacing(14)
@@ -206,6 +207,10 @@ class MainWindow(QWidget):
         self._summary.setMinimumHeight(70)
         main.addWidget(self._summary)
         main.addStretch()
+
+    def _on_library_collapsed(self, collapsed: bool) -> None:
+        self._settings.library_collapsed = collapsed
+        self._settings.save()
 
     def _library_first_id(self) -> str:
         return filter_beats(self._beats)[0].id
@@ -310,7 +315,7 @@ class MainWindow(QWidget):
         self._settings_bar.set_metronome_playing(mode is Mode.METRONOME)
         # Settings can't change mid-run; while listening or clicking they apply live.
         self._settings_bar.setEnabled(mode not in (Mode.PRACTICE, Mode.CALIBRATE))
-        self._library.setEnabled(mode not in (Mode.PRACTICE, Mode.CALIBRATE))
+        self._library.set_locked(mode in (Mode.PRACTICE, Mode.CALIBRATE))
         if mode is not Mode.IDLE:
             self._summary.setText("")
 
