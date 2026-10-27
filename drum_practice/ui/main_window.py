@@ -4,12 +4,13 @@ import time
 from dataclasses import replace
 from enum import Enum, auto
 
-from PySide6.QtCore import QEvent, QObject, Qt, QTimer, Signal
+from PySide6.QtCore import QEvent, QObject, QPoint, Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QApplication,
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMenu,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
@@ -24,6 +25,7 @@ from ..midi_in import Hit, MidiInput
 from ..library import ScoreBook, UserBeats, genres, is_example, is_user_beat, search_beats, visible_beats
 from ..model import Beat, load_beats
 from ..player import BeatPlayer, MetronomePlayer
+from ..rhythm import SUBDIVISIONS
 from ..session import Stage, Timeline
 from ..settings import DevSettings, Settings
 from ..sounds import build_clicks, build_kit
@@ -224,6 +226,8 @@ class MainWindow(QWidget):
         self._editor_bar = EditorBar()
         self._editor_bar.details_changed.connect(self._on_draft_details)
         self._editor_bar.bars_changed.connect(self._on_draft_bars)
+        self._editor_bar.time_signature_changed.connect(self._on_draft_time_signature)
+        self._editor_bar.grid_changed.connect(self._on_draft_grid)
         self._editor_bar.save_clicked.connect(self._save_draft)
         self._editor_bar.cancel_clicked.connect(self._cancel_edit)
         self._editor_bar.delete_clicked.connect(self._delete_draft)
@@ -239,6 +243,7 @@ class MainWindow(QWidget):
         )
         self._grid.cell_pressed.connect(self._on_cell_pressed)
         self._grid.cell_dragged.connect(self._on_cell_dragged)
+        self._grid.beat_header_clicked.connect(self._on_beat_header)
         main.addWidget(self._grid)
 
         self._summary = QLabel()
@@ -392,7 +397,7 @@ class MainWindow(QWidget):
         self._metronome.stop()
         self._engine.mixer.clear()
         self._timeline = None
-        self._grid.set_step(None)
+        self._grid.set_position(None)
         if self._mode is not Mode.IDLE:
             self._set_mode(Mode.IDLE)
             self._show_idle_banner()
@@ -447,7 +452,7 @@ class MainWindow(QWidget):
 
     def _show_idle_banner(self) -> None:
         if self._draft is not None:
-            self._banner.setText("Editing: click a cell to add or remove a note, drag along a row to paint.")
+            self._banner.setText("Editing: click a cell to add or remove a note, drag to paint. Click a beat number to change its grid.")
             return
         if self._base_beat is None:
             self._banner.setText("Make your first beat with New beat in the library.")
@@ -485,17 +490,55 @@ class MainWindow(QWidget):
         self._show_beat_details(self._draft)
         self._player.update_beat(self._draft)  # hear edits while listening
 
-    def _on_cell_pressed(self, step: int, drum) -> None:
-        self._draft, self._stroke = editing.click(self._draft, step, drum, self._editor_bar.brush)
+    def _on_cell_pressed(self, at, drum) -> None:
+        self._draft, self._stroke = editing.click(self._draft, at, drum, self._editor_bar.brush)
         self._show_draft()
 
-    def _on_cell_dragged(self, step: int, drum) -> None:
-        self._draft = editing.paint(self._draft, step, drum, self._stroke, self._editor_bar.brush)
+    def _on_cell_dragged(self, at, drum) -> None:
+        self._draft = editing.paint(self._draft, at, drum, self._stroke, self._editor_bar.brush)
         self._show_draft()
 
     def _on_draft_details(self) -> None:
         self._draft = self._editor_bar.apply_details(self._draft)
         self._show_draft()
+
+    def _on_draft_time_signature(self, ts) -> None:
+        self._draft, moved = editing.set_time_signature(self._draft, ts)
+        self._editor_bar.show_rhythm(self._draft)
+        self._show_draft()
+        self._report_moved(moved)
+
+    def _on_draft_grid(self, columns: int) -> None:
+        self._draft, moved = editing.set_grid(self._draft, columns)
+        self._editor_bar.show_rhythm(self._draft)
+        self._show_draft()
+        self._report_moved(moved)
+
+    def _on_beat_header(self, index: int, where: QPoint) -> None:
+        """Click on a beat's number: choose how that beat alone is divided."""
+        ts = self._draft.time_signature
+        current = self._draft.chosen_columns(index)
+        menu = QMenu(self)
+        menu.addSection(f"Divide beat {index % self._draft.beats_per_bar + 1} into")
+        for sub in SUBDIVISIONS:
+            columns = sub.columns(ts)
+            if columns is None:
+                continue
+            action = menu.addAction(sub.name)
+            action.setCheckable(True)
+            action.setChecked(columns == current)
+            action.setData(columns)
+        chosen = menu.exec(where)
+        if chosen is not None and chosen.data() != current:
+            self._draft, moved = editing.set_beat_columns(self._draft, index, chosen.data())
+            self._show_draft()
+            self._report_moved(moved)
+
+    def _report_moved(self, moved: int) -> None:
+        if moved:
+            self._banner.setText(f"Moved {moved} note{'s' if moved != 1 else ''} to the nearest spot on the new grid.")
+        else:
+            self._show_idle_banner()
 
     def _on_draft_bars(self, bars: int) -> None:
         self._draft = editing.resize(self._draft, bars)
@@ -559,7 +602,7 @@ class MainWindow(QWidget):
     def _tick(self) -> None:
         if self._mode is Mode.LISTEN:
             self._player.pump()
-            self._grid.set_step(self._player.current_step())
+            self._grid.set_position(self._player.current_position())
         elif self._mode is Mode.PRACTICE:
             self._tick_practice()
         elif self._mode is Mode.CALIBRATE:
@@ -573,19 +616,19 @@ class MainWindow(QWidget):
     def _tick_practice(self) -> None:
         tl = self._timeline
         now = self._engine.position_samples()
-        stage, step = tl.stage_at(now)
+        stage, position = tl.stage_at(now)
         beat = tl.beat
         if now < tl.segments[0].start:
-            self._grid.set_step(None)
+            self._grid.set_position(None)
             self._banner.setText("Get ready…")
         elif stage is Stage.COUNT_IN:
-            self._grid.set_step(None)
-            self._banner.setText(f"Count-in   {int(step // beat.steps_per_beat) + 1}")
+            self._grid.set_position(None)
+            self._banner.setText(f"Count-in   {int(position // float(beat.beat_quarters)) + 1}")
         elif stage is Stage.DEMO:
-            self._grid.set_step(step)
+            self._grid.set_position(position)
             self._banner.setText("Listen…")
         elif stage is Stage.PLAY:
-            self._grid.set_step(step)
+            self._grid.set_position(position)
             self._banner.setText("Your turn!")
         elif now > tl.end + FINISH_GRACE_SECONDS * self._engine.sample_rate:
             self._finish_practice()
@@ -620,15 +663,14 @@ class MainWindow(QWidget):
         ]
         result = grade(tl.expected(to_perf), played)
 
-        step_s = tl.beat.step_seconds()
-        def step_of(p: Played) -> float:
-            return (p.time - play_start) / step_s
+        def quarters_of(p: Played) -> float:
+            return (p.time - play_start) * tl.beat.tempo / 60.0
 
         self._grid.set_results(
             GridResults(
-                notes={(n.expected.step, n.expected.drum): n for n in result.notes},
-                extras=[(step_of(p), p.drum) for p in result.extras],
-                ignored=[(step_of(p), p.drum) for p in result.ignored],
+                notes={(n.expected.at, n.expected.drum): n for n in result.notes},
+                extras=[(quarters_of(p), p.drum) for p in result.extras],
+                ignored=[(quarters_of(p), p.drum) for p in result.ignored],
             )
         )
         self._stop_all()

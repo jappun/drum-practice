@@ -1,3 +1,5 @@
+from fractions import Fraction
+
 from drum_practice.editing import (
     Stroke,
     blank,
@@ -7,12 +9,17 @@ from drum_practice.editing import (
     paint,
     resize,
     same_music,
+    set_beat_columns,
+    set_grid,
+    set_time_signature,
 )
 from drum_practice.kit import DrumClass
 from drum_practice.library import ScoreBook, UserBeats, is_user_beat
 from drum_practice.model import ACCENT, GHOST, MAX_BEAT_BARS, NORMAL, Beat, Note
+from drum_practice.rhythm import TimeSignature
 
 S, K = DrumClass.SNARE, DrumClass.KICK
+F = Fraction
 
 
 # --- clicking and painting ---
@@ -47,12 +54,19 @@ def test_click_only_touches_that_drum_on_that_step():
 
 def test_drag_repeats_the_stroke():
     beat = blank()
-    for step in range(0, 8, 2):
-        beat = paint(beat, step, S, Stroke.ADD, NORMAL)
-    assert [n.step for n in beat.notes] == [0, 2, 4, 6]
-    beat = paint(beat, 2, S, Stroke.REMOVE, NORMAL)
-    beat = paint(beat, 3, S, Stroke.REMOVE, NORMAL)  # removing an empty cell is harmless
-    assert [n.step for n in beat.notes] == [0, 4, 6]
+    eighths = [F(i, 2) for i in range(4)]
+    for at in eighths:
+        beat = paint(beat, at, S, Stroke.ADD, NORMAL)
+    assert [n.at for n in beat.notes] == eighths
+    beat = paint(beat, F(1, 2), S, Stroke.REMOVE, NORMAL)
+    beat = paint(beat, F(3, 4), S, Stroke.REMOVE, NORMAL)  # removing an empty cell is harmless
+    assert [n.at for n in beat.notes] == [0, 1, F(3, 2)]
+
+
+def test_triplet_positions_are_exact_cells():
+    beat, _ = click(blank(), F(1, 3), S, NORMAL)
+    beat, stroke = click(beat, F(1, 3), S, NORMAL)
+    assert beat.notes == [] and stroke is Stroke.REMOVE
 
 
 def test_edits_return_new_beats_and_leave_the_original_alone():
@@ -73,17 +87,73 @@ def test_notes_stay_sorted():
 
 
 def test_resize_adds_empty_bars_and_cuts_removed_ones():
-    beat, _ = click(blank(), 30, S, NORMAL)  # in bar 2
-    beat, _ = click(beat, 2, K, NORMAL)
+    beat, _ = click(blank(), F(15, 2), S, NORMAL)  # in bar 2
+    beat, _ = click(beat, F(1, 2), K, NORMAL)
+    beat.divisions = {7: 3}
     longer = resize(beat, 4)
-    assert longer.total_steps == 64 and longer.notes == beat.notes
+    assert longer.total_quarters == 16 and longer.notes == beat.notes and longer.divisions == {7: 3}
     shorter = resize(beat, 1)
-    assert shorter.total_steps == 16 and shorter.notes == [Note(2, K, NORMAL)]
+    assert shorter.total_quarters == 4 and shorter.notes == [Note(F(1, 2), K, NORMAL)]
+    assert shorter.divisions == {}
 
 
 def test_resize_is_clamped():
     assert resize(blank(), 0).bars == 1
     assert resize(blank(), 9).bars == MAX_BEAT_BARS
+
+
+# --- grid and time signature ---
+
+
+def test_set_grid_divides_every_beat_and_snaps_notes():
+    beat, _ = click(blank(), F(1, 4), S, NORMAL)  # the "e" of 1, a 16th
+    beat.divisions = {2: 8}
+    triplets, moved = set_grid(beat, 3)
+    assert triplets.grid == 3 and triplets.divisions == {}
+    assert [n.at for n in triplets.notes] == [F(1, 3)]  # nearest triplet
+    assert moved == 1
+
+
+def test_set_grid_leaves_fitting_notes_alone():
+    beat, _ = click(blank(), F(1, 2), S, NORMAL)
+    sixteenth_triplets, moved = set_grid(beat, 6)
+    assert sixteenth_triplets.notes == beat.notes and moved == 0
+
+
+def test_set_beat_columns_changes_one_beat_only():
+    beat, _ = click(blank(), F(1, 4), S, NORMAL)
+    beat, _ = click(beat, F(3) + F(1, 4), S, NORMAL)  # same spot in beat 4
+    changed, moved = set_beat_columns(beat, 3, 3)
+    assert changed.divisions == {3: 3}
+    assert [n.at for n in changed.notes] == [F(1, 4), F(3) + F(1, 3)]
+    assert moved == 1
+    back, _ = set_beat_columns(changed, 3, changed.grid)
+    assert back.divisions == {}
+
+
+def test_snapping_two_notes_onto_one_cell_keeps_the_louder():
+    beat, _ = click(blank(), F(3, 8), S, GHOST)  # 32nds either side of the "&"
+    beat, _ = click(beat, F(5, 8), S, ACCENT)
+    snapped, _ = set_grid(beat, 2)  # 8ths
+    assert snapped.notes == [Note(F(1, 2), S, ACCENT)]
+
+
+def test_set_time_signature_resets_the_grid_and_drops_overflow():
+    beat, _ = click(blank(), F(7), S, NORMAL)  # in bar 2 of 4/4 (ends at 8)
+    beat, _ = click(beat, F(1), K, NORMAL)
+    beat.divisions = {1: 3}
+    three_four, moved = set_time_signature(beat, TimeSignature(3, 4))
+    assert three_four.total_quarters == 6 and [n.at for n in three_four.notes] == [1]
+    assert three_four.divisions == {} and three_four.grid == 4 and moved == 0
+    six_eight, _ = set_time_signature(beat, TimeSignature(6, 8))
+    assert six_eight.grid == 6  # 16ths per dotted-quarter beat
+
+
+def test_set_time_signature_snaps_notes_that_no_longer_fit():
+    beat, _ = click(blank(), F(3) + F(1, 3), S, NORMAL)  # a triplet in 4/4
+    six_eight, moved = set_time_signature(beat, TimeSignature(6, 8))
+    assert [n.at for n in six_eight.notes] == [F(3) + F(1, 4)] and moved == 1
+    assert all(six_eight.columns_in_beat(i) == 6 for i in range(six_eight.total_beats))
 
 
 # --- copies and comparisons ---

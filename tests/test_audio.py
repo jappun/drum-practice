@@ -33,16 +33,16 @@ def test_scheduled_sounds_start_on_exact_sample_regardless_of_block_size(block):
     assert _onsets(_render(mixer, 12_000, block)) == [0, 100, 255, 256, 1000, 9999]
 
 
-def test_beat_renders_with_every_note_within_1ms_of_its_step():
+def test_beat_renders_with_every_note_within_1ms_of_its_position():
     beat = Beat.load(FIXTURES / "rock_open_hat_fill.json")
     start = 4_800
     events = beat_events(beat, start, SR)
     mixer = Mixer(SR)
     for sample, _ in events:
         mixer.schedule(sample, IMPULSE)
-    rendered = _render(mixer, start + int(beat.total_steps * beat.step_seconds() * SR) + 100, 512)
+    rendered = _render(mixer, start + int(beat.duration_seconds * SR) + 100, 512)
 
-    expected = sorted({start + n.step * beat.step_seconds() * SR for n in beat.notes})
+    expected = sorted({start + beat.seconds(n.at) * SR for n in beat.notes})
     onsets = _onsets(rendered)
     assert len(onsets) == len(expected)
     for got, want in zip(onsets, expected):
@@ -54,7 +54,7 @@ def test_later_loops_do_not_drift():
         {"name": "t", "genre": "g", "difficulty": "beginner", "tempo": 93, "bars": 1,
          "pattern": {"KICK": "x--- ---- ---- ----"}}
     )
-    loop_seconds = beat.total_steps * beat.step_seconds()
+    loop_seconds = beat.duration_seconds
     for loop in [1, 10, 100]:
         (sample, _), = beat_events(beat, 0, SR, loop=loop)
         assert abs(sample - loop * loop_seconds * SR) <= 0.5
@@ -100,3 +100,22 @@ def test_synth_kit_has_a_sound_for_every_drum_and_stays_in_range():
     for sound in kit.values():
         assert sound.dtype == np.float32
         assert 0.1 < np.max(np.abs(sound)) <= 1.5
+
+
+def test_triplets_and_32nds_render_within_1ms():
+    from fractions import Fraction as F
+
+    from drum_practice.model import Note
+    from drum_practice.rhythm import TimeSignature
+
+    hats = [Note(F(i, 3), DrumClass.HH_CLOSED) for i in range(12)]  # 8th triplets
+    fill = [Note(F(3) + F(i, 8), DrumClass.SNARE) for i in range(8)]  # 32nds in beat 4
+    beat = Beat("t", "g", "beginner", 97.0, 1, hats[:9] + fill, TimeSignature(4, 4))
+    start = 1_000
+    mixer = Mixer(SR)
+    for sample, _ in beat_events(beat, start, SR):
+        mixer.schedule(sample, IMPULSE)
+    onsets = _onsets(_render(mixer, start + int(beat.duration_seconds * SR) + 100, 512))
+    expected = sorted(start + beat.seconds(n.at) * SR for n in beat.notes)
+    assert len(onsets) == len(expected)
+    assert max(abs(got - want) for got, want in zip(onsets, expected)) / SR < 0.001

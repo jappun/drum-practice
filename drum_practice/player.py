@@ -1,5 +1,7 @@
 """Turns a Beat into scheduled sounds, looping until stopped."""
 
+from fractions import Fraction
+
 from .audio import AudioEngine
 from .model import Beat, Note
 from .sounds import CHOKES
@@ -8,19 +10,16 @@ START_LEAD_SECONDS = 0.15  # gap between pressing Play and the first note
 LOOKAHEAD_SECONDS = 0.5  # how far ahead loops are scheduled
 
 
-def step_sample(beat: Beat, start_sample: int, step: int, sample_rate: int) -> int:
-    """Absolute sample for a step, counting from `start_sample`. Steps past the
-    end of the beat continue into later loops, computed from the start each
-    time so rounding never accumulates drift."""
-    return start_sample + round(step * beat.step_seconds() * sample_rate)
+def position_sample(beat: Beat, start_sample: int, quarters: Fraction, sample_rate: int) -> int:
+    """Absolute sample for a position (quarters from `start_sample`).
+    Positions past the end of the beat continue into later loops; each is
+    computed from the start with exact fractions, so nothing drifts."""
+    return start_sample + round(beat.seconds(quarters) * sample_rate)
 
 
 def beat_events(beat: Beat, start_sample: int, sample_rate: int, loop: int = 0) -> list[tuple[int, Note]]:
-    offset = loop * beat.total_steps
-    return [
-        (step_sample(beat, start_sample, offset + n.step, sample_rate), n)
-        for n in beat.notes
-    ]
+    offset = loop * beat.total_quarters
+    return [(position_sample(beat, start_sample, offset + n.at, sample_rate), n) for n in beat.notes]
 
 
 class BeatPlayer:
@@ -55,7 +54,7 @@ class BeatPlayer:
         timing changes, so playback restarts."""
         if self.beat is None:
             return
-        if beat.total_steps == self.beat.total_steps and beat.tempo == self.beat.tempo:
+        if beat.total_quarters == self.beat.total_quarters and beat.tempo == self.beat.tempo:
             self.beat = beat
         else:
             self.play(beat)
@@ -78,18 +77,18 @@ class BeatPlayer:
                 )
             self._loops_scheduled += 1
 
-    def current_step(self) -> float | None:
-        """Fractional step being heard now, within the beat; None before the first note."""
+    def current_position(self) -> float | None:
+        """Quarters into the beat being heard now; None before the first note."""
         if self.beat is None:
             return None
         sr = self._engine.sample_rate
         elapsed = (self._engine.position_samples() - self._start) / sr
         if elapsed < 0:
             return None
-        return (elapsed / self.beat.step_seconds()) % self.beat.total_steps
+        return (elapsed * self.beat.tempo / 60.0) % float(self.beat.total_quarters)
 
     def _loop_start(self, loop: int) -> int:
-        return step_sample(self.beat, self._start, loop * self.beat.total_steps, self._engine.sample_rate)
+        return position_sample(self.beat, self._start, loop * self.beat.total_quarters, self._engine.sample_rate)
 
 
 def click_sample(start_sample: int, tempo: float, index: int, sample_rate: int) -> int:

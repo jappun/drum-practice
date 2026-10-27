@@ -176,4 +176,4 @@ def test_every_example_is_well_formed():
         assert beat.name, beat.id
         assert 1 <= beat.bars <= MAX_BEAT_BARS, beat.id
         assert beat.notes, beat.id
-        assert all(0 <= n.step < beat.total_steps for n in beat.notes), beat.id
+        assert all(0 <= n.at < beat.total_quarters for n in beat.notes), beat.id

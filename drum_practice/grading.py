@@ -6,6 +6,7 @@ latency offset already removed from the hits.
 
 from dataclasses import dataclass, field
 from enum import Enum
+from fractions import Fraction
 
 from .kit import DrumClass
 
@@ -27,7 +28,7 @@ class Verdict(Enum):
 class Expected:
     time: float
     drum: DrumClass
-    step: int  # for display
+    at: Fraction  # position in the beat, for display
 
 
 @dataclass(frozen=True)

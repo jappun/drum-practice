@@ -1,8 +1,12 @@
+from dataclasses import replace
+from fractions import Fraction
+
 import pytest
 
 from drum_practice.kit import DrumClass
 from drum_practice.model import Beat, Note
 from drum_practice.player import click_sample
+from drum_practice.rhythm import TimeSignature
 from drum_practice.session import Stage, Timeline
 from drum_practice.settings import Settings
 
@@ -30,30 +34,45 @@ def one_bar_beat() -> Beat:
 def test_with_bars_repeats_a_shorter_pattern():
     beat = one_bar_beat().with_bars(4)
     assert beat.bars == 4
-    assert beat.total_steps == 64
-    kicks = [n.step for n in beat.notes if n.drum is DrumClass.KICK]
-    assert kicks == [0, 8, 16, 24, 32, 40, 48, 56]
+    assert beat.total_quarters == 16
+    kicks = [n.at for n in beat.notes if n.drum is DrumClass.KICK]
+    assert kicks == [0, 2, 4, 6, 8, 10, 12, 14]
 
 
 def test_with_bars_cuts_a_longer_pattern_to_its_first_bars():
     two_bar = Beat.load(FIXTURES / "rock_open_hat_fill.json")
     one = two_bar.with_bars(1)
-    assert one.total_steps == 16
-    assert all(n.step < 16 for n in one.notes)
-    assert one.notes == [n for n in two_bar.notes if n.step < 16]
+    assert one.total_quarters == 4
+    assert all(n.at < 4 for n in one.notes)
+    assert one.notes == [n for n in two_bar.notes if n.at < 4]
 
 
 def test_with_bars_keeps_velocities_and_leaves_original_alone():
     beat = one_bar_beat()
-    beat.notes[0] = Note(0, DrumClass.KICK, 127)
+    beat.notes[0] = Note(Fraction(0), DrumClass.KICK, 127)
     stretched = beat.with_bars(2)
-    assert Note(16, DrumClass.KICK, 127) in stretched.notes
+    assert Note(Fraction(4), DrumClass.KICK, 127) in stretched.notes
     assert beat.bars == 1 and len(beat.notes) == 4
 
 
 def test_with_bars_same_length_is_unchanged():
     beat = one_bar_beat()
     assert beat.with_bars(1) == beat
+
+
+def test_with_bars_repeats_per_beat_divisions_too():
+    beat = one_bar_beat()
+    beat.divisions = {3: 3}  # beat 4 in triplets
+    assert beat.with_bars(3).divisions == {3: 3, 7: 3, 11: 3}
+    assert beat.with_bars(1).divisions == {3: 3}
+
+
+def test_count_in_follows_the_time_signature():
+    six_eight = replace(one_bar_beat(), time_signature=TimeSignature(6, 8), notes=[])
+    clicks = Timeline(six_eight, 0, SR).clicks()
+    assert len(clicks) == 4  # two dotted-quarter beats, before the demo and before your turn
+    assert [c.accent for c in clicks[:2]] == [True, False]
+    assert clicks[1].sample == round(1.5 * 60 / 90 * SR)
 
 
 # --- tempo ---

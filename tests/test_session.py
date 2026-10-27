@@ -22,7 +22,7 @@ def test_sequence_is_count_in_demo_count_in_play(beat):
     tl = Timeline(beat, start=1_000, sample_rate=SR)
     assert [s.stage for s in tl.segments] == [Stage.COUNT_IN, Stage.DEMO, Stage.COUNT_IN, Stage.PLAY]
 
-    bar = beat.steps_per_bar * beat.step_seconds() * SR
+    bar = beat.seconds(beat.bar_quarters) * SR
     lengths_in_bars = [round((s.end - s.start) / bar, 6) for s in tl.segments]
     assert lengths_in_bars == [1, 2, 1, 2]
     for a, b in zip(tl.segments, tl.segments[1:]):
@@ -35,12 +35,12 @@ def test_without_count_in_demo_runs_straight_into_play(beat):
     assert [s.stage for s in tl.segments] == [Stage.DEMO, Stage.PLAY]
 
 
-def test_stage_at_reports_stage_and_step(beat):
+def test_stage_at_reports_stage_and_position(beat):
     tl = Timeline(beat, start=0, sample_rate=SR)
-    step = beat.step_seconds() * SR
+    quarter = beat.seconds(1) * SR
     assert tl.stage_at(0) == (Stage.COUNT_IN, 0)
-    stage, s = tl.stage_at(tl.segment(Stage.DEMO).start + 5.5 * step)
-    assert stage is Stage.DEMO and s == pytest.approx(5.5)
+    stage, position = tl.stage_at(tl.segment(Stage.DEMO).start + 1.375 * quarter)
+    assert stage is Stage.DEMO and position == pytest.approx(1.375)
     assert tl.stage_at(tl.segment(Stage.PLAY).start)[0] is Stage.PLAY
     assert tl.stage_at(tl.end)[0] is Stage.DONE
 
@@ -113,3 +113,41 @@ def test_settings_round_trip_and_tolerate_missing_file(tmp_path):
     assert Settings.load(path) == Settings()
     Settings(latency_offset=0.042, calibrated=True).save(path)
     assert Settings.load(path) == Settings(latency_offset=0.042, calibrated=True)
+
+
+def _triplet_beat():
+    from fractions import Fraction as F
+
+    from drum_practice.kit import DrumClass
+    from drum_practice.model import Note
+    from drum_practice.rhythm import TimeSignature
+
+    notes = [Note(F(i, 3), DrumClass.HH_CLOSED) for i in range(12)] + [Note(F(1), DrumClass.SNARE)]
+    return Beat("Shuffle", "Blues", "beginner", 90.0, 1, notes, TimeSignature(4, 4), grid=3)
+
+
+def test_grading_a_triplet_beat_played_exactly_is_perfect():
+    from drum_practice.grading import Played, grade
+
+    tl = Timeline(_triplet_beat(), start=0, sample_rate=SR)
+    expected = tl.expected(lambda sample: sample / SR)
+    result = grade(expected, [Played(e.time + 0.004, e.drum) for e in expected])
+    assert result.score == 100
+
+
+def test_playing_triplets_as_straight_notes_is_marked_off():
+    from fractions import Fraction as F
+
+    from drum_practice.grading import Played, Verdict, grade
+
+    beat = _triplet_beat()
+    tl = Timeline(beat, start=0, sample_rate=SR)
+    expected = tl.expected(lambda sample: sample / SR)
+    play_start = tl.segment(Stage.PLAY).start / SR
+    second_triplet = next(e for e in expected if e.at == F(1, 3))
+    # Hitting the 16th (1/4) instead of the triplet (1/3): ~56 ms early -> only Good.
+    sixteenth = grade([second_triplet], [Played(play_start + beat.seconds(F(1, 4)), second_triplet.drum)])
+    assert sixteenth.notes[0].verdict is Verdict.GOOD and sixteenth.notes[0].early
+    # Hitting the 8th (1/2) instead: ~111 ms late -> a miss.
+    eighth = grade([second_triplet], [Played(play_start + beat.seconds(F(1, 2)), second_triplet.drum)])
+    assert eighth.notes[0].verdict is Verdict.MISS

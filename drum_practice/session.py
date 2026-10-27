@@ -6,6 +6,7 @@ sequence is short, so it's scheduled into the mixer in one go.
 
 from dataclasses import dataclass
 from enum import Enum
+from fractions import Fraction
 
 import numpy as np
 
@@ -47,23 +48,22 @@ class Timeline:
         self.beat = beat
         self.sample_rate = sample_rate
         self.metronome = metronome  # click on every beat of your turn
-        self.step_samples = beat.step_seconds() * sample_rate
-        bar = beat.steps_per_bar
-        plan = []
+        self.quarter_samples = 60.0 / beat.tempo * sample_rate
+        plan = []  # (stage, length in quarters)
         if count_in:
-            plan.append((Stage.COUNT_IN, bar))
-        plan.append((Stage.DEMO, beat.total_steps))
+            plan.append((Stage.COUNT_IN, beat.bar_quarters))
+        plan.append((Stage.DEMO, beat.total_quarters))
         if count_in:
-            plan.append((Stage.COUNT_IN, bar))
-        plan.append((Stage.PLAY, beat.total_steps))
+            plan.append((Stage.COUNT_IN, beat.bar_quarters))
+        plan.append((Stage.PLAY, beat.total_quarters))
 
         self.segments: list[Segment] = []
-        steps_so_far = 0
+        so_far = Fraction(0)
         for stage, length in plan:
-            # Every boundary is computed from the start, so rounding never drifts.
-            seg_start = start + round(steps_so_far * self.step_samples)
-            steps_so_far += length
-            self.segments.append(Segment(stage, seg_start, start + round(steps_so_far * self.step_samples)))
+            # Every boundary is computed exactly from the start, so nothing drifts.
+            seg_start = start + round(so_far * self.quarter_samples)
+            so_far += length
+            self.segments.append(Segment(stage, seg_start, start + round(so_far * self.quarter_samples)))
 
     @property
     def end(self) -> int:
@@ -74,10 +74,10 @@ class Timeline:
         return [s for s in self.segments if s.stage is stage][-1]
 
     def stage_at(self, sample: float) -> tuple[Stage, float]:
-        """(stage, fractional step into that stage) for an absolute sample."""
+        """(stage, quarters into that stage) for an absolute sample."""
         for seg in self.segments:
             if sample < seg.end:
-                return seg.stage, max(0.0, (sample - seg.start) / self.step_samples)
+                return seg.stage, max(0.0, (sample - seg.start) / self.quarter_samples)
         return Stage.DONE, 0.0
 
     def clicks(self) -> list[Click]:
@@ -85,19 +85,20 @@ class Timeline:
         out = []
         for seg in self.segments:
             if seg.stage is Stage.COUNT_IN or (seg.stage is Stage.PLAY and self.metronome):
-                beats = round((seg.end - seg.start) / self.step_samples) // beat.steps_per_beat
+                length = beat.bar_quarters if seg.stage is Stage.COUNT_IN else beat.total_quarters
+                beats = int(length / beat.beat_quarters)
                 for b in range(beats):
-                    sample = seg.start + round(b * beat.steps_per_beat * self.step_samples)
+                    sample = seg.start + round(b * beat.beat_quarters * self.quarter_samples)
                     out.append(Click(sample, accent=b % beat.beats_per_bar == 0))
         return out
 
-    def note_sample(self, stage: Stage, step: int) -> int:
-        return self.segment(stage).start + round(step * self.step_samples)
+    def note_sample(self, stage: Stage, at: Fraction) -> int:
+        return self.segment(stage).start + round(at * self.quarter_samples)
 
     def expected(self, sample_to_time) -> list[Expected]:
         """The notes to play in the PLAY segment, timed with `sample_to_time`."""
         return [
-            Expected(sample_to_time(self.note_sample(Stage.PLAY, n.step)), n.drum, n.step)
+            Expected(sample_to_time(self.note_sample(Stage.PLAY, n.at)), n.drum, n.at)
             for n in self.beat.notes
         ]
 
@@ -108,7 +109,7 @@ class Timeline:
             mixer.schedule(c.sample, accent_click if c.accent else click)
         for n in self.beat.notes:
             mixer.schedule(
-                self.note_sample(Stage.DEMO, n.step),
+                self.note_sample(Stage.DEMO, n.at),
                 kit[n.drum],
                 gain=n.velocity / 127,
                 group=n.drum,

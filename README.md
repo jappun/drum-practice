@@ -60,7 +60,8 @@ The settings row underneath sets the **tempo** (drag the slider or type a number
 
 **Your own beats:** press **New beat** in the library, or **Edit** on a beat, to open the editor.
 - **Notes:** click a cell to add a note with the current brush (Ghost, Normal or Accent). Click it again to remove it, or click with a different brush to change its strength. Drag along a row to paint several at once.
-- **Details:** set the name, genre, level, tempo and bars (1–4).
+- **Details:** set the name, genre, level and tempo.
+- **Rhythm:** set the bars (1–4), the time signature (pick one or type e.g. `7/8`) and the **Grid**: 16ths, 8th triplets, 16th triplets or 32nds. Click a beat's number above the grid to divide just that beat differently, e.g. a triplet fill in beat 4. When a change leaves notes between columns, they move to the nearest one and the editor tells you how many moved.
 - **Saving:** your beats are saved in your app-data folder and marked "yours" in the library.
 - **Examples** are read-only. **Duplicate & edit** makes your own copy. **Hide example** removes one from your library, and **Show hidden examples** at the bottom of the library brings them back.
 - **Scores:** changing a beat's notes or length resets its best score.
@@ -71,16 +72,25 @@ The settings row underneath sets the **tempo** (drag the slider or type a number
 
 Your library is your own beats, made in the editor and saved in your app-data folder, plus a few hand-made starter examples in `beats/examples/`. A beat is at most 4 bars; longer music will be a song (see [docs/REVISION1_PLAN_PHASES.md](docs/REVISION1_PLAN_PHASES.md)).
 
-Beats are JSON files with one pattern string per drum and one character per 16th step:
+Beats are JSON files with one note per line. Each note's `at` is its exact position in quarter notes from the start, so triplets and 32nds are exact:
 
 ```
-"HH_CLOSED": "x-x- x-x- x-x- x-x-",
-"SNARE":     "---- X--g ---- x---",
+"notes": [
+    {"at": "0", "drum": "KICK", "v": "X"},
+    {"at": "2/3", "drum": "HH_CLOSED", "v": "g"},
+    {"at": "1+3/4", "drum": "SNARE", "v": "x"}
+]
 ```
 
-`x` normal, `X` accent, `g` ghost, `-` rest. Spaces and `|` are only for readability.
+- **Positions:** `"0"` is the start, `"3/4"` is the "a" of beat 1, and `"1+2/3"` is the last triplet of beat 2.
+- **`v`:** `x` normal, `X` accent, `g` ghost.
 
-Each beat file also sets `name`, `genre`, `difficulty` (`beginner`, `intermediate` or `advanced`), `tempo` and `bars`. The file name is the beat's ID, and best scores are saved under it. You can rename a beat inside the file without losing its scores, but renaming the file itself starts its score history over.
+Each beat file also sets:
+- `name`, `genre` and `difficulty` (`beginner`, `intermediate` or `advanced`);
+- `tempo` in quarter notes per minute, `time_signature` (e.g. `"4/4"` or `"6/8"`) and `bars`;
+- `grid`: how the editor divides each beat (`"16ths"`, `"8th triplets"`, `"16th triplets"` or `"32nds"`), plus optional per-beat `divisions`.
+
+Older beat files that use pattern strings (`"SNARE": "---- x--- | ..."`) still load; they're saved in the new format the next time you edit them. The file name is the beat's ID, and best scores are saved under it. You can rename a beat inside the file without losing its scores, but renaming the file itself starts its score history over.
 
 ## Dev mode (keyboard drums)
 
