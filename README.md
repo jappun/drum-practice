@@ -10,17 +10,27 @@ See `docs/` for build notes made along the way. I started off by giving [BRAINST
 Then I let Claude build a phase, and I manually approve its edits. I test the application between each phase before moving onto the next.
 
 ## TODO:
-- [x] Phase 1: project setup + kit monitor
-- [x] Phase 2: Hardcoded beat playsback with ui light up 
+Following [docs/REVISION1_PLAN_PHASES.md](docs/REVISION1_PLAN_PHASES.md). Struck-through items were scrapped or replaced in the revision.
+
+- [x] Phase 1: Project setup + kit monitor
+- [x] Phase 2: Hardcoded beat playback with UI light-up
 - [x] Phase 3: Core loop - play a beat back and get scored
-- [ ] Phase 4: User-controlled practice settings
-- [ ] Phase 5: Build enhanced beat library and picker
-- [ ] Phase 6: Groove MIDI Dataset import
-- [ ] Phase 7: Users can add/edit beats
-- [ ] Phase 8: Upload sheet music
-- [ ] Phase 9: Setup wizard to learn any kit's MIDI outputs
-- [ ] Phase 10: Dynamic hits (ie ghost notes, accents)
-- [ ] Phase 11: Flexible grid (triplets, swing, 32nd notes)
+- [x] Phase 4: User-controlled practice settings
+- [x] Phase 5: Beat library and picker (~~genre, level filters~~, search)
+- [x] ~~Phase 6: Groove MIDI Dataset import~~ (removed dataset in revision)
+- [x] Phase 7: Users can add/edit beats
+- [x] Phase 8: Fresh start: purple theme, your own library, search
+- [ ] Phase 9: Rhythm beyond 16ths (triplets, 32nds, any time signature)
+- [ ] Phase 10: Notation view (sheet music, with a grid view option)
+- [ ] Phase 11: Beat from a photo (AI, works with Claude, GPT or Gemini)
+- [ ] Phase 12: Songs from MusicXML
+- [ ] Phase 13: Drum Hero mode
+- [ ] Phase 14: Setup wizard to learn any kit's MIDI outputs
+- [ ] Phase 15: Dynamic hits (ie ghost notes, accents)
+
+Scrapped/replaced from the original plan:
+- Upload sheet music (MIDI files) → songs from MusicXML (Phase 12)
+- Flexible grid → triplets and 32nds folded into Phase 9
 
 
 ## Setup
