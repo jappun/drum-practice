@@ -1,5 +1,7 @@
 # Drum Practice App — Phased Build Plan
 
+> **Superseded.** [REVISION1_PLAN_PHASES.md](REVISION1_PLAN_PHASES.md) is now the source of truth; it lists which of these phases were kept, removed or carried over. This file is kept for history.
+
 ## Context
 `drum-practice` is a new local desktop app (repo initialised; only README, MIT LICENSE, .gitignore, BRAINSTORM.md exist). It plays a drum beat while lighting up notes on a grid, then the user plays it back on their Yamaha DTX kit and gets an accuracy grade. Requirements come from [BRAINSTORM.md](BRAINSTORM.md) plus Q&A:
 
@@ -100,6 +102,7 @@ Core logic (model, grading, scheduling, import) stays free of Qt and hardware so
 **Purpose:** practise against a full song chart.
 - Import a drum part from a MIDI file (GM drum map) and from MusicXML (what MuseScore exports, so regular sheet music can be encoded there first).
 - Long-form view: grid scrolls horizontally; section-by-section results; option to practise a bar range.
+- Until Phase 11, charts with triplets or notes finer than 16ths are flagged on import (snapped to the nearest 16th, with a warning) rather than silently distorted.
 - **Automated:** import fixtures (MIDI + MusicXML) → expected note lists; tempo/time-signature changes handled or rejected cleanly.
 - **Human:** import a song exported from MuseScore, play it through, review per-section results.
 
@@ -117,6 +120,15 @@ Core logic (model, grading, scheduling, import) stays free of Qt and hardware so
 - Hi-hat pedal hits are left out of dynamics scoring: the DTX sends every chick at velocity 100 (see `docs/KIT_NOTES.md`).
 - **Automated:** velocity bucketing + dynamics scoring tests.
 - **Human:** accents audibly/visibly differ; playing them flat lowers the dynamics score.
+
+## Phase 11 — Flexible grid (triplets, swing, finer notes)
+**Purpose:** beats that aren't straight 16ths.
+- Per-beat subdivision: 16ths (today), 8th-note triplets (12 per bar), 16th triplets (24 per bar) and 32nds. `Beat.steps_per_beat` already exists; the grid, timeline, editor and pattern format grow to use values other than 4. Mixed straight/triplet passages use a finer shared grid (e.g. 48 steps per bar), shown grouped by beat.
+- Swing setting (e.g. 50–75%) that delays off-beat 8ths/16ths of straight beats, for shuffles without rewriting them as triplets.
+- Re-run the Groove MIDI import to bring back the swung and triplet performances Phase 6 had to leave out (jazz, blues, shuffles), and keep 32nd-note detail (drags, rolls) that 16ths currently merge.
+- Editor (Phase 7) gets a grid choice per beat.
+- **Automated:** triplet/32nd step timing; swing offsets; JSON round trip for each subdivision; grading unchanged on the new grids.
+- **Human:** play a shuffle and a jazz ride pattern; the lights, sound and grading line up with the feel.
 
 ---
 
