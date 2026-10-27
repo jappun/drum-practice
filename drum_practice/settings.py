@@ -48,7 +48,7 @@ class Settings(_JsonFile):
     count_in: bool = True
     metronome: bool = False  # click along during your turn
     beat_id: str = ""  # last beat picked, reopened on launch
-    library_collapsed: bool = False
+    view: str = "notation"  # "notation" or "grid"
     hidden_examples: list[str] = field(default_factory=list)  # example beats the user hid
 
 

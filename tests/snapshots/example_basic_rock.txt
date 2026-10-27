@@ -1,0 +1,25 @@
+Basic Rock | 4/4 | 2 bar(s)
+  hands beat 1: 0 8th HH_CLOSED; 1/2 8th HH_CLOSED
+  hands beat 2: 1 8th SNARE+HH_CLOSED; 3/2 8th HH_CLOSED
+  hands beat 3: 2 8th HH_CLOSED; 5/2 8th HH_CLOSED
+  hands beat 4: 3 8th SNARE+HH_CLOSED; 7/2 8th HH_CLOSED
+  hands beat 5: 4 8th HH_CLOSED; 9/2 8th HH_CLOSED
+  hands beat 6: 5 8th SNARE+HH_CLOSED; 11/2 8th HH_CLOSED
+  hands beat 7: 6 8th HH_CLOSED; 13/2 8th HH_CLOSED
+  hands beat 8: 7 8th SNARE+HH_CLOSED; 15/2 8th HH_CLOSED
+  feet beat 1: 0 quarter KICK
+  feet beat 2: 1 quarter rest
+  feet beat 3: 2 quarter KICK
+  feet beat 4: 3 quarter rest
+  feet beat 5: 4 quarter KICK
+  feet beat 6: 5 quarter rest
+  feet beat 7: 6 quarter KICK
+  feet beat 8: 7 quarter rest
+  beam L1 0..1/2 up
+  beam L1 1..3/2 up
+  beam L1 2..5/2 up
+  beam L1 3..7/2 up
+  beam L1 4..9/2 up
+  beam L1 5..11/2 up
+  beam L1 6..13/2 up
+  beam L1 7..15/2 up

@@ -135,6 +135,13 @@ def test_old_settings_file_gets_new_defaults(tmp_path):
     assert loaded.count_in is True and loaded.metronome is False and loaded.bars == 2
 
 
+def test_view_choice_persists_and_defaults_to_notation(tmp_path):
+    path = tmp_path / "settings.json"
+    assert Settings.load(path).view == "notation"
+    Settings(view="grid").save(path)
+    assert Settings.load(path).view == "grid"
+
+
 def test_hidden_examples_persist(tmp_path):
     path = tmp_path / "settings.json"
     Settings(hidden_examples=["example_basic_rock"]).save(path)

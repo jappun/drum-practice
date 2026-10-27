@@ -53,7 +53,7 @@ python -m drum_practice
 ```
 
 1. **Calibrate** (once): tap any pad on each click, and the app measures the delay between sound and hit so it can correct for it.
-2. Pick a beat from the **Library** on the left. Type in the search box to find beats by name, or press **Surprise me** for a random beat from your whole library. Each beat shows your best score. **«** collapses the library to give the grid more room, and **»** brings it back. **Listen** plays the beat on a loop, with the grid lighting up each note as it sounds.
+2. Pick a beat from the **Library** on the left. It's shown as drum sheet music; **Notation / Grid** at the top right switches to the grid view, and your choice is remembered. Type in the search box to find beats by name, or press **Surprise me** for a random beat from your whole library. Each beat shows your best score. **«** collapses the library to give the grid more room, and **»** brings it back. **Listen** plays the beat on a loop, with the grid lighting up each note as it sounds.
 3. **Start practice** runs count-in → the beat plays → count-in → your turn (silent, the grid keeps lighting) → your score. On the results grid, green is perfect (≤30 ms), purple is good (≤70 ms, notched on the early/late side), a red outline is a missed note and a red dot is an extra hit.
 
 The settings row underneath sets the **tempo** (drag the slider or type a number), how many **bars** to practise (the pattern repeats to fill them), whether there's a **count-in**, and whether a **click** plays during your turn. **Metronome** just plays a click at the current tempo. Settings are remembered between launches.
@@ -61,6 +61,7 @@ The settings row underneath sets the **tempo** (drag the slider or type a number
 **Your own beats:** press **New beat** in the library, or **Edit** on a beat, to open the editor.
 - **Notes:** click a cell to add a note with the current brush (Ghost, Normal or Accent). Click it again to remove it, or click with a different brush to change its strength. Drag along a row to paint several at once.
 - **Details:** set the name, genre, level and tempo.
+- **Preview:** while you edit, the notation updates above the grid as you click.
 - **Rhythm:** set the bars (1–4), the time signature (pick one or type e.g. `7/8`) and the **Grid**: 16ths, 8th triplets, 16th triplets or 32nds. Click a beat's number above the grid to divide just that beat differently, e.g. a triplet fill in beat 4. When a change leaves notes between columns, they move to the nearest one and the editor tells you how many moved.
 - **Saving:** your beats are saved in your app-data folder and marked "yours" in the library.
 - **Examples** are read-only. **Duplicate & edit** makes your own copy. **Hide example** removes one from your library, and **Show hidden examples** at the bottom of the library brings them back.
@@ -122,6 +123,10 @@ Without `--dev`, the keyboard does nothing and the app is unchanged.
 ```
 pytest
 ```
+
+## Credits
+
+Music notation is drawn with the [Bravura](https://github.com/steinbergmedia/bravura) font, © Steinberg Media Technologies, licensed under the SIL Open Font License 1.1 (see [assets/fonts/Bravura-OFL.txt](assets/fonts/Bravura-OFL.txt)).
 
 ## License
 

@@ -1,0 +1,27 @@
+Rock: Ride + Hi-hat Foot | 4/4 | 2 bar(s)
+  hands beat 1: 0 8th RIDE; 1/2 8th RIDE
+  hands beat 2: 1 8th SNARE+RIDE; 3/2 8th RIDE
+  hands beat 3: 2 8th RIDE; 5/2 8th RIDE
+  hands beat 4: 3 8th SNARE+RIDE; 7/2 8th RIDE
+  hands beat 5: 4 8th RIDE; 9/2 8th RIDE
+  hands beat 6: 5 8th SNARE+RIDE; 11/2 8th RIDE
+  hands beat 7: 6 8th RIDE; 13/2 8th RIDE
+  hands beat 8: 7 8th SNARE+RIDE; 15/2 8th RIDE
+  feet beat 1: 0 quarter KICK
+  feet beat 2: 1 quarter HH_PEDAL
+  feet beat 3: 2 8th KICK; 5/2 8th KICK
+  feet beat 4: 3 quarter HH_PEDAL
+  feet beat 5: 4 quarter KICK
+  feet beat 6: 5 quarter HH_PEDAL
+  feet beat 7: 6 8th KICK; 13/2 8th KICK
+  feet beat 8: 7 quarter HH_PEDAL
+  beam L1 2..5/2 down
+  beam L1 6..13/2 down
+  beam L1 0..1/2 up
+  beam L1 1..3/2 up
+  beam L1 2..5/2 up
+  beam L1 3..7/2 up
+  beam L1 4..9/2 up
+  beam L1 5..11/2 up
+  beam L1 6..13/2 up
+  beam L1 7..15/2 up

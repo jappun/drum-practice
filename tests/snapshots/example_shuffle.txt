@@ -1,0 +1,27 @@
+Shuffle (triplets) | 4/4 | 2 bar(s)
+  hands beat 1: 0 quarter HH_CLOSED; 2/3 8th HH_CLOSED
+  hands beat 2: 1 quarter SNARE+HH_CLOSED; 5/3 8th HH_CLOSED
+  hands beat 3: 2 quarter HH_CLOSED; 8/3 8th HH_CLOSED
+  hands beat 4: 3 quarter SNARE+HH_CLOSED; 11/3 8th HH_CLOSED
+  hands beat 5: 4 quarter HH_CLOSED; 14/3 8th HH_CLOSED
+  hands beat 6: 5 quarter SNARE+HH_CLOSED; 17/3 8th HH_CLOSED
+  hands beat 7: 6 quarter HH_CLOSED; 20/3 8th HH_CLOSED
+  hands beat 8: 7 quarter SNARE+HH_CLOSED; 23/3 8th HH_CLOSED
+  feet beat 1: 0 quarter KICK
+  feet beat 2: 1 quarter rest; 5/3 8th KICK
+  feet beat 3: 2 quarter KICK
+  feet beat 4: 3 quarter rest
+  feet beat 5: 4 quarter KICK
+  feet beat 6: 5 quarter rest; 17/3 8th KICK
+  feet beat 7: 6 quarter KICK
+  feet beat 8: 7 quarter rest
+  tuplet 3 0..2/3 up
+  tuplet 3 1..5/3 up
+  tuplet 3 2..8/3 up
+  tuplet 3 3..11/3 up
+  tuplet 3 4..14/3 up
+  tuplet 3 5..17/3 up
+  tuplet 3 6..20/3 up
+  tuplet 3 7..23/3 up
+  tuplet 3 1..5/3 down
+  tuplet 3 5..17/3 down

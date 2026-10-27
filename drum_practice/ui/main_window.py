@@ -7,6 +7,7 @@ from enum import Enum, auto
 from PySide6.QtCore import QEvent, QObject, QPoint, Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QApplication,
+    QButtonGroup,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -31,14 +32,20 @@ from ..settings import DevSettings, Settings
 from ..sounds import build_clicks, build_kit
 from . import theme
 from .editor_bar import EditorBar
-from .grid import BeatGrid, GridResults
+from .beat_views import GRID, NOTATION, BeatViews
+from .grid import GridResults
 from .library_panel import LibraryPanel
 from .monitor import MonitorWindow
 from .settings_bar import SettingsBar
 
 FRAME_MS = 16
+WINDOW_MAX_WIDTH = 1280
+WINDOW_MIN_HEIGHT = 640
+WINDOW_SCREEN_SHARE = 0.85  # never more than this much of the screen
 ABOUT_TEXT = """<p>Practise drum beats on an electronic kit and get graded on your timing.</p>
 <p>Your library is made of your own beats, plus a few hand-made examples you can hide.</p>
+<p>Music notation uses the <a href="https://github.com/steinbergmedia/bravura">Bravura</a> font,
+© Steinberg Media Technologies, under the SIL Open Font License.</p>
 <p>MIT licensed.</p>"""
 START_LEAD_SECONDS = 0.3  # pause between pressing Start and the first click
 FINISH_GRACE_SECONDS = 0.15  # keep listening this long after the last bar for late hits
@@ -66,7 +73,6 @@ class MainWindow(QWidget):
         super().__init__()
         self._dev_mode = dev_mode
         self.setWindowTitle("Drum Practice — DEV (keyboard)" if dev_mode else "Drum Practice")
-        self.resize(1460, 680)
 
         self._settings = Settings.load()
         self._dev = DevSettings.load() if dev_mode else None
@@ -115,6 +121,19 @@ class MainWindow(QWidget):
         self.setFocusPolicy(Qt.StrongFocus)
         self.setFocus()
         QApplication.instance().installEventFilter(self)
+        self._place_on_screen()
+
+    def _place_on_screen(self) -> None:
+        """A comfortable window, not full screen, centred on the screen. It's
+        tall enough for the practice view; the grid and the editor make it
+        grow (Qt keeps the window at least as big as its contents need)."""
+        area = self.screen().availableGeometry()
+        width = min(WINDOW_MAX_WIDTH, int(area.width() * WINDOW_SCREEN_SHARE))
+        height = min(int(area.height() * WINDOW_SCREEN_SHARE), max(self.sizeHint().height(), WINDOW_MIN_HEIGHT))
+        self.resize(width, height)
+        frame = self.frameGeometry()
+        frame.moveCenter(area.center())
+        self.move(frame.topLeft())
 
     def eventFilter(self, obj, event) -> bool:
         if self._dev_mode and event.type() == QEvent.KeyPress:
@@ -175,12 +194,11 @@ class MainWindow(QWidget):
         self._library = LibraryPanel(
             self._beats,
             self._scores,
-            collapsed=self._settings.library_collapsed,
+            collapsed=True,  # the app opens with the library tucked away, so the beat gets the width
             hidden_examples=self._hidden_count,
         )
         self._library.restore_examples_requested.connect(self._restore_examples)
         self._library.beat_selected.connect(self._select_beat)
-        self._library.collapsed_changed.connect(self._on_library_collapsed)
         self._library.new_beat_requested.connect(self._new_beat)
         body.addWidget(self._library)
         main = QVBoxLayout()
@@ -216,6 +234,16 @@ class MainWindow(QWidget):
         controls.addWidget(self._beat_name)
         controls.addWidget(self._meta)
         controls.addStretch()
+        self._view_buttons = QButtonGroup(self)
+        for name, label in ((NOTATION, "Notation"), (GRID, "Grid")):
+            button = QPushButton(label)
+            button.setObjectName("segment")
+            button.setCheckable(True)
+            button.setChecked(self._settings.view == name)
+            button.setProperty("view", name)
+            self._view_buttons.addButton(button)
+            controls.addWidget(button)
+        self._view_buttons.buttonClicked.connect(self._on_view_chosen)
         main.addLayout(controls)
 
         self._settings_bar = SettingsBar(self._settings)
@@ -238,13 +266,15 @@ class MainWindow(QWidget):
         self._banner.setObjectName("banner")
         main.addWidget(self._banner)
 
-        self._grid = BeatGrid(
-            key_labels={d: keyboard_in.key_label(d) for d in DrumClass} if self._dev_mode else None
+        self._views = BeatViews(
+            key_labels={d: keyboard_in.key_label(d) for d in DrumClass} if self._dev_mode else None,
+            view=self._settings.view,
         )
+        self._grid = self._views.grid  # editing happens in the grid
         self._grid.cell_pressed.connect(self._on_cell_pressed)
         self._grid.cell_dragged.connect(self._on_cell_dragged)
         self._grid.beat_header_clicked.connect(self._on_beat_header)
-        main.addWidget(self._grid)
+        main.addWidget(self._views)
 
         self._summary = QLabel()
         self._summary.setObjectName("summary")
@@ -254,9 +284,10 @@ class MainWindow(QWidget):
         main.addWidget(self._summary)
         main.addStretch()
 
-    def _on_library_collapsed(self, collapsed: bool) -> None:
-        self._settings.library_collapsed = collapsed
+    def _on_view_chosen(self, button) -> None:
+        self._settings.view = button.property("view")
         self._settings.save()
+        self._views.set_view(self._settings.view)
 
     def _load_library(self) -> None:
         """Bundled examples + your beats, minus examples you've hidden."""
@@ -283,7 +314,7 @@ class MainWindow(QWidget):
     def _show_no_beat(self) -> None:
         self._stop_all()
         self._base_beat = None
-        self._grid.set_beat(None)
+        self._views.set_beat(None)
         self._summary.setText("")
         self._beat_name.setText("No beat selected")
         self._meta.setText("")
@@ -318,7 +349,7 @@ class MainWindow(QWidget):
         if self._settings.beat_id != beat.id:
             self._settings.beat_id = beat.id
             self._settings.save()
-        self._grid.set_beat(self._practice_beat())
+        self._views.set_beat(self._practice_beat())
         self._summary.setText("")
         self._show_beat_details(beat)
         self._edit.setText("Edit" if is_user_beat(beat) else "Duplicate && edit")  # && shows a literal &
@@ -333,7 +364,7 @@ class MainWindow(QWidget):
 
     def _on_settings_changed(self) -> None:
         self._settings.save()
-        self._grid.set_beat(self._practice_beat())
+        self._views.set_beat(self._practice_beat())
         # Hear changes straight away while something's playing.
         if self._mode is Mode.LISTEN:
             self._player.play(self._practice_beat())
@@ -347,7 +378,7 @@ class MainWindow(QWidget):
             self._stop_all()
             return
         self._stop_all()
-        self._grid.set_results(None)
+        self._views.set_results(None)
         self._player.play(self._practice_beat())
         self._set_mode(Mode.LISTEN)
         self._banner.setText("Listening — press Stop when you're ready to practise")
@@ -365,7 +396,7 @@ class MainWindow(QWidget):
             self._stop_all()
             return
         self._stop_all()
-        self._grid.set_results(None)
+        self._views.set_results(None)
         start = int(self._engine.mixer.position + START_LEAD_SECONDS * self._engine.sample_rate)
         self._timeline = Timeline(
             self._practice_beat(),
@@ -397,7 +428,7 @@ class MainWindow(QWidget):
         self._metronome.stop()
         self._engine.mixer.clear()
         self._timeline = None
-        self._grid.set_position(None)
+        self._views.set_position(None)
         if self._mode is not Mode.IDLE:
             self._set_mode(Mode.IDLE)
             self._show_idle_banner()
@@ -448,7 +479,7 @@ class MainWindow(QWidget):
         self._hide.setEnabled(not running)
         self._settings_bar.setVisible(not editing)
         self._editor_bar.setVisible(editing)
-        self._grid.set_editable(editing)
+        self._views.set_editing(editing)
 
     def _show_idle_banner(self) -> None:
         if self._draft is not None:
@@ -477,7 +508,7 @@ class MainWindow(QWidget):
 
     def _start_edit(self, draft: Beat) -> None:
         self._stop_all()
-        self._grid.set_results(None)
+        self._views.set_results(None)
         self._summary.setText("")
         self._draft = self._draft_start = draft
         self._editor_bar.load(draft, genres(self._beats), deletable=is_user_beat(draft))
@@ -486,7 +517,7 @@ class MainWindow(QWidget):
         self._show_idle_banner()
 
     def _show_draft(self) -> None:
-        self._grid.set_beat(self._draft)
+        self._views.set_beat(self._draft)
         self._show_beat_details(self._draft)
         self._player.update_beat(self._draft)  # hear edits while listening
 
@@ -602,7 +633,7 @@ class MainWindow(QWidget):
     def _tick(self) -> None:
         if self._mode is Mode.LISTEN:
             self._player.pump()
-            self._grid.set_position(self._player.current_position())
+            self._views.set_position(self._player.current_position())
         elif self._mode is Mode.PRACTICE:
             self._tick_practice()
         elif self._mode is Mode.CALIBRATE:
@@ -619,16 +650,16 @@ class MainWindow(QWidget):
         stage, position = tl.stage_at(now)
         beat = tl.beat
         if now < tl.segments[0].start:
-            self._grid.set_position(None)
+            self._views.set_position(None)
             self._banner.setText("Get ready…")
         elif stage is Stage.COUNT_IN:
-            self._grid.set_position(None)
+            self._views.set_position(None)
             self._banner.setText(f"Count-in   {int(position // float(beat.beat_quarters)) + 1}")
         elif stage is Stage.DEMO:
-            self._grid.set_position(position)
+            self._views.set_position(position)
             self._banner.setText("Listen…")
         elif stage is Stage.PLAY:
-            self._grid.set_position(position)
+            self._views.set_position(position)
             self._banner.setText("Your turn!")
         elif now > tl.end + FINISH_GRACE_SECONDS * self._engine.sample_rate:
             self._finish_practice()
@@ -666,7 +697,7 @@ class MainWindow(QWidget):
         def quarters_of(p: Played) -> float:
             return (p.time - play_start) * tl.beat.tempo / 60.0
 
-        self._grid.set_results(
+        self._views.set_results(
             GridResults(
                 notes={(n.expected.at, n.expected.drum): n for n in result.notes},
                 extras=[(quarters_of(p), p.drum) for p in result.extras],
@@ -762,5 +793,5 @@ def _summary_text(result: Result) -> str:
     mean = result.mean_offset
     if mean is not None and abs(mean) >= 0.005:
         text += f"<br>On average you were {abs(mean) * 1000:.0f} ms {'early' if mean < 0 else 'late'}."
-    text += f"<br><span style='color:{theme.TEXT_DIM}'>Good notes have a notch on the side you were off: left = early, right = late.</span>"
+    text += f"<br><span style='color:{theme.TEXT_DIM}'>Good notes are marked on the side you were off: left = early, right = late.</span>"
     return text
