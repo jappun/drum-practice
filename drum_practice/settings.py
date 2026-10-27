@@ -2,7 +2,7 @@
 
 import json
 import sys
-from dataclasses import asdict, dataclass, fields
+from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import ClassVar
 
@@ -49,6 +49,7 @@ class Settings(_JsonFile):
     metronome: bool = False  # click along during your turn
     beat_id: str = ""  # last beat picked, reopened on launch
     library_collapsed: bool = False
+    hidden_examples: list[str] = field(default_factory=list)  # example beats the user hid
 
 
 @dataclass

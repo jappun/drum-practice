@@ -1,13 +1,13 @@
-"""Left-hand library: filter by genre and difficulty, pick a beat or get a random one.
+"""Left-hand library: search beats by name, pick one or get a random one.
 
 Collapsible to a thin strip so the grid can use the full width."""
 
 from PySide6.QtCore import QPointF, QRectF, QSize, Qt, Signal
 from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import (
-    QComboBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QListWidget,
     QListWidgetItem,
     QAbstractButton,
@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..library import DIFFICULTIES, ScoreBook, filter_beats, genres, surprise
+from ..library import ScoreBook, is_example, is_user_beat, search_beats, surprise
 from ..model import Beat
 from . import theme
 
@@ -32,10 +32,13 @@ COLLAPSED_WIDTH = 36
 class LibraryPanel(QWidget):
     beat_selected = Signal(object)  # Beat
     collapsed_changed = Signal(bool)
+    new_beat_requested = Signal()
+    restore_examples_requested = Signal()
 
-    def __init__(self, beats: list[Beat], scores: ScoreBook, collapsed: bool = False):
+    def __init__(self, beats: list[Beat], scores: ScoreBook, collapsed: bool = False, hidden_examples: int = 0):
         super().__init__()
         self._beats = beats
+        self._hidden_examples = hidden_examples
         self._scores = scores
         self._current_id: str | None = None
 
@@ -64,21 +67,12 @@ class LibraryPanel(QWidget):
         self._filler.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         outer.addWidget(self._filler, 1)
 
-        filters = QHBoxLayout()
-        filters.setSpacing(8)
-        self._genre = QComboBox()
-        self._genre.addItem("All genres", None)
-        for g in genres(beats):
-            self._genre.addItem(g, g)
-        self._difficulty = QComboBox()
-        self._difficulty.addItem("All levels", None)
-        for d in DIFFICULTIES:
-            self._difficulty.addItem(d.capitalize(), d)
-        for combo in (self._genre, self._difficulty):
-            combo.setObjectName("filter")
-            combo.currentIndexChanged.connect(self._refresh)
-            filters.addWidget(combo)
-        col.addLayout(filters)
+        self._search = QLineEdit()
+        self._search.setObjectName("search")
+        self._search.setPlaceholderText("Search beats")
+        self._search.setClearButtonEnabled(True)
+        self._search.textChanged.connect(self._refresh)
+        col.addWidget(self._search)
 
         self._list = QListWidget()
         self._list.setObjectName("library")
@@ -88,15 +82,28 @@ class LibraryPanel(QWidget):
         self._list.itemClicked.connect(self._on_item)
         col.addWidget(self._list, 1)
 
-        self._empty = QLabel("No beats match these filters.")
+        self._empty = QLabel()
         self._empty.setObjectName("meta")
         self._empty.setAlignment(Qt.AlignCenter)
-        col.addWidget(self._empty)
+        self._empty.setWordWrap(True)
+        col.addWidget(self._empty, 1)
 
+        self._restore = QPushButton()
+        self._restore.setObjectName("link")
+        self._restore.clicked.connect(self.restore_examples_requested)
+        col.addWidget(self._restore)
+
+        buttons = QHBoxLayout()
+        buttons.setSpacing(8)
         self._surprise = QPushButton("Surprise me")
-        self._surprise.setToolTip("Pick a random beat that matches the filters")
+        self._surprise.setToolTip("Pick a random beat from your whole library")
         self._surprise.clicked.connect(self._on_surprise)
-        col.addWidget(self._surprise)
+        new_beat = QPushButton("New beat")
+        new_beat.setToolTip("Make your own beat in the editor")
+        new_beat.clicked.connect(self.new_beat_requested)
+        buttons.addWidget(self._surprise)
+        buttons.addWidget(new_beat)
+        col.addLayout(buttons)
 
         self._refresh()
         self._collapsed = not collapsed  # force set_collapsed to lay out
@@ -133,29 +140,41 @@ class LibraryPanel(QWidget):
     def refresh_scores(self) -> None:
         self._refresh()
 
-    def _filters(self) -> tuple[str | None, str | None]:
-        return self._genre.currentData(), self._difficulty.currentData()
+    def set_beats(self, beats: list[Beat], hidden_examples: int = 0) -> None:
+        """Replace the library (after saving, deleting or hiding), keeping the search."""
+        self._beats = beats
+        self._hidden_examples = hidden_examples
+        self._refresh()
 
     def _refresh(self) -> None:
-        visible = filter_beats(self._beats, *self._filters())
+        query = self._search.text()
+        visible = search_beats(self._beats, query)
         self._list.clear()
         for beat in visible:
             best = self._scores.best(beat.id)
             item = QListWidgetItem()
             item.setData(Qt.UserRole, beat.id)
             item.setData(_NAME, beat.name)
-            item.setData(_META, f"{beat.genre} · {beat.difficulty}")
+            mine = " · yours" if is_user_beat(beat) else " · example" if is_example(beat) else ""
+            item.setData(_META, f"{beat.genre} · {beat.difficulty}{mine}")
             item.setData(_SCORE, f"{best.score:.0f}%" if best else "")
             if best:
                 item.setToolTip(f"Best: {best.score:.1f}% at {best.tempo:.0f} BPM, {best.bars} bars")
             self._list.addItem(item)
+        if not self._beats:
+            self._empty.setText("Your library is empty.\nMake or import your first beat.")
+        else:
+            self._empty.setText(f"No beats match “{query.strip()}”.")
         self._empty.setVisible(not visible)
         self._list.setVisible(bool(visible))
-        self._surprise.setEnabled(bool(visible))
+        self._surprise.setEnabled(bool(self._beats))
+        n = self._hidden_examples
+        self._restore.setText(f"Show {n} hidden example{'s' if n != 1 else ''}")
+        self._restore.setVisible(n > 0)
         self._highlight()
 
     def _highlight(self) -> None:
-        # The current beat may be filtered out of view; then nothing is highlighted.
+        # The current beat may be hidden by the search; then nothing is highlighted.
         self._list.clearSelection()
         for i in range(self._list.count()):
             item = self._list.item(i)
@@ -167,7 +186,7 @@ class LibraryPanel(QWidget):
         self.select(item.data(Qt.UserRole))
 
     def _on_surprise(self) -> None:
-        pick = surprise(self._beats, *self._filters(), exclude_id=self._current_id)
+        pick = surprise(self._beats, exclude_id=self._current_id)
         if pick is not None:
             self.select(pick.id)
 
@@ -213,7 +232,8 @@ class _BeatRowDelegate(QStyledItemDelegate):
         name_font = QFont(option.font)
         name_font.setBold(True)
         p.setFont(name_font)
-        p.setPen(QColor(theme.TEXT))
+        enabled = bool(option.state & QStyle.State_Enabled)
+        p.setPen(QColor(theme.TEXT if enabled else theme.TEXT_DIM))  # dimmed while locked
         top, bottom = text_rect.adjusted(0, 0, 0, -text_rect.height() // 2), text_rect.adjusted(0, text_rect.height() // 2, 0, 0)
         p.drawText(top, Qt.AlignLeft | Qt.AlignBottom, p.fontMetrics().elidedText(index.data(_NAME), Qt.ElideRight, top.width()))
         p.setFont(option.font)

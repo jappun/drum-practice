@@ -20,6 +20,7 @@ Then I let Claude build a phase, and I manually approve its edits. I test the ap
 - [ ] Phase 8: Upload sheet music
 - [ ] Phase 9: Setup wizard to learn any kit's MIDI outputs
 - [ ] Phase 10: Dynamic hits (ie ghost notes, accents)
+- [ ] Phase 11: Flexible grid (triplets, swing, 32nd notes)
 
 
 ## Setup
@@ -42,24 +43,25 @@ python -m drum_practice
 ```
 
 1. **Calibrate** (once): tap any pad on each click, and the app measures the delay between sound and hit so it can correct for it.
-2. Pick a beat from the **Library** on the left. You can filter it by genre and level, or press **Surprise me** for a random beat that matches the filters. Each beat shows your best score. **«** collapses the library to give the grid more room, and **»** brings it back. **Listen** plays the beat on a loop, with the grid lighting up each note as it sounds.
-3. **Start practice** runs count-in → the beat plays → count-in → your turn (silent, the grid keeps lighting) → your score. On the results grid, green is perfect (≤30 ms), amber is good (≤70 ms, notched on the early/late side), a red outline is a missed note and a red dot is an extra hit.
+2. Pick a beat from the **Library** on the left. Type in the search box to find beats by name, or press **Surprise me** for a random beat from your whole library. Each beat shows your best score. **«** collapses the library to give the grid more room, and **»** brings it back. **Listen** plays the beat on a loop, with the grid lighting up each note as it sounds.
+3. **Start practice** runs count-in → the beat plays → count-in → your turn (silent, the grid keeps lighting) → your score. On the results grid, green is perfect (≤30 ms), purple is good (≤70 ms, notched on the early/late side), a red outline is a missed note and a red dot is an extra hit.
 
 The settings row underneath sets the **tempo** (drag the slider or type a number), how many **bars** to practise (the pattern repeats to fill them), whether there's a **count-in**, and whether a **click** plays during your turn. **Metronome** just plays a click at the current tempo. Settings are remembered between launches.
+
+**Your own beats:** press **New beat** in the library, or **Edit** on a beat, to open the editor.
+- **Notes:** click a cell to add a note with the current brush (Ghost, Normal or Accent). Click it again to remove it, or click with a different brush to change its strength. Drag along a row to paint several at once.
+- **Details:** set the name, genre, level, tempo and bars (1–4).
+- **Saving:** your beats are saved in your app-data folder and marked "yours" in the library.
+- **Examples** are read-only. **Duplicate & edit** makes your own copy. **Hide example** removes one from your library, and **Show hidden examples** at the bottom of the library brings them back.
+- **Scores:** changing a beat's notes or length resets its best score.
 
 **Kit monitor** opens a window that shows the kit's connection status and lights up each pad as you hit it. It also logs the MIDI note number and velocity of every hit, plus other messages such as hi-hat pedal position.
 
 ## Beats
 
-The library's 384 beats come from the [Groove MIDI Dataset](https://magenta.tensorflow.org/datasets/groove) by Google LLC, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (Gillick et al., "Learning to Groove with Inverse Sequence Transformations", ICML 2019). Each beat is a 2-bar section of a real drummer's performance, snapped to a 16th-note grid. Swung and triplet-feel performances are left out, since the grid can't show them yet. See [beats/gmd/ATTRIBUTION.md](beats/gmd/ATTRIBUTION.md) for exactly what was changed.
+Your library is your own beats, made in the editor and saved in your app-data folder, plus a few hand-made starter examples in `beats/examples/`. A beat is at most 4 bars; longer music will be a song (see [docs/REVISION1_PLAN_PHASES.md](docs/REVISION1_PLAN_PHASES.md)).
 
-To rebuild them from the dataset (the script downloads it, 3 MB, and checks its checksum):
-
-```
-python scripts/import_gmd.py
-```
-
-Beats live in `beats/` as JSON files, with one pattern string per drum and one character per 16th step:
+Beats are JSON files with one pattern string per drum and one character per 16th step:
 
 ```
 "HH_CLOSED": "x-x- x-x- x-x- x-x-",

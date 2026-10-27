@@ -1,0 +1,19 @@
+{
+  "name": "Rock: Open Hat + Tom Fill",
+  "genre": "Rock",
+  "difficulty": "intermediate",
+  "tempo": 90,
+  "bars": 2,
+  "beats_per_bar": 4,
+  "steps_per_beat": 4,
+  "pattern": {
+    "CRASH":     "x--- ---- ---- ---- | ---- ---- ---- ----",
+    "HH_OPEN":   "---- ---- ---- --x- | ---- ---- ---- ----",
+    "HH_CLOSED": "--x- x-x- x-x- x--- | x-x- x-x- x-x- ----",
+    "TOM_HIGH":  "---- ---- ---- ---- | ---- ---- ---- xx--",
+    "TOM_MID":   "---- ---- ---- ---- | ---- ---- ---- --x-",
+    "SNARE":     "---- x--- ---- x--- | ---- x--- ---- ----",
+    "TOM_LOW":   "---- ---- ---- ---- | ---- ---- ---- ---x",
+    "KICK":      "x--- ---- x-x- ---- | x--- ---- x-x- ----"
+  }
+}

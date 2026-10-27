@@ -20,9 +20,6 @@ __pycache__/
 build/
 dist/
 
-# Downloaded datasets (rebuilt by scripts/)
-.cache/
-
 # Environment / secrets
 .env
 .env.*

@@ -16,6 +16,7 @@ from pathlib import Path
 from .kit import DRUM_ORDER, DrumClass
 
 GHOST, NORMAL, ACCENT = 45, 100, 127
+MAX_BEAT_BARS = 4  # longer music is a song, not a beat
 _CHAR_VELOCITY = {"g": GHOST, "x": NORMAL, "X": ACCENT}
 _REST = "-."
 _IGNORED = " |"

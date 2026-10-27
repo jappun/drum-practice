@@ -1,8 +1,7 @@
 """Drum classes and the MIDI note map for the kit.
 
-Every incoming note is reduced to one of ten drum classes. This follows the
-Groove MIDI Dataset's reduction, except the hi-hat pedal ("chick") is kept as
-its own class instead of being merged into closed hi-hat, since it is notated
+Every incoming note is reduced to one of ten drum classes. The hi-hat pedal
+("chick") is its own class, not merged into closed hi-hat, since it's notated
 separately in drum charts.
 """
 
@@ -40,8 +39,8 @@ DRUM_ORDER = [
     DrumClass.HH_PEDAL,
 ]
 
-# General MIDI drum notes plus the Roland extras found in the Groove MIDI
-# Dataset, so most kits work out of the box.
+# General MIDI drum notes plus common Roland extras (rims, edges, bell), so
+# most kits work out of the box.
 NOTE_MAP: dict[int, DrumClass] = {
     35: DrumClass.KICK,
     36: DrumClass.KICK,

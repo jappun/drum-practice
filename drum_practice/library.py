@@ -1,52 +1,57 @@
-"""Choosing beats (filters, random pick) and remembering best scores."""
+"""Choosing beats (search, random pick) and remembering best scores."""
 
 import json
 import random
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 
 from .model import Beat
 from .settings import app_dir
 
 DIFFICULTIES = ("beginner", "intermediate", "advanced")
-OTHER_GENRE = "Other"  # catch-all for genres with too few beats
 
 
 def genres(beats: list[Beat]) -> list[str]:
-    """Genres alphabetically, with the catch-all last."""
-    return sorted({b.genre for b in beats}, key=lambda g: (g == OTHER_GENRE, g))
+    return sorted({b.genre for b in beats})
 
 
-def filter_beats(beats: list[Beat], genre: str | None = None, difficulty: str | None = None) -> list[Beat]:
-    """Beats matching the filters (None = any), easiest first, then by name."""
-    matching = [
-        b
-        for b in beats
-        if (genre is None or b.genre == genre) and (difficulty is None or b.difficulty == difficulty)
-    ]
-    return sorted(matching, key=_difficulty_then_name)
+def search_beats(beats: list[Beat], query: str = "") -> list[Beat]:
+    """Beats whose name contains every word of the query (any case), in
+    natural name order. An empty query matches everything."""
+    words = query.lower().split()
+    matching = [b for b in beats if all(w in b.name.lower() for w in words)]
+    return sorted(matching, key=_natural_name)
 
 
 def surprise(
     beats: list[Beat],
-    genre: str | None = None,
-    difficulty: str | None = None,
     exclude_id: str | None = None,
     rng: random.Random | None = None,
 ) -> Beat | None:
-    """A random beat within the filters, avoiding `exclude_id` (the current
-    beat) when there's anything else to pick. None if nothing matches."""
-    pool = filter_beats(beats, genre, difficulty)
-    others = [b for b in pool if b.id != exclude_id]
-    return (rng or random).choice(others or pool) if pool else None
+    """A random beat from the whole library (the search doesn't narrow it),
+    avoiding `exclude_id` (the current beat) when there's anything else to
+    pick. None if the library is empty."""
+    others = [b for b in beats if b.id != exclude_id]
+    return (rng or random).choice(others or beats) if beats else None
 
 
-def _difficulty_then_name(beat: Beat) -> tuple:
-    rank = DIFFICULTIES.index(beat.difficulty) if beat.difficulty in DIFFICULTIES else len(DIFFICULTIES)
-    # Natural order, so "Rock 2" comes before "Rock 10".
-    name = tuple(int(part) if part.isdigit() else part for part in re.split(r"(\d+)", beat.name.lower()))
-    return rank, name
+def _natural_name(beat: Beat) -> tuple:
+    # Natural order, so "Groove 2" comes before "Groove 10".
+    return tuple(int(part) if part.isdigit() else part for part in re.split(r"(\d+)", beat.name.lower()))
+
+
+EXAMPLE_ID_PREFIX = "example_"
+
+
+def is_example(beat: Beat) -> bool:
+    return beat.id.startswith(EXAMPLE_ID_PREFIX)
+
+
+def visible_beats(beats: list[Beat], hidden_examples: list[str]) -> list[Beat]:
+    """The library minus any example beats the user has hidden."""
+    hidden = set(hidden_examples)
+    return [b for b in beats if not (is_example(b) and b.id in hidden)]
 
 
 @dataclass(frozen=True)
@@ -75,6 +80,19 @@ class ScoreBook:
     def best(self, beat_id: str) -> Best | None:
         return self._best.get(beat_id)
 
+    def forget_prefix(self, prefix: str) -> None:
+        """Drop every best score whose beat id starts with `prefix`."""
+        stale = [k for k in self._best if k.startswith(prefix)]
+        for k in stale:
+            del self._best[k]
+        if stale:
+            self._save()
+
+    def forget(self, beat_id: str) -> None:
+        """Drop a beat's best score (it was deleted, or its notes changed)."""
+        if self._best.pop(beat_id, None) is not None:
+            self._save()
+
     def record(self, beat_id: str, score: float, tempo: float, bars: int) -> bool:
         """Store the run if it's a new best. Returns True when it is."""
         run = Best(round(score, 1), tempo, bars)
@@ -82,8 +100,55 @@ class ScoreBook:
         if current is not None and not run.beats(current):
             return False
         self._best[beat_id] = run
+        self._save()
+        return True
+
+    def _save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.path.write_text(
             json.dumps({k: asdict(v) for k, v in self._best.items()}, indent=2) + "\n"
         )
-        return True
+
+
+USER_ID_PREFIX = "user_"
+
+
+def is_user_beat(beat: Beat) -> bool:
+    return beat.id.startswith(USER_ID_PREFIX)
+
+
+class UserBeats:
+    """Beats the user made in the editor, one JSON file each in the app-data
+    folder (separate from the bundled library, which is read-only)."""
+
+    def __init__(self, directory: Path | None = None):
+        self.directory = directory or app_dir() / "my_beats"
+
+    def load(self) -> list[Beat]:
+        if not self.directory.exists():
+            return []
+        beats = []
+        for path in sorted(self.directory.glob("*.json")):
+            try:
+                beats.append(Beat.load(path))
+            except (OSError, ValueError, KeyError):
+                continue  # a damaged file shouldn't stop the app from starting
+        return beats
+
+    def save(self, beat: Beat) -> Beat:
+        """Write the beat, giving it an id the first time. Returns the saved beat."""
+        if not is_user_beat(beat):
+            beat = replace(beat, id=self._new_id(beat.name))
+        self.directory.mkdir(parents=True, exist_ok=True)
+        beat.save(self.directory / f"{beat.id}.json")
+        return beat
+
+    def delete(self, beat_id: str) -> None:
+        (self.directory / f"{beat_id}.json").unlink(missing_ok=True)
+
+    def _new_id(self, name: str) -> str:
+        slug = re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_") or "beat"
+        n = 1
+        while (self.directory / f"{USER_ID_PREFIX}{slug}_{n}.json").exists():
+            n += 1
+        return f"{USER_ID_PREFIX}{slug}_{n}"

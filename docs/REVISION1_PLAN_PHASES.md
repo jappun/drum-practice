@@ -70,10 +70,10 @@ Core logic (rhythm, layout, transcription parsing, MusicXML, hero scoring) stays
 - **Accent colour:** `#8742f5` everywhere orange was used (buttons, notes, playhead, toggles, links). Derive the lit/hover shade from it.
 - **Remove the Groove MIDI Dataset:** `gmd.py`, `scripts/import_gmd.py`, `beats/gmd/`, its tests, the About credit and README sections, and `.cache/`. Best scores for removed beats are dropped.
 - **Starter beats:** 3–5 small hand-made examples in `beats/examples/`, editable as duplicates. Deleting one hides it, and there's a "restore examples" option.
-- **Library:** the genre and level filters are replaced by a **search box** that filters by name as you type. **Surprise me** stays: it picks a random beat from what the search shows, avoiding the current one. The list keeps best scores, "yours" tags, New beat and the collapsible sidebar. When the library is empty it shows "Make or import your first beat".
+- **Library:** the genre and level filters are replaced by a **search box** that filters by name as you type. **Surprise me** stays: it picks a random beat from the whole Beats library (the search doesn't narrow it), avoiding the current one. The list keeps best scores, "yours" tags, New beat and the collapsible sidebar. When the library is empty it shows "Make or import your first beat".
 - **Beat length cap:** `MAX_BEAT_BARS = 4` is defined once and used by the editor (as today) and by every import from Phase 11 on.
-- **Automated:** search matching (case-insensitive, partial, natural order); Surprise me respects the search and avoids the current beat; hiding/restoring examples; no GMD code or data left; theme has no orange.
-- **Human:** the app looks right in purple; search finds beats as you type; Surprise me picks among the matches; examples can be practised, duplicated and hidden.
+- **Automated:** search matching (case-insensitive, partial, natural order); Surprise me picks from the whole library, ignoring the search, and avoids the current beat; hiding/restoring examples; no GMD code or data left; theme has no orange.
+- **Human:** the app looks right in purple; search finds beats as you type; Surprise me picks from the whole library; examples can be practised, duplicated and hidden.
 
 ## Phase 9 — Rhythm beyond 16ths (new beat model + grid view)
 **Purpose:** beats can contain triplets, 32nds and dotted rhythms, and play and grade correctly.
@@ -148,7 +148,7 @@ Core logic (rhythm, layout, transcription parsing, MusicXML, hero scoring) stays
   - handle tempo marks, time-signature changes, tuplets and dotted rhythms;
   - expand repeats and voltas into play order;
   - read rehearsal marks as **sections** (verse, chorus…).
-- **Songs library:** a second library tab, **Songs**, searchable by name like Beats, with best scores per song and per section. Import, rename and delete. **Surprise me** in the Songs tab picks a random song.
+- **Songs library:** a second library tab, **Songs**, searchable by name like Beats, with best scores per song and per section. Import, rename and delete. **Surprise me** in the Songs tab picks a random song from the whole Songs library.
 - **Beat or song, by length:** anything longer than `MAX_BEAT_BARS`, whether from a photo, MusicXML or the editor, is a **song**. The app tells you "This looks like a song, so it's been added to your Songs library" and saves it there. A MusicXML file of 4 bars or fewer is offered as a **beat** instead (you can choose to keep it as a song).
 - **Long music scrolls into view:** the notation and grid views follow the playhead with a smooth, continuous scroll, so upcoming notes slide in from the right. No page flipping. (Shared with Phase 13.)
 - **Practice a song:** the whole song or a chosen section or bar range, with loop and tempo % for slow practice. The existing practice loop runs on the selection. Results are given per section.

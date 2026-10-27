@@ -114,3 +114,10 @@ def test_old_settings_file_gets_new_defaults(tmp_path):
     loaded = Settings.load(path)
     assert loaded.latency_offset == pytest.approx(0.02)
     assert loaded.count_in is True and loaded.metronome is False and loaded.bars == 2
+
+
+def test_hidden_examples_persist(tmp_path):
+    path = tmp_path / "settings.json"
+    Settings(hidden_examples=["example_basic_rock"]).save(path)
+    assert Settings.load(path).hidden_examples == ["example_basic_rock"]
+    assert Settings.load(tmp_path / "missing.json").hidden_examples == []

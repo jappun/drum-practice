@@ -1,12 +1,11 @@
 """Step-grid view of a beat: one row per drum, one column per step."""
 
 import math
+from dataclasses import dataclass, field
 
-from PySide6.QtCore import QRectF, Qt
+from PySide6.QtCore import QRectF, Qt, Signal
 from PySide6.QtGui import QColor, QFont, QPainter, QPen
 from PySide6.QtWidgets import QSizePolicy, QWidget
-
-from dataclasses import dataclass, field
 
 from ..grading import NoteResult, Verdict
 from ..kit import DRUM_ORDER, DrumClass
@@ -31,6 +30,10 @@ class GridResults:
 
 
 class BeatGrid(QWidget):
+    # Edit mode only: a click on a cell, then cells dragged over on the same row.
+    cell_pressed = Signal(int, object)  # step, DrumClass
+    cell_dragged = Signal(int, object)
+
     def __init__(self, key_labels: dict[DrumClass, str] | None = None):
         """`key_labels` (dev mode only) shows each drum's keyboard key beside its name."""
         super().__init__()
@@ -39,6 +42,10 @@ class BeatGrid(QWidget):
         self.beat: Beat | None = None
         self.results: GridResults | None = None
         self._step: int | None = None
+        self._editable = False
+        self._hover: tuple[int, DrumClass] | None = None
+        self._drag_row: DrumClass | None = None
+        self._last_cell: tuple[int, DrumClass] | None = None
         self.setMinimumHeight(HEADER_HEIGHT + ROW_HEIGHT * len(DRUM_ORDER) + 2)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
@@ -47,6 +54,55 @@ class BeatGrid(QWidget):
         self.results = None
         self._step = None
         self.update()
+
+    def set_editable(self, editable: bool) -> None:
+        self._editable = editable
+        self._hover = self._drag_row = self._last_cell = None
+        self.setMouseTracking(editable)
+        self.setCursor(Qt.PointingHandCursor if editable else Qt.ArrowCursor)
+        self.update()
+
+    def cell_at(self, x: float, y: float) -> tuple[int, DrumClass] | None:
+        """The (step, drum) cell under a point, or None outside the cells."""
+        if self.beat is None or x < self._label_width or y < HEADER_HEIGHT:
+            return None
+        step = int((x - self._label_width) / self._cell_width())
+        row = int((y - HEADER_HEIGHT) / ROW_HEIGHT)
+        if 0 <= step < self.beat.total_steps and 0 <= row < len(DRUM_ORDER):
+            return step, DRUM_ORDER[row]
+        return None
+
+    def mousePressEvent(self, event) -> None:
+        cell = self.cell_at(event.position().x(), event.position().y()) if self._editable else None
+        if cell is None or event.button() != Qt.LeftButton:
+            return super().mousePressEvent(event)
+        self._drag_row, self._last_cell = cell[1], cell
+        self.cell_pressed.emit(*cell)
+
+    def mouseMoveEvent(self, event) -> None:
+        if not self._editable:
+            return super().mouseMoveEvent(event)
+        cell = self.cell_at(event.position().x(), event.position().y())
+        if cell != self._hover:
+            self._hover = cell
+            self.update()
+        # Dragging paints along the row the press started on.
+        if self._drag_row is not None and cell and cell[1] is self._drag_row and cell != self._last_cell:
+            self._last_cell = cell
+            self.cell_dragged.emit(*cell)
+
+    def mouseReleaseEvent(self, event) -> None:
+        self._drag_row = self._last_cell = None
+        super().mouseReleaseEvent(event)
+
+    def leaveEvent(self, event) -> None:
+        if self._hover is not None:
+            self._hover = None
+            self.update()
+        super().leaveEvent(event)
+
+    def _cell_width(self) -> float:
+        return (self.width() - self._label_width) / self.beat.total_steps
 
     def set_results(self, results: GridResults | None) -> None:
         self.results = results
@@ -68,7 +124,7 @@ class BeatGrid(QWidget):
 
         beat = self.beat
         steps = beat.total_steps
-        cell_w = (self.width() - self._label_width) / steps
+        cell_w = self._cell_width()
         used = {n.drum for n in beat.notes}
 
         # Beat shading, bar lines and beat numbers.
@@ -92,6 +148,11 @@ class BeatGrid(QWidget):
                 p.setPen(QPen(QColor(theme.TEXT_DIM), 2))
                 p.drawLine(int(x), HEADER_HEIGHT, int(x), grid_bottom)
 
+        # Close off the last cell, so the final step doesn't fade into the background.
+        end_x = int(self._label_width + steps * cell_w) - 1
+        p.setPen(QPen(QColor(theme.BORDER), 1, Qt.DotLine))
+        p.drawLine(end_x, HEADER_HEIGHT, end_x, grid_bottom)
+
         # Playhead column.
         if self._step is not None:
             x = self._label_width + self._step * cell_w
@@ -107,7 +168,7 @@ class BeatGrid(QWidget):
             rect = QRectF(8, y, self._label_width - 12, ROW_HEIGHT)
             p.drawText(rect, Qt.AlignVCenter, drum.label)
             if self._key_labels:
-                p.setPen(QColor(theme.ACCENT))
+                p.setPen(QColor(theme.ACCENT_TEXT))
                 p.drawText(rect, Qt.AlignVCenter | Qt.AlignRight, self._key_labels[drum])
 
         # Notes; the ones under the playhead light up.
@@ -129,6 +190,21 @@ class BeatGrid(QWidget):
             p.setPen(QPen(QColor(theme.LIT), 2) if lit else Qt.NoPen)
             p.setBrush(color)
             p.drawRoundedRect(rect, 5, 5)
+
+        if self._editable and self._hover is not None:
+            step, drum = self._hover
+            p.setPen(QPen(QColor(theme.ACCENT), 1.5))
+            p.setBrush(Qt.NoBrush)
+            p.drawRoundedRect(
+                QRectF(
+                    self._label_width + step * cell_w + CELL_GAP / 2,
+                    HEADER_HEIGHT + DRUM_ORDER.index(drum) * ROW_HEIGHT + CELL_GAP,
+                    cell_w - CELL_GAP,
+                    ROW_HEIGHT - 2 * CELL_GAP,
+                ),
+                5,
+                5,
+            )
 
         if self.results:
             for marks, color in ((self.results.ignored, theme.TEXT_DIM), (self.results.extras, theme.BAD)):

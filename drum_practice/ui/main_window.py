@@ -1,6 +1,7 @@
 """Main window: pick a beat, listen to it, then play it back and get graded."""
 
 import time
+from dataclasses import replace
 from enum import Enum, auto
 
 from PySide6.QtCore import QEvent, QObject, Qt, QTimer, Signal
@@ -15,32 +16,28 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from .. import calibration, keyboard_in
+from .. import calibration, editing, keyboard_in
 from ..audio import AudioEngine
 from ..grading import GOOD_WINDOW, Played, Result, Verdict, grade
 from ..kit import DrumClass
 from ..midi_in import Hit, MidiInput
-from ..library import ScoreBook, filter_beats
+from ..library import ScoreBook, UserBeats, genres, is_example, is_user_beat, search_beats, visible_beats
 from ..model import Beat, load_beats
 from ..player import BeatPlayer, MetronomePlayer
 from ..session import Stage, Timeline
 from ..settings import DevSettings, Settings
 from ..sounds import build_clicks, build_kit
 from . import theme
+from .editor_bar import EditorBar
 from .grid import BeatGrid, GridResults
 from .library_panel import LibraryPanel
 from .monitor import MonitorWindow
 from .settings_bar import SettingsBar
 
 FRAME_MS = 16
-ABOUT_TEXT = """<p>Practise drum beats on an electronic kit and get graded on your timing.
-MIT licensed.</p>
-<p><b>Beats</b> come from the <a href="https://magenta.tensorflow.org/datasets/groove">Groove MIDI
-Dataset</a> by Google LLC, licensed under
-<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>:<br>
-Jon Gillick, Adam Roberts, Jesse Engel, Douglas Eck and David Bamman,
-"Learning to Groove with Inverse Sequence Transformations", ICML 2019.<br>
-Each beat is a 2-bar excerpt, simplified to a 16th-note grid.</p>"""
+ABOUT_TEXT = """<p>Practise drum beats on an electronic kit and get graded on your timing.</p>
+<p>Your library is made of your own beats, plus a few hand-made examples you can hide.</p>
+<p>MIT licensed.</p>"""
 START_LEAD_SECONDS = 0.3  # pause between pressing Start and the first click
 FINISH_GRACE_SECONDS = 0.15  # keep listening this long after the last bar for late hits
 
@@ -77,9 +74,17 @@ class MainWindow(QWidget):
         self._player = BeatPlayer(self._engine, self._kit)
         self._metronome = MetronomePlayer(self._engine, self._clicks)
         self._engine.start()
-        self._beats = load_beats()
+        self._user_beats = UserBeats()
         self._scores = ScoreBook()
-        self._base_beat: Beat = self._beats[0]  # as written; settings reshape it
+        self._scores.forget_prefix("gmd_")  # beats from the removed Groove MIDI library
+        self._beats: list[Beat] = []
+        self._hidden_count = 0
+        self._load_library()
+        # Editing: the beat being changed, and how it started (to spot unsaved changes).
+        self._draft: Beat | None = None
+        self._draft_start: Beat | None = None
+        self._stroke = editing.Stroke.ADD  # what the current drag does
+        self._base_beat: Beat | None = None  # as written; settings reshape it
         self._monitor: MonitorWindow | None = None
 
         self._mode = Mode.IDLE
@@ -92,9 +97,7 @@ class MainWindow(QWidget):
         self._midi = MidiInput(on_hit=self._bridge.hit.emit)
 
         self._build_ui()
-        known = {b.id for b in self._beats}
-        start_id = self._settings.beat_id if self._settings.beat_id in known else self._library_first_id()
-        self._library.select(start_id)
+        self._select_after_reload(self._settings.beat_id)
 
         self._frame = QTimer(self, interval=FRAME_MS)
         self._frame.timeout.connect(self._tick)
@@ -167,9 +170,16 @@ class MainWindow(QWidget):
         body = QHBoxLayout()
         body.setSpacing(24)
         root.addLayout(body, 1)
-        self._library = LibraryPanel(self._beats, self._scores, collapsed=self._settings.library_collapsed)
+        self._library = LibraryPanel(
+            self._beats,
+            self._scores,
+            collapsed=self._settings.library_collapsed,
+            hidden_examples=self._hidden_count,
+        )
+        self._library.restore_examples_requested.connect(self._restore_examples)
         self._library.beat_selected.connect(self._select_beat)
         self._library.collapsed_changed.connect(self._on_library_collapsed)
+        self._library.new_beat_requested.connect(self._new_beat)
         body.addWidget(self._library)
         main = QVBoxLayout()
         main.setSpacing(14)
@@ -184,14 +194,22 @@ class MainWindow(QWidget):
         self._start = QPushButton("Start practice")
         self._start.setObjectName("primary")
         self._start.clicked.connect(self._toggle_practice)
+        self._edit = QPushButton("Edit")
+        self._edit.clicked.connect(self._edit_current)
+        self._hide = QPushButton("Hide example")
+        self._hide.setToolTip("Remove this example from your library (you can show it again)")
+        self._hide.clicked.connect(self._hide_example)
         self._meta = QLabel()
         self._meta.setObjectName("meta")
         # Fixed widths so buttons don't jump when their text flips to "Stop".
         self._listen.setFixedWidth(90)
         self._start.setFixedWidth(150)
+        self._edit.setFixedWidth(150)
         self._calibrate.setFixedWidth(100)
         controls.addWidget(self._listen)
         controls.addWidget(self._start)
+        controls.addWidget(self._edit)
+        controls.addWidget(self._hide)
         controls.addSpacing(12)
         controls.addWidget(self._beat_name)
         controls.addWidget(self._meta)
@@ -203,6 +221,15 @@ class MainWindow(QWidget):
         self._settings_bar.metronome_toggled.connect(self._toggle_metronome)
         main.addWidget(self._settings_bar)
 
+        self._editor_bar = EditorBar()
+        self._editor_bar.details_changed.connect(self._on_draft_details)
+        self._editor_bar.bars_changed.connect(self._on_draft_bars)
+        self._editor_bar.save_clicked.connect(self._save_draft)
+        self._editor_bar.cancel_clicked.connect(self._cancel_edit)
+        self._editor_bar.delete_clicked.connect(self._delete_draft)
+        self._editor_bar.hide()
+        main.addWidget(self._editor_bar)
+
         self._banner = QLabel()
         self._banner.setObjectName("banner")
         main.addWidget(self._banner)
@@ -210,6 +237,8 @@ class MainWindow(QWidget):
         self._grid = BeatGrid(
             key_labels={d: keyboard_in.key_label(d) for d in DrumClass} if self._dev_mode else None
         )
+        self._grid.cell_pressed.connect(self._on_cell_pressed)
+        self._grid.cell_dragged.connect(self._on_cell_dragged)
         main.addWidget(self._grid)
 
         self._summary = QLabel()
@@ -224,13 +253,57 @@ class MainWindow(QWidget):
         self._settings.library_collapsed = collapsed
         self._settings.save()
 
-    def _library_first_id(self) -> str:
-        return filter_beats(self._beats)[0].id
+    def _load_library(self) -> None:
+        """Bundled examples + your beats, minus examples you've hidden."""
+        everything = load_beats() + self._user_beats.load()
+        hidden = set(self._settings.hidden_examples)
+        self._hidden_count = sum(1 for b in everything if is_example(b) and b.id in hidden)
+        self._beats = visible_beats(everything, self._settings.hidden_examples)
+
+    def _reload_library(self, select_id: str | None) -> None:
+        self._load_library()
+        self._library.set_beats(self._beats, self._hidden_count)
+        self._select_after_reload(select_id)
+
+    def _select_after_reload(self, beat_id: str | None) -> None:
+        """Select `beat_id` if it's still there, else the first beat, else nothing."""
+        known = {b.id for b in self._beats}
+        if beat_id in known:
+            self._library.select(beat_id)
+        elif self._beats:
+            self._library.select(search_beats(self._beats)[0].id)
+        else:
+            self._show_no_beat()
+
+    def _show_no_beat(self) -> None:
+        self._stop_all()
+        self._base_beat = None
+        self._grid.set_beat(None)
+        self._summary.setText("")
+        self._beat_name.setText("No beat selected")
+        self._meta.setText("")
+        self._banner.setText("Make your first beat with New beat in the library.")
+        self._apply_locks()
+
+    def _hide_example(self) -> None:
+        if self._base_beat is None or not is_example(self._base_beat):
+            return
+        self._settings.hidden_examples = sorted(set(self._settings.hidden_examples) | {self._base_beat.id})
+        self._settings.save()
+        self._reload_library(select_id=None)
+
+    def _restore_examples(self) -> None:
+        self._settings.hidden_examples = []
+        self._settings.save()
+        self._reload_library(select_id=self._base_beat.id if self._base_beat else None)
 
     # --- actions ---
 
     def _practice_beat(self) -> Beat:
-        """The selected beat reshaped by the current tempo and bars settings."""
+        """The selected beat reshaped by the current tempo and bars settings.
+        While editing it's the draft exactly as written, at its own tempo."""
+        if self._draft is not None:
+            return self._draft
         s = self._settings
         return self._base_beat.with_bars(s.bars).with_tempo(s.tempo)
 
@@ -242,11 +315,16 @@ class MainWindow(QWidget):
             self._settings.save()
         self._grid.set_beat(self._practice_beat())
         self._summary.setText("")
-        self._beat_name.setText(beat.name)
+        self._show_beat_details(beat)
+        self._edit.setText("Edit" if is_user_beat(beat) else "Duplicate && edit")  # && shows a literal &
+        self._apply_locks()
+        self._show_idle_banner()
+
+    def _show_beat_details(self, beat: Beat) -> None:
+        self._beat_name.setText(beat.name or "Untitled")
         self._meta.setText(
             f"{beat.genre} · {beat.difficulty} · {beat.bars}-bar pattern · written at {beat.tempo:g} BPM"
         )
-        self._show_idle_banner()
 
     def _on_settings_changed(self) -> None:
         self._settings.save()
@@ -327,7 +405,7 @@ class MainWindow(QWidget):
         self._settings_bar.set_metronome_playing(mode is Mode.METRONOME)
         # Settings can't change mid-run; while listening or clicking they apply live.
         self._settings_bar.setEnabled(mode not in (Mode.PRACTICE, Mode.CALIBRATE))
-        self._library.set_locked(mode in (Mode.PRACTICE, Mode.CALIBRATE))
+        self._apply_locks()
         if mode is not Mode.IDLE:
             self._summary.setText("")
 
@@ -349,13 +427,132 @@ class MainWindow(QWidget):
             self._settings.calibrated = True
             self._settings.save()
 
+    def _apply_locks(self) -> None:
+        """What's usable depends on the mode and on whether a beat is being edited."""
+        editing = self._draft is not None
+        running = self._mode in (Mode.PRACTICE, Mode.CALIBRATE)
+        has_beat = self._base_beat is not None or editing
+        self._library.set_locked(running or editing)
+        self._listen.setEnabled(has_beat)
+        self._start.setEnabled(has_beat and not editing)
+        self._calibrate.setEnabled(not editing)
+        self._edit.setVisible(not editing and self._base_beat is not None)
+        self._edit.setEnabled(not running)
+        example = self._base_beat is not None and is_example(self._base_beat)
+        self._hide.setVisible(example and not editing)
+        self._hide.setEnabled(not running)
+        self._settings_bar.setVisible(not editing)
+        self._editor_bar.setVisible(editing)
+        self._grid.set_editable(editing)
+
     def _show_idle_banner(self) -> None:
+        if self._draft is not None:
+            self._banner.setText("Editing: click a cell to add or remove a note, drag along a row to paint.")
+            return
+        if self._base_beat is None:
+            self._banner.setText("Make your first beat with New beat in the library.")
+            return
         if not self._calibrated():
             self._banner.setText("Tip: press Calibrate first so timing is graded accurately.")
         elif self._settings.count_in:
             self._banner.setText("Press Start practice: count-in, listen, count-in, then your turn.")
         else:
             self._banner.setText("Press Start practice: listen, then your turn.")
+
+    # --- editing ---
+
+    def _new_beat(self) -> None:
+        self._start_edit(editing.blank())
+
+    def _edit_current(self) -> None:
+        beat = self._base_beat
+        # Your own beats are edited in place; library beats are copied first.
+        draft = replace(beat, notes=list(beat.notes)) if is_user_beat(beat) else editing.duplicate(beat)
+        self._start_edit(draft)
+
+    def _start_edit(self, draft: Beat) -> None:
+        self._stop_all()
+        self._grid.set_results(None)
+        self._summary.setText("")
+        self._draft = self._draft_start = draft
+        self._editor_bar.load(draft, genres(self._beats), deletable=is_user_beat(draft))
+        self._apply_locks()
+        self._show_draft()
+        self._show_idle_banner()
+
+    def _show_draft(self) -> None:
+        self._grid.set_beat(self._draft)
+        self._show_beat_details(self._draft)
+        self._player.update_beat(self._draft)  # hear edits while listening
+
+    def _on_cell_pressed(self, step: int, drum) -> None:
+        self._draft, self._stroke = editing.click(self._draft, step, drum, self._editor_bar.brush)
+        self._show_draft()
+
+    def _on_cell_dragged(self, step: int, drum) -> None:
+        self._draft = editing.paint(self._draft, step, drum, self._stroke, self._editor_bar.brush)
+        self._show_draft()
+
+    def _on_draft_details(self) -> None:
+        self._draft = self._editor_bar.apply_details(self._draft)
+        self._show_draft()
+
+    def _on_draft_bars(self, bars: int) -> None:
+        self._draft = editing.resize(self._draft, bars)
+        self._show_draft()
+
+    def _has_unsaved_changes(self) -> bool:
+        if self._draft is None:
+            return False
+        return self._editor_bar.apply_details(self._draft).to_dict() != self._draft_start.to_dict()
+
+    def _save_draft(self) -> None:
+        draft = self._editor_bar.apply_details(self._draft)
+        if not draft.name:
+            self._banner.setText("Give the beat a name before saving.")
+            return
+        if not draft.notes:
+            self._banner.setText("Add at least one note before saving.")
+            return
+        saved = self._user_beats.save(draft)
+        if is_user_beat(self._draft_start) and not editing.same_music(self._draft_start, saved):
+            self._scores.forget(saved.id)  # different notes: the old best no longer applies
+        self._finish_edit(select_id=saved.id)
+        self._banner.setText(f"Saved “{saved.name}” to your beats.")
+
+    def _cancel_edit(self) -> None:
+        if self._has_unsaved_changes() and not self._confirm("Discard your changes to this beat?"):
+            return
+        self._finish_edit(select_id=self._base_beat.id if self._base_beat else None)
+
+    def _delete_draft(self) -> None:
+        if not self._confirm(f"Delete “{self._draft_start.name}”? This can't be undone.", "Delete", danger=True):
+            return
+        self._user_beats.delete(self._draft_start.id)
+        self._scores.forget(self._draft_start.id)
+        self._finish_edit(select_id=None)
+
+    def _finish_edit(self, select_id: str | None) -> None:
+        self._stop_all()
+        self._draft = self._draft_start = None
+        self._apply_locks()
+        self._reload_library(select_id)
+
+    def _confirm(self, question: str, confirm: str = "Yes", danger: bool = False) -> bool:
+        """Ask a yes/no question. `danger` styles the confirm button red, for
+        actions that can't be undone."""
+        box = QMessageBox(self)
+        box.setWindowTitle("Drum Practice")
+        box.setText(question)
+        yes = box.addButton(confirm, QMessageBox.ButtonRole.AcceptRole)
+        no = box.addButton("Cancel" if danger else "No", QMessageBox.ButtonRole.RejectRole)
+        if danger:
+            yes.setObjectName("danger")
+            yes.style().unpolish(yes)  # re-apply the stylesheet now the name has changed
+            yes.style().polish(yes)
+        box.setDefaultButton(no)  # Enter shouldn't trigger an irreversible action
+        box.exec()
+        return box.clickedButton() is yes
 
     # --- per frame ---
 
@@ -471,7 +668,7 @@ class MainWindow(QWidget):
         kit = self._midi.poll_connection()
         if self._dev_mode:
             self._kit_status.setText("⌨ Keyboard (dev mode)" + (" + kit" if kit else ""))
-            color = theme.ACCENT
+            color = theme.ACCENT_TEXT
         elif kit:
             self._kit_status.setText("● Kit connected")
             color = theme.OK
@@ -494,6 +691,9 @@ class MainWindow(QWidget):
         self._monitor.raise_()
 
     def closeEvent(self, event) -> None:
+        if self._has_unsaved_changes() and not self._confirm("Quit without saving the beat you're editing?"):
+            event.ignore()
+            return
         QApplication.instance().removeEventFilter(self)
         self._frame.stop()
         self._poll.stop()

@@ -6,8 +6,11 @@ SURFACE_HI = "#272b34"
 BORDER = "#323743"
 TEXT = "#e6e8ee"
 TEXT_DIM = "#8b92a3"
-ACCENT = "#f2a541"
-LIT = "#ffe7b8"
+ACCENT = "#8742f5"  # buttons, notes, borders, playhead
+ACCENT_HOVER = "#9a5cf7"
+ON_ACCENT = "#ffffff"  # text on accent fills (5.1:1 contrast)
+ACCENT_TEXT = "#a77bf8"  # accent-coloured text on the dark background (5.8:1)
+LIT = "#d9c6fd"  # a note lighting up as it plays
 OK = "#4cc38a"
 BAD = "#e5534b"
 
@@ -58,13 +61,29 @@ QPushButton:hover {{
 }}
 QPushButton#primary {{
     background: {ACCENT};
-    color: {BG};
+    color: {ON_ACCENT};
     border: none;
     font-weight: 600;
     padding: 8px 22px;
 }}
 QPushButton#primary:hover {{
-    background: {LIT};
+    background: {ACCENT_HOVER};
+}}
+QPushButton#primary:disabled {{
+    background: {SURFACE_HI};
+    color: {TEXT_DIM};
+}}
+QPushButton#segment:checked {{
+    background: {ACCENT};
+    color: {ON_ACCENT};
+    border-color: {ACCENT};
+    font-weight: 600;
+}}
+QPushButton#danger {{
+    color: {BAD};
+}}
+QPushButton#danger:hover {{
+    border-color: {BAD};
 }}
 QComboBox {{
     background: {SURFACE_HI};
@@ -102,6 +121,18 @@ QLineEdit {{
 }}
 QLineEdit:focus {{
     border-color: {ACCENT};
+}}
+QLineEdit#search {{
+    padding: 7px 10px;
+}}
+QPushButton#link {{
+    background: transparent;
+    border: none;
+    color: {ACCENT_TEXT};
+    padding: 2px;
+}}
+QPushButton#link:hover {{
+    text-decoration: underline;
 }}
 QLabel#rowTitle {{
     font-weight: 600;
@@ -166,7 +197,7 @@ QCheckBox::indicator:checked {{
 QLabel#banner {{
     font-size: 18px;
     font-weight: 600;
-    color: {ACCENT};
+    color: {ACCENT_TEXT};
     min-height: 28px;
 }}
 QLabel#summary {{

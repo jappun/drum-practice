@@ -49,6 +49,17 @@ class BeatPlayer:
         self.beat = None
         self._engine.mixer.clear()
 
+    def update_beat(self, beat: Beat) -> None:
+        """Swap in an edited beat while playing. Same length and tempo: the
+        loops not yet queued play the edit without a restart. Otherwise the
+        timing changes, so playback restarts."""
+        if self.beat is None:
+            return
+        if beat.total_steps == self.beat.total_steps and beat.tempo == self.beat.tempo:
+            self.beat = beat
+        else:
+            self.play(beat)
+
     def pump(self) -> None:
         """Schedule further loops so there's always LOOKAHEAD_SECONDS queued.
         Call regularly (the UI does it every frame)."""
