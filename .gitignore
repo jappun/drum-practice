@@ -28,5 +28,8 @@ dist/
 # Logs
 *.log
 
+# Sheet music and photos we don't have the rights to share (kept locally for testing)
+tests/music/
+
 # Claude Code local settings
 .claude/settings.local.json

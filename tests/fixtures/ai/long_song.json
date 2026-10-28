@@ -1,0 +1,5 @@
+{"grooves": [{"label": "", "time_signature": "4/4", "bars": 6, "tempo": 100, "notes": [
+  {"bar": 1, "beat": 1, "division": 1, "index": 0, "drum": "KICK", "accent": false, "ghost": false},
+  {"bar": 4, "beat": 1, "division": 1, "index": 0, "drum": "KICK", "accent": false, "ghost": false},
+  {"bar": 6, "beat": 1, "division": 1, "index": 0, "drum": "CRASH", "accent": false, "ghost": false}
+]}], "unsure": []}

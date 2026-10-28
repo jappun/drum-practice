@@ -1,0 +1,7 @@
+{"grooves": [{"label": "", "time_signature": "4/4", "bars": 1, "tempo": 400, "notes": [
+  {"bar": 1, "beat": 1, "division": 1, "index": 0, "drum": "KICK", "accent": false, "ghost": false},
+  {"bar": 2, "beat": 1, "division": 1, "index": 0, "drum": "SNARE", "accent": false, "ghost": false},
+  {"bar": 1, "beat": 5, "division": 1, "index": 0, "drum": "SNARE", "accent": false, "ghost": false},
+  {"bar": 1, "beat": 2, "division": 5, "index": 1, "drum": "SNARE", "accent": false, "ghost": false},
+  {"bar": 1, "beat": 3, "division": 4, "index": 4, "drum": "SNARE", "accent": false, "ghost": false}
+]}], "unsure": []}

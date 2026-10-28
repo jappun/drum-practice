@@ -1,0 +1,10 @@
+{"grooves": [
+  {"label": "A", "time_signature": "4/4", "bars": 1, "tempo": null, "notes": [
+    {"bar": 1, "beat": 1, "division": 1, "index": 0, "drum": "KICK", "accent": false, "ghost": false},
+    {"bar": 1, "beat": 2, "division": 1, "index": 0, "drum": "SNARE", "accent": false, "ghost": false}]},
+  {"label": "B", "time_signature": "4/4", "bars": 1, "tempo": null, "notes": [
+    {"bar": 1, "beat": 1, "division": 2, "index": 1, "drum": "KICK", "accent": false, "ghost": false},
+    {"bar": 1, "beat": 4, "division": 1, "index": 0, "drum": "SNARE", "accent": false, "ghost": false}]},
+  {"label": "", "time_signature": "6/8", "bars": 1, "tempo": null, "notes": [
+    {"bar": 1, "beat": 2, "division": 3, "index": 1, "drum": "RIDE", "accent": false, "ghost": false}]}
+], "unsure": [{"groove": "A", "bar": 1, "beat": 2, "drum": "SNARE", "reason": "timing"}, {"groove": "A", "bar": 1, "beat": 4, "drum": "SNARE", "reason": "timing"}]}

@@ -49,6 +49,8 @@ class Settings(_JsonFile):
     metronome: bool = False  # click along during your turn
     beat_id: str = ""  # last beat picked, reopened on launch
     view: str = "notation"  # "notation" or "grid"
+    ai_provider: str = "claude"  # which AI reads photos: "claude", "openai" or "gemini"
+    ai_models: dict[str, str] = field(default_factory=dict)  # provider -> chosen model
     hidden_examples: list[str] = field(default_factory=list)  # example beats the user hid
 
 

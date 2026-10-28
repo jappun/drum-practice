@@ -119,7 +119,7 @@ Core logic (rhythm, layout, transcription parsing, MusicXML, hero scoring) stays
   - paste an API key per provider, stored in the **macOS Keychain** (`keyring`), never in plain files;
   - a "Test key" button.
 - **Import flow:**
-  1. **Import photo…** accepts JPG, JPEG and PNG.
+  1. **New beat → From a photo** accepts JPG, JPEG and PNG.
   2. Crop to the bar(s) you want.
   3. Choose the provider.
   4. The app sends **only the cropped image** with a prompt describing the drum key and a strict JSON schema of Phase 9 notes, and the reply is validated.

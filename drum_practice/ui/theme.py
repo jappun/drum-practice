@@ -10,8 +10,10 @@ ACCENT = "#8742f5"  # buttons, notes, borders, playhead
 ACCENT_HOVER = "#9a5cf7"
 ON_ACCENT = "#ffffff"  # text on accent fills (5.1:1 contrast)
 ACCENT_TEXT = "#a77bf8"  # accent-coloured text on the dark background (5.8:1)
+ACCENT_TINT = "#2a2140"  # a faint purple fill behind boxed notes
 LIT = "#d9c6fd"  # a note lighting up as it plays
 OK = "#4cc38a"
+CHECK = "#f5dc7a"  # light yellow: spots the AI asks you to check
 BAD = "#e5534b"
 
 STYLESHEET = f"""
@@ -203,5 +205,26 @@ QLabel#banner {{
 QLabel#summary {{
     font-size: 14px;
     line-height: 150%;
+}}
+QLabel#aiNote {{
+    background: {ACCENT_TINT};
+    border: 1px solid {ACCENT};
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+}}
+QLabel#photo {{
+    background: {SURFACE};
+    border: 1px solid {BORDER};
+    border-radius: 6px;
+    padding: 4px;
+}}
+QPushButton#choice {{
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 14px;
+}}
+QScrollArea, QScrollArea > QWidget > QWidget {{
+    border: none;
 }}
 """

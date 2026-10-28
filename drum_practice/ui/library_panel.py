@@ -99,7 +99,7 @@ class LibraryPanel(QWidget):
         self._surprise.setToolTip("Pick a random beat from your whole library")
         self._surprise.clicked.connect(self._on_surprise)
         new_beat = QPushButton("New beat")
-        new_beat.setToolTip("Make your own beat in the editor")
+        new_beat.setToolTip("Read a beat from a photo, or write your own")
         new_beat.clicked.connect(self.new_beat_requested)
         buttons.addWidget(self._surprise)
         buttons.addWidget(new_beat)

@@ -1,19 +1,26 @@
 """Main window: pick a beat, listen to it, then play it back and get graded."""
 
+import sys
 import time
+from pathlib import Path
 from dataclasses import replace
 from enum import Enum, auto
 
 from PySide6.QtCore import QEvent, QObject, QPoint, Qt, QTimer, Signal
+from PySide6.QtGui import QAction, QActionGroup, QImage, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
     QButtonGroup,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QFileDialog,
     QMenu,
+    QMenuBar,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QVBoxLayout,
     QWidget,
 )
@@ -24,18 +31,23 @@ from ..grading import GOOD_WINDOW, Played, Result, Verdict, grade
 from ..kit import DrumClass
 from ..midi_in import Hit, MidiInput
 from ..library import ScoreBook, UserBeats, genres, is_example, is_user_beat, search_beats, visible_beats
-from ..model import Beat, load_beats
+from ..model import MAX_BEAT_BARS, Beat, load_beats
 from ..player import BeatPlayer, MetronomePlayer
 from ..rhythm import SUBDIVISIONS
 from ..session import Stage, Timeline
+from ..ai.transcription import describe_unsure, unsure_cells
 from ..settings import DevSettings, Settings
 from ..sounds import build_clicks, build_kit
 from . import theme
 from .editor_bar import EditorBar
+from .ai_settings import AISettingsDialog
 from .beat_views import GRID, NOTATION, BeatViews
 from .grid import GridResults
 from .library_panel import LibraryPanel
 from .monitor import MonitorWindow
+from .new_beat import PHOTO, NewBeatDialog
+from .photo_import import GrooveChoiceDialog, PhotoImportDialog
+from .photo_panel import PhotoPanel
 from .settings_bar import SettingsBar
 
 FRAME_MS = 16
@@ -65,6 +77,28 @@ class _HitBridge(QObject):
     hit = Signal(object)
 
 
+class VerticalScroll(QScrollArea):
+    """Scrolls up and down only. It never gets narrower than its content, so
+    nothing is cut off at the side."""
+
+    def __init__(self):
+        super().__init__()
+        self.setWidgetResizable(True)
+        self.setFrameShape(QFrame.NoFrame)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+    def minimumSizeHint(self):
+        hint = super().minimumSizeHint()
+        if self.widget() is not None:
+            hint.setWidth(self.widget().minimumSizeHint().width() + self.verticalScrollBar().sizeHint().width())
+        return hint
+
+    def eventFilter(self, watched, event) -> bool:
+        if watched is self.widget() and event.type() == QEvent.LayoutRequest:
+            self.updateGeometry()  # content shown or hidden: recheck the minimum width
+        return super().eventFilter(watched, event)
+
+
 class MainWindow(QWidget):
     def __init__(self, dev_mode: bool = False):
         """`dev_mode` (only ever set by launching with --dev) lets the laptop
@@ -91,6 +125,7 @@ class MainWindow(QWidget):
         # Editing: the beat being changed, and how it started (to spot unsaved changes).
         self._draft: Beat | None = None
         self._draft_start: Beat | None = None
+        self._draft_photo: bytes | None = None  # reference photo shown while editing
         self._stroke = editing.Stroke.ADD  # what the current drag does
         self._base_beat: Beat | None = None  # as written; settings reshape it
         self._monitor: MonitorWindow | None = None
@@ -174,19 +209,11 @@ class MainWindow(QWidget):
         title.setObjectName("title")
         self._kit_status = QLabel()
         self._kit_status.setObjectName("status")
-        self._calibrate = QPushButton("Calibrate")
-        self._calibrate.clicked.connect(self._toggle_calibration)
-        monitor = QPushButton("Kit monitor")
-        monitor.clicked.connect(self._open_monitor)
-        about = QPushButton("About")
-        about.clicked.connect(self._show_about)
         header.addWidget(title)
         header.addStretch()
         header.addWidget(self._kit_status)
-        header.addWidget(self._calibrate)
-        header.addWidget(monitor)
-        header.addWidget(about)
         root.addLayout(header)
+        self._build_menus(root)
 
         body = QHBoxLayout()
         body.setSpacing(24)
@@ -201,9 +228,15 @@ class MainWindow(QWidget):
         self._library.beat_selected.connect(self._select_beat)
         self._library.new_beat_requested.connect(self._new_beat)
         body.addWidget(self._library)
-        main = QVBoxLayout()
+        # The beat column scrolls up and down, so the editor stays reachable on
+        # short screens (the photo, notation and grid together are tall).
+        content = QWidget()
+        main = QVBoxLayout(content)
+        main.setContentsMargins(0, 0, 10, 0)  # room for the scroll bar
         main.setSpacing(14)
-        body.addLayout(main, 1)
+        self._scroll = VerticalScroll()
+        self._scroll.setWidget(content)
+        body.addWidget(self._scroll, 1)
 
         controls = QHBoxLayout()
         controls.setSpacing(12)
@@ -225,7 +258,6 @@ class MainWindow(QWidget):
         self._listen.setFixedWidth(90)
         self._start.setFixedWidth(150)
         self._edit.setFixedWidth(150)
-        self._calibrate.setFixedWidth(100)
         controls.addWidget(self._listen)
         controls.addWidget(self._start)
         controls.addWidget(self._edit)
@@ -234,16 +266,6 @@ class MainWindow(QWidget):
         controls.addWidget(self._beat_name)
         controls.addWidget(self._meta)
         controls.addStretch()
-        self._view_buttons = QButtonGroup(self)
-        for name, label in ((NOTATION, "Notation"), (GRID, "Grid")):
-            button = QPushButton(label)
-            button.setObjectName("segment")
-            button.setCheckable(True)
-            button.setChecked(self._settings.view == name)
-            button.setProperty("view", name)
-            self._view_buttons.addButton(button)
-            controls.addWidget(button)
-        self._view_buttons.buttonClicked.connect(self._on_view_chosen)
         main.addLayout(controls)
 
         self._settings_bar = SettingsBar(self._settings)
@@ -262,9 +284,19 @@ class MainWindow(QWidget):
         self._editor_bar.hide()
         main.addWidget(self._editor_bar)
 
+        self._photo_panel = PhotoPanel()
+        main.addWidget(self._photo_panel)
+
         self._banner = QLabel()
         self._banner.setObjectName("banner")
         main.addWidget(self._banner)
+
+        self._ai_note = QLabel()  # what the AI wasn't sure about, after reading a photo
+        self._ai_note.setObjectName("aiNote")
+        self._ai_note.setWordWrap(True)
+        self._ai_note.setTextFormat(Qt.PlainText)
+        self._ai_note.hide()
+        main.addWidget(self._ai_note)
 
         self._views = BeatViews(
             key_labels={d: keyboard_in.key_label(d) for d in DrumClass} if self._dev_mode else None,
@@ -284,8 +316,51 @@ class MainWindow(QWidget):
         main.addWidget(self._summary)
         main.addStretch()
 
-    def _on_view_chosen(self, button) -> None:
-        self._settings.view = button.property("view")
+    def _build_menus(self, root: QVBoxLayout) -> None:
+        """Settings, tools and the view live in the menu bar, so the window
+        itself is just the beat. On macOS a menu bar with no parent is the one
+        at the top of the screen."""
+        mac = sys.platform == "darwin"
+        self._menu_bar = bar = QMenuBar(None if mac else self)
+        if not mac:
+            root.setMenuBar(bar)
+
+        settings = bar.addMenu("Settings")
+        self._menu_item(settings, "AI settings…", self._open_ai_settings)
+        self._calibrate = self._menu_item(settings, "Calibrate", self._toggle_calibration)
+        self._menu_item(settings, "Kit monitor", self._open_monitor)
+
+        view = bar.addMenu("View")
+        self._view_actions = QActionGroup(self)
+        for name, label, key in ((NOTATION, "Notation", "Ctrl+1"), (GRID, "Grid", "Ctrl+2")):
+            action = self._menu_item(view, label)
+            action.setCheckable(True)
+            action.setChecked(self._settings.view == name)
+            action.setData(name)
+            action.setShortcut(key)  # Ctrl is ⌘ on macOS
+            self._view_actions.addAction(action)
+        self._view_actions.triggered.connect(self._on_view_chosen)
+
+        # Esc stops whatever is playing; calibration has no on-screen Stop button.
+        QShortcut(QKeySequence(Qt.Key_Escape), self, self._stop_all)
+
+        # Kept in Help: run from Python, macOS would file About under an app menu
+        # named "Python". A packaged app can move it to its own app menu.
+        self._menu_item(bar.addMenu("Help"), "About Drum Practice", self._show_about)
+
+    def _menu_item(self, menu: QMenu, text: str, slot=None) -> QAction:
+        """A menu item that stays in the menu it's put in. macOS otherwise moves
+        items named like "settings" or "about" to the app menu, and only reads
+        the role when the item is added, so it's set first."""
+        action = QAction(text, self)
+        action.setMenuRole(QAction.NoRole)
+        if slot is not None:
+            action.triggered.connect(lambda: slot())
+        menu.addAction(action)
+        return action
+
+    def _on_view_chosen(self, action) -> None:
+        self._settings.view = action.data()
         self._settings.save()
         self._views.set_view(self._settings.view)
 
@@ -351,6 +426,7 @@ class MainWindow(QWidget):
             self._settings.save()
         self._views.set_beat(self._practice_beat())
         self._summary.setText("")
+        self._set_ai_note("")
         self._show_beat_details(beat)
         self._edit.setText("Edit" if is_user_beat(beat) else "Duplicate && edit")  # && shows a literal &
         self._apply_locks()
@@ -437,7 +513,7 @@ class MainWindow(QWidget):
         self._mode = mode
         self._listen.setText("Stop" if mode is Mode.LISTEN else "Listen")
         self._start.setText("Stop" if mode is Mode.PRACTICE else "Start practice")
-        self._calibrate.setText("Stop" if mode is Mode.CALIBRATE else "Calibrate")
+        self._calibrate.setText("Stop calibrating" if mode is Mode.CALIBRATE else "Calibrate")
         self._settings_bar.set_metronome_playing(mode is Mode.METRONOME)
         # Settings can't change mid-run; while listening or clicking they apply live.
         self._settings_bar.setEnabled(mode not in (Mode.PRACTICE, Mode.CALIBRATE))
@@ -489,7 +565,7 @@ class MainWindow(QWidget):
             self._banner.setText("Make your first beat with New beat in the library.")
             return
         if not self._calibrated():
-            self._banner.setText("Tip: press Calibrate first so timing is graded accurately.")
+            self._banner.setText("Tip: choose Settings → Calibrate first so timing is graded accurately.")
         elif self._settings.count_in:
             self._banner.setText("Press Start practice: count-in, listen, count-in, then your turn.")
         else:
@@ -498,7 +574,13 @@ class MainWindow(QWidget):
     # --- editing ---
 
     def _new_beat(self) -> None:
-        self._start_edit(editing.blank())
+        dialog = NewBeatDialog(self)
+        if not dialog.exec():
+            return
+        if dialog.choice == PHOTO:
+            self._import_photo()
+        else:
+            self._start_edit(editing.blank())
 
     def _edit_current(self) -> None:
         beat = self._base_beat
@@ -506,11 +588,17 @@ class MainWindow(QWidget):
         draft = replace(beat, notes=list(beat.notes)) if is_user_beat(beat) else editing.duplicate(beat)
         self._start_edit(draft)
 
-    def _start_edit(self, draft: Beat) -> None:
+    def _start_edit(self, draft: Beat, photo: bytes | None = None) -> None:
         self._stop_all()
         self._views.set_results(None)
         self._summary.setText("")
+        self._set_ai_note("")
+        self._grid.set_checks(set())
         self._draft = self._draft_start = draft
+        if photo is None and is_user_beat(draft):
+            photo = self._user_beats.photo(draft.id)
+        self._draft_photo = photo
+        self._photo_panel.set_photo(photo)
         self._editor_bar.load(draft, genres(self._beats), deletable=is_user_beat(draft))
         self._apply_locks()
         self._show_draft()
@@ -578,6 +666,8 @@ class MainWindow(QWidget):
     def _has_unsaved_changes(self) -> bool:
         if self._draft is None:
             return False
+        if self._draft_photo is not None and not is_user_beat(self._draft_start):
+            return True  # read from a photo and not saved anywhere yet
         return self._editor_bar.apply_details(self._draft).to_dict() != self._draft_start.to_dict()
 
     def _save_draft(self) -> None:
@@ -589,6 +679,8 @@ class MainWindow(QWidget):
             self._banner.setText("Add at least one note before saving.")
             return
         saved = self._user_beats.save(draft)
+        if self._draft_photo:
+            self._user_beats.save_photo(saved.id, self._draft_photo)
         if is_user_beat(self._draft_start) and not editing.same_music(self._draft_start, saved):
             self._scores.forget(saved.id)  # different notes: the old best no longer applies
         self._finish_edit(select_id=saved.id)
@@ -609,6 +701,10 @@ class MainWindow(QWidget):
     def _finish_edit(self, select_id: str | None) -> None:
         self._stop_all()
         self._draft = self._draft_start = None
+        self._draft_photo = None
+        self._photo_panel.set_photo(None)
+        self._set_ai_note("")
+        self._grid.set_checks(set())
         self._apply_locks()
         self._reload_library(select_id)
 
@@ -627,6 +723,75 @@ class MainWindow(QWidget):
         box.setDefaultButton(no)  # Enter shouldn't trigger an irreversible action
         box.exec()
         return box.clickedButton() is yes
+
+    # --- beats from photos ---
+
+    def _open_ai_settings(self) -> None:
+        AISettingsDialog(self._settings, self).exec()
+
+    def _import_photo(self) -> None:
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Import a beat from a photo", str(Path.home()), "Images (*.png *.jpg *.jpeg)"
+        )
+        if not path:
+            return
+        image = QImage(path)
+        if image.isNull():
+            QMessageBox.warning(self, "Drum Practice", "That file couldn't be opened as an image (JPG or PNG).")
+            return
+        name = Path(path).stem.replace("_", " ").replace("-", " ").strip().title() or "From photo"
+        dialog = PhotoImportDialog(image, name, self._settings, self)
+        if not dialog.exec():
+            return
+        if dialog.manual:
+            self._start_edit(editing.blank(name), photo=dialog.photo)
+            self._banner.setText("Enter the notes from the photo, then Save.")
+            return
+        self._use_photo_result(dialog.result, dialog.photo)
+
+    def _use_photo_result(self, result, photo: bytes) -> None:
+        long_ones = [g for g in result.grooves if g.too_long]
+        if long_ones:
+            bars = max(g.bars_read for g in long_ones)
+            keep = self._confirm(
+                f"This looks like a song ({bars} bars). Songs arrive in a later update. "
+                f"Keep the first {MAX_BEAT_BARS} bars as a beat?",
+                f"Keep first {MAX_BEAT_BARS} bars",
+            )
+            if not keep:
+                return
+        notes = []
+        if result.unsure:
+            notes.append(describe_unsure(result.unsure, several_grooves=len(result.grooves) > 1))
+        skipped = sum(len(g.problems) for g in result.grooves)
+        if skipped:
+            notes.append(f"{skipped} note(s) couldn't be placed and were left out.")
+
+        if len(result.grooves) == 1:
+            beat = result.grooves[0].beat
+            self._start_edit(beat, photo=photo)
+            self._grid.set_checks(unsure_cells(result.unsure, beat))
+            self._banner.setText("Check the notes against the photo, fix anything, then Save.")
+            self._set_ai_note("\n\n".join(notes))
+            return
+
+        chooser = GrooveChoiceDialog(result, self)
+        if not chooser.exec() or not chooser.chosen():
+            return
+        saved = []
+        for groove in chooser.chosen():
+            beat = self._user_beats.save(groove.beat)
+            self._user_beats.save_photo(beat.id, photo)
+            saved.append(beat)
+        self._reload_library(saved[0].id)
+        self._banner.setText(
+            f"Saved {len(saved)} beats from the photo. Open each with Edit to check it against the photo."
+        )
+        self._set_ai_note("\n\n".join(notes))
+
+    def _set_ai_note(self, text: str) -> None:
+        self._ai_note.setText(text)
+        self._ai_note.setVisible(bool(text))
 
     # --- per frame ---
 
@@ -674,7 +839,7 @@ class MainWindow(QWidget):
         else:
             n = heard - calibration.LEAD_IN_CLICKS
             target = "any drum key" if self._dev_mode else "any pad"
-            self._banner.setText(f"Hit {target} exactly on each click   {n} / {calibration.MEASURED_CLICKS}")
+            self._banner.setText(f"Hit {target} exactly on each click   {n} / {calibration.MEASURED_CLICKS}   (Esc to stop)")
         beat = 60.0 / calibration.TEMPO * sr
         if now > clicks[-1] + beat / 2:
             self._finish_calibration()
@@ -716,7 +881,7 @@ class MainWindow(QWidget):
         m = calibration.measure(clicks, [h.time for h in self._hits])
         self._stop_all()
         if not m.enough_taps:
-            self._banner.setText("Calibration didn't get enough hits. Press Calibrate to try again.")
+            self._banner.setText("Calibration didn't get enough hits. Choose Settings → Calibrate to try again.")
             return
         if not m.consistent:
             self._banner.setText(

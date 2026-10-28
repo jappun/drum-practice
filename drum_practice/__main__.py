@@ -1,3 +1,4 @@
+import logging
 import sys
 
 from PySide6.QtGui import QColor, QPalette
@@ -18,7 +19,12 @@ def main() -> int:
     cursors = PointerCursors(app)  # pointing hand on anything clickable
     app.installEventFilter(cursors)
     # --dev is the only way to enable keyboard drums (a developer tool).
-    window = MainWindow(dev_mode="--dev" in sys.argv[1:])
+    dev_mode = "--dev" in sys.argv[1:]
+    if dev_mode:
+        # Show the AI's raw replies in the terminal, to see what it said it was unsure about.
+        logging.basicConfig(format="%(name)s: %(message)s")
+        logging.getLogger("drum_practice").setLevel(logging.DEBUG)
+    window = MainWindow(dev_mode=dev_mode)
     window.show()
     return app.exec()
 

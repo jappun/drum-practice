@@ -55,6 +55,7 @@ class BeatGrid(QWidget):
         self._hover: tuple[Fraction, DrumClass] | None = None
         self._drag_row: DrumClass | None = None
         self._last_cell: tuple[Fraction, DrumClass] | None = None
+        self._checks: set[tuple[int, DrumClass | None]] = set()
         self.setMinimumHeight(HEADER_HEIGHT + ROW_HEIGHT * len(DRUM_ORDER) + 2)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
@@ -66,6 +67,12 @@ class BeatGrid(QWidget):
 
     def set_results(self, results: GridResults | None) -> None:
         self.results = results
+        self.update()
+
+    def set_checks(self, checks: set[tuple[int, DrumClass | None]]) -> None:
+        """Spots to check, outlined in yellow: (beat index, drum, or None for
+        every drum in that beat). They stay put while the beat is edited."""
+        self._checks = set(checks)
         self.update()
 
     def set_editable(self, editable: bool) -> None:
@@ -253,6 +260,8 @@ class BeatGrid(QWidget):
             radius = min(5.0, rect.width() / 3)
             p.drawRoundedRect(rect, radius, radius)
 
+        self._paint_checks(p)
+
         if self._editable and self._hover is not None:
             p.setPen(QPen(QColor(theme.ACCENT), 1.5))
             p.setBrush(Qt.NoBrush)
@@ -269,6 +278,30 @@ class BeatGrid(QWidget):
                     x = self.x_of(min(max(quarters, 0.0), total))
                     y = HEADER_HEIGHT + (DRUM_ORDER.index(drum) + 0.5) * ROW_HEIGHT
                     p.drawEllipse(QRectF(x - MARK_RADIUS, y - MARK_RADIUS, 2 * MARK_RADIUS, 2 * MARK_RADIUS))
+
+    def _paint_checks(self, p: QPainter) -> None:
+        """Outline the notes to check; where there are none (e.g. a note may be
+        missing), outline that beat's row instead, dashed."""
+        beat = self.beat
+        p.setBrush(Qt.NoBrush)
+        for index, drum in self._checks:
+            if index >= beat.total_beats:
+                continue
+            notes = [n for n in beat.notes if beat.beat_index(n.at) == index and drum in (None, n.drum)]
+            p.setPen(QPen(QColor(theme.CHECK), 2))
+            for note in notes:
+                rect = self._cell_rect(note.at, note.drum).adjusted(-1, -1, 1, 1)
+                radius = min(5.0, rect.width() / 3)
+                p.drawRoundedRect(rect, radius, radius)
+            if notes:
+                continue
+            start = index * beat.beat_quarters
+            left, right = self.x_of(start), self.x_of(start + beat.beat_quarters)
+            rows = [DRUM_ORDER.index(drum)] if drum else list(range(len(DRUM_ORDER)))
+            top = HEADER_HEIGHT + min(rows) * ROW_HEIGHT + CELL_GAP
+            bottom = HEADER_HEIGHT + (max(rows) + 1) * ROW_HEIGHT - CELL_GAP
+            p.setPen(QPen(QColor(theme.CHECK), 1.5, Qt.DashLine))
+            p.drawRoundedRect(QRectF(left + 2, top, right - left - 4, bottom - top), 4, 4)
 
     def _note_is_lit(self, at: Fraction, playing_start: Fraction) -> bool:
         """A note lights while the playhead is in the column it starts in."""

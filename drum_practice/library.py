@@ -145,6 +145,20 @@ class UserBeats:
 
     def delete(self, beat_id: str) -> None:
         (self.directory / f"{beat_id}.json").unlink(missing_ok=True)
+        self._photo_path(beat_id).unlink(missing_ok=True)
+
+    # A beat imported from a photo keeps the photo, to show beside the editor.
+
+    def save_photo(self, beat_id: str, image: bytes) -> None:
+        self.directory.mkdir(parents=True, exist_ok=True)
+        self._photo_path(beat_id).write_bytes(image)
+
+    def photo(self, beat_id: str) -> bytes | None:
+        path = self._photo_path(beat_id)
+        return path.read_bytes() if path.exists() else None
+
+    def _photo_path(self, beat_id: str) -> Path:
+        return self.directory / f"{beat_id}.photo"
 
     def _new_id(self, name: str) -> str:
         slug = re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_") or "beat"
