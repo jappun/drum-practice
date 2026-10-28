@@ -27,6 +27,7 @@ Following [docs/REVISION1_PLAN_PHASES.md](docs/REVISION1_PLAN_PHASES.md). Struck
 - [ ] Phase 13: Drum Hero mode
 - [ ] Phase 14: Setup wizard to learn any kit's MIDI outputs
 - [ ] Phase 15: Dynamic hits (ie ghost notes, accents)
+- [ ] Phase 16: Package and publish
 
 Scrapped/replaced from the original plan:
 - Upload sheet music (MIDI files) → songs from MusicXML (Phase 12)
